@@ -1,0 +1,23 @@
+name: 'Create R source package'
+description: 'Creates source package from git url'
+inputs:
+  url:
+    description: 'Git URL where to clone from'
+    required: true
+  ref:
+    description: 'Which commit to checkout'
+    required: false
+    default: 'HEAD'
+outputs:
+  PACKAGE:
+    description: 'Name of the package'  
+  SOURCEPKG:
+    description: 'Filename of the source package'
+  COMMIT_TIMESTAMP:
+    description: 'Time of the last commit'
+runs:
+  using: 'docker'
+  image: 'docker://runiverse/build-source'
+  args:
+    - ${{ inputs.url }}
+    - ${{ inputs.ref }}
