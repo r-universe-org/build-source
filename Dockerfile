@@ -18,8 +18,8 @@ RUN \
     libsecret-1-dev libsodium-dev libssh-dev libssh2-1-dev libtiff-dev libwebp-dev libnetcdf-dev libsasl2-dev \
     libzmq3-dev zlib1g-dev libglpk-dev librdf0-dev libglu1-mesa-dev r-cran-rjava
 
-COPY Renviron /root/.Renviron
-COPY Rprofile /root/.Rprofile
+COPY Renviron /etc/R/Renviron.site
+COPY Rprofile /etc/R/Rprofile.site
 
 RUN \
 	R -e 'install.packages("remotes"); remotes::install_github("jeroen/maketools")'
