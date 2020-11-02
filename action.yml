@@ -8,6 +8,9 @@ inputs:
     description: 'Which commit to checkout'
     required: false
     default: 'HEAD'
+  subdir:
+    description: 'Subdirectory in which the package lives'
+    required: false
 outputs:
   PACKAGE:
     description: 'Name of the package'  
@@ -21,3 +24,4 @@ runs:
   args:
     - ${{ inputs.url }}
     - ${{ inputs.ref }}
+    - ${{ inputs.subdir }}
