@@ -7,7 +7,6 @@ inputs:
   ref:
     description: 'Which commit to checkout'
     required: false
-    default: 'HEAD'
   subdir:
     description: 'Subdirectory in which the package lives'
     required: false
