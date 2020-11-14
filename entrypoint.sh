@@ -1,7 +1,7 @@
 #!/bin/bash -l
 set -e
 echo "Building ${1} in ${PWD}"
-echo "Ref: ${2}"
+echo "CommitRef: ${2}"
 echo "Subdir: ${3}"
 
 # Setup build environment
@@ -9,12 +9,19 @@ if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
 
 # Get the package dir
 REPO=$(basename $1)
+
+# Clone, and checkout the revision if any
+git clone --depth 1 "$1" "${REPO}"
+if [ "${2}" ]; then
+( cd ${REPO}; git checkout "$2" )
+fi
+
+# Subdirectory containing the R package
 PKGDIR="${REPO}"
 if [ "${3}" ]; then
 PKGDIR="${PKGDIR}/${3}"
 fi
 
-git clone --depth 1 "$1" "${REPO}"
 COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(grep '^Package:' "${PKGDIR}/DESCRIPTION" | sed 's/^Package://')
