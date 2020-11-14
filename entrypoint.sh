@@ -13,7 +13,7 @@ REPO=$(basename $1)
 # Clone, and checkout the revision if any
 git clone --depth 1 "$1" "${REPO}"
 if [ "${2}" ]; then
-( cd ${REPO}; git checkout "$2" )
+( cd ${REPO}; git fetch origin "$2"; git checkout "$2" )
 fi
 
 # Subdirectory containing the R package
