@@ -33,12 +33,12 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Get dependencies
-Rscript -e "setwd('$PKGDIR'); install.packages(remotes::local_package_deps(dependencies=TRUE))"
+Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_package_deps(dependencies=TRUE))"
 
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 rm -Rf ${REPO}/.git
-R CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || R CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
+R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
 
 # Set output values
 echo ::set-output name=DISTRO::$DISTRO
