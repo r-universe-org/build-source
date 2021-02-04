@@ -54,6 +54,12 @@ R CMD INSTALL "$SOURCEPKG"
 SYSDEPS=$(Rscript -e "cat(maketools::package_sysdeps_string('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
+# Check for a package logo
+PKGLOGO=$(Rscript -e "cat(maketools::find_logo('$PKGDIR'))")
+if [ "$PKGLOGO" ]; then
+echo ::set-output name=PKGLOGO::$PKGLOGO
+fi
+
 ### Test if Java is needed to load
 ### TODO: this seems to fail builds?
 #RJAVA=$(R -e "library('$PACKAGE'); sessionInfo()" | grep "rJava")
