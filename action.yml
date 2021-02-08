@@ -19,6 +19,8 @@ outputs:
     description: 'Time of the last commit'
   PKGLOGO:
     description: 'Path to logo within pkg dir'
+  VIGNETTES:
+    description: 'Base64 encoded JSON vignettes list'
 runs:
   using: 'docker'
   image: 'docker://runiverse/build-source'

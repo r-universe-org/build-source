@@ -54,6 +54,10 @@ R CMD INSTALL "$SOURCEPKG"
 SYSDEPS=$(Rscript -e "cat(maketools::package_sysdeps_string('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
+# Check for vignettes
+VIGNETTES=$(Rscript -e "cat(maketools::vignettes_base64('$PACKAGE'))")
+echo ::set-output name=VIGNETTES::$VIGNETTES
+
 # Check for a package logo
 PKGLOGO=$(Rscript -e "cat(maketools::find_logo('$PKGDIR'))")
 if [ "$PKGLOGO" ]; then
