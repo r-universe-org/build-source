@@ -35,6 +35,9 @@ BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 # Get dependencies
 Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_package_deps(dependencies=TRUE))"
 
+# Delete latex vignettes for now (latex is to heavy for github actions)
+rm -f ${PKGDIR}/vignettes/*.Rnw
+
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 rm -Rf ${REPO}/.git
