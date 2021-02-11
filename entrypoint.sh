@@ -35,8 +35,13 @@ BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 # Get dependencies
 Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_package_deps(dependencies=TRUE))"
 
+# Set modification time of vignette files to latest commit date
 # Delete latex vignettes for now (latex is to heavy for github actions)
+gitmtim(){ local f;for f;do touch -d @0`git log --pretty=%at -n1 -- "$f"` "$f"; done;};
+if [ -d "${PKGDIR}/vignettes" ]; then
+(cd ${REPO}; gitmtim "${PKGDIR}/vignettes/*")
 rm -f ${PKGDIR}/vignettes/*.Rnw
+fi
 
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
