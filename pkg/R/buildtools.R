@@ -16,6 +16,13 @@ find_logo <- function (path = ".") {
 #' @rdname buildtools
 #' @param pkg name of the installed package
 vignettes_base64 <- function(path, pkg = basename(path)){
+  df <- vignettes_info(path = path, pkg = pkg)
+  if(is.data.frame(df)){
+    gsub("\n", "", jsonlite::base64_enc(jsonlite::toJSON(df, POSIXt = 'mongo')), fixed = TRUE)
+  }
+}
+
+vignettes_info <- function(path, pkg){
   repo <- gert::git_open(repo = path)
   vignettes <- as.data.frame(tools::getVignetteInfo(pkg))
   if(nrow(vignettes) > 0){
@@ -26,9 +33,6 @@ vignettes_base64 <- function(path, pkg = basename(path)){
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
-    cat("===== Vignette data =====\n")
-    print(df)
-    cat("===== Vignette data =====\n")
-    gsub("\n", "", jsonlite::base64_enc(jsonlite::toJSON(df, POSIXt = 'mongo')), fixed = TRUE)
+    return(df)
   }
 }

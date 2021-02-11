@@ -40,9 +40,9 @@ rm -f ${PKGDIR}/vignettes/*.Rnw
 
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
-mv ${REPO}/.git tmpgit
+#mv ${REPO}/.git tmpgit
 R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
-mv tmpgit ${REPO}/.git
+#mv tmpgit ${REPO}/.git
 
 # Set output values
 echo ::set-output name=DISTRO::$DISTRO
