@@ -30,9 +30,9 @@ vignettes_info <- function(path, pkg){
     names(df) <- c("source", "filename", "title")
     inputs <- file.path('vignettes', df$source)
     stats <- gert::git_stat_files(inputs, repo = repo)
-    df$created = stats$created
-    df$modified = stats$modified
-    df$commits = stats$commits
+    #df$created = stats$created
+    #df$modified = stats$modified
+    #df$commits = stats$commits
     return(df)
   }
 }
