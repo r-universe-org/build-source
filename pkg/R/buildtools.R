@@ -18,7 +18,7 @@ find_logo <- function (path = ".") {
 vignettes_base64 <- function(path, pkg = basename(path)){
   df <- vignettes_info(path = path, pkg = pkg)
   if(is.data.frame(df)){
-    base64url_encode(jsonlite::toJSON(df))
+    base64url_gzip(jsonlite::toJSON(df))
   }
 }
 
@@ -37,7 +37,8 @@ vignettes_info <- function(path, pkg){
   }
 }
 
-base64url_encode <- function(bin){
-  text <- gsub("\n", "", jsonlite::base64_enc(bin), fixed = TRUE)
+base64url_gzip <- function(bin){
+  buf <- memCompress(bin, 'gzip')
+  text <- gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
   sub("=+$", "", chartr("+/", "-_", text))
 }
