@@ -11,7 +11,8 @@ if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
 REPO=$(basename $1)
 
 # Clone, and checkout the revision if any
-git clone --depth 1 "$1" "${REPO}"
+# Removed --depth 1 because we want to read vignette c/m times
+git clone "$1" "${REPO}"
 if [ "${2}" ]; then
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
