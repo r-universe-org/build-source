@@ -18,7 +18,7 @@ find_logo <- function (path = ".") {
 vignettes_base64 <- function(path, pkg = basename(path)){
   df <- vignettes_info(path = path, pkg = pkg)
   if(is.data.frame(df)){
-    gsub("\n", "", jsonlite::base64_enc(jsonlite::toJSON(df, POSIXt = 'mongo')), fixed = TRUE)
+    base64url_encode(jsonlite::toJSON(df))
   }
 }
 
@@ -30,9 +30,14 @@ vignettes_info <- function(path, pkg){
     names(df) <- c("source", "filename", "title")
     inputs <- file.path('vignettes', df$source)
     stats <- gert::git_stat_files(inputs, repo = repo)
-    #df$created = stats$created
-    #df$modified = stats$modified
-    #df$commits = stats$commits
+    df$created = stats$created
+    df$modified = stats$modified
+    df$commits = stats$commits
     return(df)
   }
+}
+
+base64url_encode <- function(bin){
+  text <- gsub("\n", "", jsonlite::base64_enc(bin), fixed = TRUE)
+  sub("=+$", "", chartr("+/", "-_", text))
 }
