@@ -10,9 +10,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    gert (>= 1.1.9000),
+    gert (>= 1.2.0),
     jsonlite,
     maketools
-Remotes:
-    r-lib/gert
 RoxygenNote: 7.1.1
