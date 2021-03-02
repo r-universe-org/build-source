@@ -11,5 +11,6 @@ LazyData: true
 Imports:
     gert (>= 1.2.0),
     jsonlite,
-    maketools
+    maketools,
+    yaml
 RoxygenNote: 7.1.1

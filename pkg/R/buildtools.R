@@ -2,14 +2,33 @@
 #'
 #' Get some extra info about packages.
 #'
-#' @export
+#' @export find_logo package_sysdeps_string
+#' @aliases find_logo package_sysdeps_string
 #' @rdname buildtools
 #' @param path root directory of package
 find_logo <- function (path = ".") {
+  cardimage <- find_opengraph_image(path = path)
+  if(length(cardimage))
+    return(cardimage)
   # Match logic from pkgdown but return path relative package root.
   files <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
   candidates <- file.path(path, files)
   utils::head(files[file.exists(candidates)], 1)
+}
+
+find_opengraph_image <- function(path = "."){
+  tryCatch({
+    yml <- load_pkgdown_yml(path = path)
+    return(yml$template$opengraph$image$src)
+  }, error = function(e){})
+}
+
+load_pkgdown_yml <- function(path = '.'){
+  candidates <- file.path(path, c('_pkgdown.yml', 'pkgdown/_pkgdown.yml'))
+  for(f in candidates){
+    if(file.exists(f))
+      return(yaml::read_yaml(f))
+  }
 }
 
 #' @export
@@ -41,3 +60,6 @@ base64_gzip <- function(bin){
   buf <- memCompress(bin, 'gzip')
   gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
 }
+
+#' @importFrom maketools package_sysdeps_string
+package_sysdeps_string <- maketools::package_sysdeps_string

@@ -56,7 +56,7 @@ echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 # For now we don't do a full build to speed up building of subsequent Win/Mac binaries
 test -f "$SOURCEPKG"
 R CMD INSTALL "$SOURCEPKG"
-SYSDEPS=$(Rscript -e "cat(maketools::package_sysdeps_string('$PACKAGE'))")
+SYSDEPS=$(Rscript -e "cat(buildtools::package_sysdeps_string('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
 # Check for vignettes

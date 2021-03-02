@@ -2,6 +2,7 @@
 % Please edit documentation in R/buildtools.R
 \name{find_logo}
 \alias{find_logo}
+\alias{package_sysdeps_string}
 \alias{vignettes_base64}
 \title{Build tools}
 \usage{
