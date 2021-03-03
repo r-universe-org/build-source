@@ -12,5 +12,6 @@ Imports:
     gert (>= 1.2.0),
     jsonlite,
     maketools,
+    rmarkdown,
     yaml
 RoxygenNote: 7.1.1

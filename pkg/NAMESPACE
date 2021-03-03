@@ -2,5 +2,6 @@
 
 export(find_logo)
 export(package_sysdeps_string)
+export(render_article)
 export(vignettes_base64)
 importFrom(maketools,package_sysdeps_string)
