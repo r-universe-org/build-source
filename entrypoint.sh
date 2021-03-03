@@ -39,6 +39,12 @@ Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_pac
 # Delete latex vignettes for now (latex is to heavy for github actions)
 rm -f ${PKGDIR}/vignettes/*.Rnw
 
+# Override rmarkdown engine
+if ls ${PKGDIR}/vignettes/*.Rmd; then
+sed -i.bak 's/VignetteEngine{.*}/VignetteEngine{buildtools::rmarkdown}/g' ${PKGDIR}/vignettes/*.Rmd
+sed -i.bak 's/knitr/knitr,buildtools/g' ${PKGDIR}/DESCRIPTION
+fi
+
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit

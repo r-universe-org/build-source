@@ -11,6 +11,7 @@ LazyData: true
 Imports:
     gert (>= 1.2.0),
     jsonlite,
+    knitr,
     maketools,
     rmarkdown,
     yaml

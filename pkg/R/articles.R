@@ -2,8 +2,17 @@
 #'
 #' @export
 #' @param input path to Rmd file
-render_article <- function(input){
-  rmarkdown::render(input, rmarkdown::html_document(
+#' @param ... passed to render
+render_article <- function(input, ...){
+  rmarkdown::render(input, output_format = r_universe_format(), ...)
+}
+
+r_universe_format <- function(){
+  template_file <- function(path){
+    normalizePath(system.file(paste0('rmd-template/', path),
+                              package = 'buildtools'), mustWork = TRUE)
+  }
+  rmarkdown::html_document(
     toc = TRUE,
     toc_depth = 2,
     theme = NULL,
@@ -14,9 +23,14 @@ render_article <- function(input){
       in_header = template_file('header.html'),
       after_body = template_file('footer.html')
     )
-  ))
+  )
 }
 
-template_file <- function(path){
-  normalizePath(system.file(paste0('rmd-template/', path), package = 'buildtools'), mustWork = TRUE)
+# HACK: dummy vignette builder buildtools::rmarkdown
+register_vignette_engine <- function(pkg){
+  default_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
+  tools::vignetteEngine('rmarkdown', package = 'buildtools', tangle = default_engine$tangle,
+    pattern = default_engine$pattern, weave = function(..., output_format = NULL){
+      default_engine$weave(..., output_format = r_universe_format())
+    })
 }

@@ -4,10 +4,12 @@
 \alias{render_article}
 \title{Render rmarkdown article}
 \usage{
-render_article(input)
+render_article(input, ...)
 }
 \arguments{
 \item{input}{path to Rmd file}
+
+\item{...}{passed to render}
 }
 \description{
 Render rmarkdown article
