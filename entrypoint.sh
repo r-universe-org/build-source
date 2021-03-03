@@ -41,8 +41,8 @@ rm -f ${PKGDIR}/vignettes/*.Rnw
 
 # Override rmarkdown engine
 if ls ${PKGDIR}/vignettes/*.Rmd; then
-sed -i.bak 's/VignetteEngine{.*}/VignetteEngine{buildtools::rmarkdown}/g' ${PKGDIR}/vignettes/*.Rmd
-sed -i.bak 's/knitr/knitr,buildtools/g' ${PKGDIR}/DESCRIPTION
+sed -i 's/VignetteEngine{.*}/VignetteEngine{buildtools::rmarkdown}/g' ${PKGDIR}/vignettes/*.Rmd
+sed -i 's/knitr/knitr,buildtools/g' ${PKGDIR}/DESCRIPTION
 fi
 
 # Build source package. Try vignettes, but build without otherwise.
