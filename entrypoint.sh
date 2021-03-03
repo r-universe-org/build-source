@@ -40,10 +40,10 @@ Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_pac
 rm -f ${PKGDIR}/vignettes/*.Rnw
 
 # Override rmarkdown engine
-if ls ${PKGDIR}/vignettes/*.Rmd; then
-sed -i 's/VignetteEngine{.*}/VignetteEngine{buildtools::rmarkdown}/g' ${PKGDIR}/vignettes/*.Rmd
-sed -i 's/knitr/knitr,buildtools/g' ${PKGDIR}/DESCRIPTION
-fi
+#if ls ${PKGDIR}/vignettes/*.Rmd; then
+#sed -i 's/VignetteEngine{.*}/VignetteEngine{buildtools::rmarkdown}/g' ${PKGDIR}/vignettes/*.Rmd
+#sed -i 's/knitr/knitr,buildtools/g' ${PKGDIR}/DESCRIPTION
+#fi
 
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
