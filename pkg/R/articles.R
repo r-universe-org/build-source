@@ -1,6 +1,7 @@
 #' Render rmarkdown article
 #'
 #' @export
+#' @rdname articles
 #' @param input path to Rmd file
 #' @param ... passed to render
 render_article <- function(input, ...){
@@ -26,10 +27,13 @@ r_universe_format <- function(){
   )
 }
 
-# HACK: dummy vignette builder buildtools::rmarkdown
-register_vignette_engine <- function(pkg){
+#  Hack to replace knitr::rmarkdown engine
+#' @export
+#' @rdname articles
+replace_rmarkdown_engine <- function(){
+  message("Replacing rmarkdown engine...")
   default_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
-  tools::vignetteEngine('rmarkdown', package = 'buildtools', tangle = default_engine$tangle,
+  tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = default_engine$tangle,
     pattern = default_engine$pattern, weave = function(..., output_format = NULL){
       default_engine$weave(..., output_format = r_universe_format())
     })

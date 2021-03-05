@@ -2,9 +2,12 @@
 % Please edit documentation in R/articles.R
 \name{render_article}
 \alias{render_article}
+\alias{replace_rmarkdown_engine}
 \title{Render rmarkdown article}
 \usage{
 render_article(input, ...)
+
+replace_rmarkdown_engine()
 }
 \arguments{
 \item{input}{path to Rmd file}
