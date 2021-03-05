@@ -43,13 +43,12 @@ rm -f ${PKGDIR}/vignettes/*.Rnw
 if ls ${PKGDIR}/vignettes/*.Rmd; then
 echo "Overriding rmarkdown engine..."
 echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
-export R_TESTS="/tmp/vignettehack.R"
 fi
 
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
-R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
+R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
 #mv tmpgit ${REPO}/.git
 
 # Set output values
