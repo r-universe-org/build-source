@@ -9,7 +9,7 @@
       $if(title)$<title>$title$</title>$endif$
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" data-external="1">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" data-external="1">
-      <link rel="stylesheet" href="https://ashki23.github.io/styles.css" data-external="1">
+      <link rel="stylesheet" href="https://r-universe.dev/static/article-styles.css" data-external="1">
       $for(header-includes)$
       $header-includes$
       $endfor$
@@ -41,15 +41,6 @@
       <!-- Mathjax -->
       <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" data-external="1"></script>
       <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" data-external="1"></script>
-      <script>
-         /* Bootstrap styles to tables */
-         function bootstrapStylePandocTables() {
-         $$('tr.header').parent('thead').parent('table').addClass('table table-condensed'); }
-         $$(document).ready(function () { bootstrapStylePandocTables(); });
-         /* Adjust the height when click the toc */
-         var shiftWindow = function() { scrollBy(0, -60) };
-         window.addEventListener("hashchange", shiftWindow);
-         function load() { if (window.location.hash) shiftWindow(); }
-      </script>
+      <script src="https://r-universe.dev/static/article.js" data-external="1"></script>
    </body>
 </html>
