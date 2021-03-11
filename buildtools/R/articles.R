@@ -32,9 +32,20 @@ r_universe_format <- function(){
 #' @rdname articles
 replace_rmarkdown_engine <- function(){
   message("Replacing rmarkdown engine...")
-  default_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
-  tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = default_engine$tangle,
-    pattern = default_engine$pattern, weave = function(..., output_format = NULL){
-      default_engine$weave(..., output_format = r_universe_format())
+  rmd_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
+  tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = rmd_engine$tangle,
+    pattern = rmd_engine$pattern, weave = function(..., output_format = NULL){
+      rmd_engine$weave(..., output_format = r_universe_format())
+    })
+
+  # For backward compatibility with old vignettes that use legacy knitr::knitr engine
+  old_engine <- tools::vignetteEngine('knitr', package = 'knitr')
+  tools::vignetteEngine('knitr', package = 'knitr', tangle = old_engine$tangle,
+    pattern = old_engine$pattern, weave = function(file, ..., output_format = NULL){
+      if (grepl("\\.[Rr]md$", file)){
+        rmd_engine$weave(file, ..., output_format = r_universe_format())
+      } else {
+        old_engine$weave(file, ...)
+      }
     })
 }
