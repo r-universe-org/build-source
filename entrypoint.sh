@@ -40,7 +40,7 @@ Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_pac
 rm -f ${PKGDIR}/vignettes/*.Rnw
 
 # Override rmarkdown engine
-if ls ${PKGDIR}/vignettes/*.Rmd; then
+if ls ${PKGDIR}/vignettes/*; then
 echo "Overriding rmarkdown engine..."
 echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 fi
