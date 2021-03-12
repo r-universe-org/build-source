@@ -33,21 +33,26 @@ load_pkgdown_yml <- function(path = '.'){
 
 #' @export
 #' @rdname buildtools
+#' @param repo path to the git repository
 #' @param pkg name of the installed package
-vignettes_base64 <- function(path, pkg = basename(path)){
-  df <- vignettes_info(path = path, pkg = pkg)
+#' @param subdir path within the git repo where the pkg is
+vignettes_base64 <- function(repo, pkg = basename(repo), subdir = ""){
+  df <- vignettes_info(repo = repo, pkg = pkg, subdir = subdir)
   if(is.data.frame(df)){
     base64_gzip(jsonlite::toJSON(df))
   }
 }
 
-vignettes_info <- function(path, pkg){
-  repo <- gert::git_open(repo = path)
+vignettes_info <- function(repo, pkg, subdir = ""){
+  repo <- gert::git_open(repo = repo)
   vignettes <- as.data.frame(tools::getVignetteInfo(pkg))
   if(nrow(vignettes) > 0){
     df <- vignettes[c('File', 'PDF', 'Title')]
     names(df) <- c("source", "filename", "title")
     inputs <- file.path('vignettes', df$source)
+    if(length(subdir) && nchar(subdir)){
+      inputs <- file.path(subdir, inputs)
+    }
     stats <- gert::git_stat_files(inputs, repo = repo)
     df$created = stats$created
     df$modified = stats$modified

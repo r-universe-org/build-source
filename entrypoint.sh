@@ -20,7 +20,8 @@ fi
 # Subdirectory containing the R package
 PKGDIR="${REPO}"
 if [ "${3}" ]; then
-PKGDIR="${PKGDIR}/${3}"
+SUBDIR="$3"
+PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
 COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
@@ -66,7 +67,7 @@ SYSDEPS=$(Rscript -e "cat(buildtools::package_sysdeps_string('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
 # Check for vignettes
-VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$PKGDIR','$PACKAGE'))")
+VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Check for a package logo
