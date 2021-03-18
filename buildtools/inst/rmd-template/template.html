@@ -7,7 +7,7 @@
       $if(author)$<meta name="author" content="$author$">$endif$
       $if(description)$<meta name="description" content="$description$">$endif$
       $if(title)$<title>$title$</title>$endif$
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" data-external="1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" data-external="1">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" data-external="1">
       <link rel="stylesheet" href="https://r-universe.dev/static/article-styles.css" data-external="1">
       $for(header-includes)$
@@ -35,13 +35,12 @@
       $for(include-after)$
       $include-after$
       $endfor$
-      <!-- JS, Popper.js, and jQuery -->
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" data-external="1"></script>
-      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" data-external="1"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" data-external="1"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.js" data-external="1"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js" data-external="1"></script>
+
       <!-- Mathjax -->
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" data-external="1"></script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" data-external="1"></script>
+      <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" data-external="1"></script> -->
+      <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/tex-mml-chtml.min.js" data-external="1"></script>
       <script src="https://r-universe.dev/static/article.js" data-external="1"></script>
    </body>
 </html>
