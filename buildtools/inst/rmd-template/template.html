@@ -4,20 +4,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="generator" content="pandoc">
-      $if(author)$<meta name="author" content="$author$">$endif$
-      $if(description)$<meta name="description" content="$description$">$endif$
+      $if(author)$<meta name="author" content="$author-meta$">$endif$
+      $if(description)$<meta name="description" content="$description-meta$">$endif$
       $if(title)$<title>$title$</title>$endif$
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" data-external="1">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" data-external="1">
       <link rel="stylesheet" href="https://r-universe.dev/static/article-styles.css" data-external="1">
-      $for(header-includes)$
-      $header-includes$
-      $endfor$
    </head>
    <body>
-      $for(include-before)$
-      $include-before$
-      $endfor$
       <div class="container" id="topcontainer">
          <script>if (window.self != window.top) try {document.getElementById('topcontainer').className = "container-fluid";} catch(e) {}</script>
          $if(title)$<h1 class="title">$title$</h1>$endif$
@@ -32,9 +26,6 @@
          </div>
          $else$$body$$endif$
       </div>
-      $for(include-after)$
-      $include-after$
-      $endfor$
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.js" data-external="1"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js" data-external="1"></script>
 
