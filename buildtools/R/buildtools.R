@@ -54,11 +54,25 @@ vignettes_info <- function(repo, pkg, subdir = ""){
       inputs <- file.path(subdir, inputs)
     }
     stats <- gert::git_stat_files(inputs, repo = repo)
+    df$author = vignette_author(inputs, repo = repo)
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
     return(df)
   }
+}
+
+vignette_author <- function(inputs, repo = repo){
+  path <- gert::git_info(repo)$path
+  files <- file.path(path, inputs)
+  vapply(files, function(x){
+    tryCatch({
+      author <- rmarkdown::yaml_front_matter(x)$author
+      if(length(author)) author else NA_character_
+    }, error = function(e){
+      NA_character_
+    })
+  }, character(1), USE.NAMES = FALSE)
 }
 
 base64_gzip <- function(bin){
