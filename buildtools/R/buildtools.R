@@ -62,13 +62,26 @@ vignettes_info <- function(repo, pkg, subdir = ""){
   }
 }
 
+normalize_author <- function(x){
+  if(!length(x)){
+    return(NA_character_)
+  }
+  if(is.list(x) && length(x$name)){
+    return(as.character(x$name))
+  }
+  # Author can be a list of named lists, e.g. BiocManager
+  if(is.list(x)){
+    x <- unlist(lapply(x, normalize_author))
+  }
+  paste(as.character(x), collapse = ', ')
+}
+
 vignette_author <- function(inputs, repo = repo){
   path <- gert::git_info(repo)$path
   files <- file.path(path, inputs)
   vapply(files, function(x){
     tryCatch({
-      author <- rmarkdown::yaml_front_matter(x)$author
-      if(length(author)) author else NA_character_
+      normalize_author(rmarkdown::yaml_front_matter(x)$author)
     }, error = function(e){
       NA_character_
     })
