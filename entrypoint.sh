@@ -49,7 +49,11 @@ fi
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
-R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
+R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
+if [ "$VIGNETTE_FAILURE" ]; then
+echo "Trying to build without vignettes...."
+R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
+fi
 #mv tmpgit ${REPO}/.git
 
 # Set output values
@@ -83,4 +87,10 @@ fi
 #echo ::set-output name=NEED_RJAVA::true
 #fi
 
+# TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
+if [ "$VIGNETTE_FAILURE" ]; then
+exit 1
+else
+exit 0
+fi
