@@ -38,11 +38,11 @@ BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_package_deps(dependencies=TRUE))"
 
 # Delete latex vignettes for now (latex is to heavy for github actions)
-rm -f ${PKGDIR}/vignettes/*.Rnw
+#rm -f ${PKGDIR}/vignettes/*.Rnw
 
 # Override rmarkdown engine
 if ls ${PKGDIR}/vignettes/*; then
-echo "Overriding rmarkdown engine..."
+echo "Found vignettes..."
 echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 fi
 
