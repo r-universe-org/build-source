@@ -1,0 +1,2 @@
+#!/bin/sh
+Rscript -e "tinytex::pdflatex('$2',clean = FALSE)"

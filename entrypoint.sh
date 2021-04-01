@@ -49,7 +49,7 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
-R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
+R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
 if [ "$VIGNETTE_FAILURE" ]; then
 echo "Trying to build without vignettes...."
 R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
