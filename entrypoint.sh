@@ -51,30 +51,34 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 #mv ${REPO}/.git tmpgit
 R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
 if [ "$VIGNETTE_FAILURE" ]; then
-echo "Trying to build without vignettes...."
+echo "---- ERROR: failed to run: R CMD build -----"
+echo "Trying to build source package without vignettes...."
 R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
 fi
 #mv tmpgit ${REPO}/.git
 
-# Set output values
+
+# Confirm that package can be installed on Linux
+# For now we don't do a full check to speed up building of subsequent Win/Mac binaries
+test -f "$SOURCEPKG"
+R CMD INSTALL "$SOURCEPKG" > /dev/null
+
+# Upon successful install, set output values
 echo ::set-output name=DISTRO::$DISTRO
 echo ::set-output name=PACKAGE::$PACKAGE
 echo ::set-output name=VERSION::$VERSION
 echo ::set-output name=SOURCEPKG::$SOURCEPKG
 echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 
-# Confirm that package can be installed on Linux
-# For now we don't do a full build to speed up building of subsequent Win/Mac binaries
-test -f "$SOURCEPKG"
-R CMD INSTALL "$SOURCEPKG"
+# Lookup system dependencies
 SYSDEPS=$(Rscript -e "cat(buildtools::package_sysdeps_string('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
-# Check for vignettes
+# Get vignette metadata
 VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
-# Check for a package logo
+# Look for a package logo
 PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR'))")
 if [ "$PKGLOGO" ]; then
 echo ::set-output name=PKGLOGO::$PKGLOGO
@@ -90,6 +94,7 @@ fi
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
 if [ "$VIGNETTE_FAILURE" ]; then
+echo "Installation OK but failed to build vignettes, see above."
 exit 1
 else
 exit 0
