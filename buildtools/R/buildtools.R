@@ -6,14 +6,38 @@
 #' @aliases find_logo package_sysdeps_string
 #' @rdname buildtools
 #' @param path root directory of package
-find_logo <- function (path = ".") {
-  cardimage <- find_opengraph_image(path = path)
-  if(length(cardimage))
-    return(cardimage)
+#' @param git_url of the git repository
+#' @param subdir if the package lives in a subdir in the repo
+find_logo <- function (path, git_url, subdir = "") {
   # Match logic from pkgdown but return path relative package root.
   files <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
+  cardimage <- find_opengraph_image(path = path)
+  if(length(cardimage)){
+    if(grepl('^http', cardimage)){
+      return(cardimage)
+    }
+    files <- c(cardimage, files)
+  }
   candidates <- file.path(path, files)
-  utils::head(files[file.exists(candidates)], 1)
+  logo <- utils::head(files[file.exists(candidates)], 1)
+  if(!length(logo))
+    return(NULL)
+  file_to_url(logo, git_url, subdir)
+}
+
+file_to_url <- function(logo, git_url, subdir){
+  git_url <- sub("\\.git$", "", git_url)
+  upstream <- paste0(git_url, '/raw/HEAD')
+  if(length(subdir) && nchar(subdir)){
+    upstream <- paste0(upstream, '/', subdir)
+  }
+  logo_url <- paste0(upstream, '/', logo)
+  if(url_exists(logo_url)){
+    return(logo_url)
+  } else{
+    message("NOTE: Did not find upstream logo URL on GitHub: ", logo_url)
+    return(logo)
+  }
 }
 
 find_opengraph_image <- function(path = "."){
@@ -91,6 +115,11 @@ vignette_author <- function(inputs, repo = repo){
 base64_gzip <- function(bin){
   buf <- memCompress(bin, 'gzip')
   gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
+}
+
+url_exists <- function(url){
+  req <- curl::curl_fetch_memory(url)
+  return(req$status < 400)
 }
 
 #' @importFrom maketools package_sysdeps_string

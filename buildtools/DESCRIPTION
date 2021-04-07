@@ -9,6 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+    curl,
     gert (>= 1.2.0),
     jsonlite,
     knitr,

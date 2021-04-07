@@ -6,18 +6,20 @@
 \alias{vignettes_base64}
 \title{Build tools}
 \usage{
-find_logo(path = ".")
+find_logo(path, git_url, subdir = "")
 
 vignettes_base64(repo, pkg = basename(repo), subdir = "")
 }
 \arguments{
 \item{path}{root directory of package}
 
+\item{git_url}{of the git repository}
+
+\item{subdir}{path within the git repo where the pkg is}
+
 \item{repo}{path to the git repository}
 
 \item{pkg}{name of the installed package}
-
-\item{subdir}{path within the git repo where the pkg is}
 }
 \description{
 Get some extra info about packages.

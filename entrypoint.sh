@@ -79,7 +79,7 @@ VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SU
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Look for a package logo
-PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR'))")
+PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")
 if [ "$PKGLOGO" ]; then
 echo ::set-output name=PKGLOGO::$PKGLOGO
 fi
