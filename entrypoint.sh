@@ -35,7 +35,7 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Get dependencies
-Rscript --no-init-file -e "setwd('$PKGDIR'); install.packages(remotes::local_package_deps(dependencies=TRUE))"
+Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
 
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw

@@ -124,3 +124,21 @@ url_exists <- function(url){
 
 #' @importFrom maketools package_sysdeps_string
 package_sysdeps_string <- maketools::package_sysdeps_string
+
+#' @rdname buildtools
+#' @export
+install_dependencies <- function(path = '.'){
+  setwd(path)
+  deps <- remotes::local_package_deps(dependencies=TRUE)
+  utils::install.packages(deps)
+  remotes <- as.data.frame(read.dcf('DESCRIPTION'))$Remotes
+
+  # The following should not be needed if the remote is part of the universe
+  # However we install it anyway to avoid race conditions if the remote was just added
+  if(length(remotes)){
+    try({
+      remotes_repos <- trimws(strsplit(remotes, ',')[[1]])
+      lapply(remotes_repos, function(x){remotes::install_github(x, upgrade = FALSE)})
+    })
+  }
+}
