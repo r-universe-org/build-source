@@ -129,9 +129,14 @@ package_sysdeps_string <- maketools::package_sysdeps_string
 #' @export
 install_dependencies <- function(path = '.'){
   setwd(path)
+  desc <- as.data.frame(read.dcf('DESCRIPTION'))
+  # Additional repositories need to be considered if they aren't yet on 
+  # r-universe
+  addl <- desc$Additional_repositories
+  addl <- if (is.null(addl)) addl else strsplit(addl, ",")[[1]]
   deps <- remotes::local_package_deps(dependencies=TRUE)
-  utils::install.packages(deps)
-  remotes <- as.data.frame(read.dcf('DESCRIPTION'))$Remotes
+  utils::install.packages(deps, repos = c(addl, getOption("repos")))
+  remotes <- desc$Remotes
 
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
