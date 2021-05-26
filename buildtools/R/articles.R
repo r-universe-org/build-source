@@ -31,7 +31,7 @@ r_universe_format <- function(){
 #' @export
 #' @rdname articles
 replace_rmarkdown_engine <- function(){
-  message("Replacing rmarkdown engine...")
+  message("Replacing default rmarkdown theme...")
   rmd_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
   tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = rmd_engine$tangle,
     pattern = rmd_engine$pattern, weave = function(..., output_format = NULL){
@@ -48,4 +48,18 @@ replace_rmarkdown_engine <- function(){
         old_engine$weave(file, ...)
       }
     })
+
+  # For Hendrik's rsp vignettes
+  setHook(packageEvent("R.rsp", "onLoad"), function(...) {
+    message("Found R.rsp! Replacing R.rsp markdown theme...")
+    rsp_engine <- tools::vignetteEngine('rsp', package='R.rsp')
+    tools::vignetteEngine('rsp', package = 'R.rsp', weave = function(file, ..., postprocess = TRUE){
+      if(isTRUE(grepl("\\.md\\.rsp$", file))){
+        mdfile <- rsp_engine$weave(file, ..., postprocess = FALSE)
+        render_article(mdfile)
+      } else {
+        rsp_engine$weave(file, ..., postprocess = postprocess)
+      }
+    }, tangle = rsp_engine$tangle, pattern = rsp_engine$pattern)
+  })
 }
