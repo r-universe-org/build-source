@@ -12,10 +12,12 @@ REPO=$(basename $1)
 
 # Clone, and checkout the revision if any
 # Removed --depth 1 because we want to read vignette c/m times
+echo "::group::Cloning R package repository"
 git clone "$1" "${REPO}"
 if [ "${2}" ]; then
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
+echo "::endgroup::"
 
 # Subdirectory containing the R package
 PKGDIR="${REPO}"
@@ -35,7 +37,9 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Get dependencies
+echo "::group::Installing R dependencies"
 Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
+echo "::endgroup::"
 
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw
@@ -49,7 +53,9 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
+echo "::group::R CMD build"
 R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
+echo "::endgroup::"
 if [ "$VIGNETTE_FAILURE" ]; then
 echo "---- ERROR: failed to run: R CMD build -----"
 echo "Trying to build source package without vignettes...."
@@ -61,7 +67,9 @@ fi
 # Confirm that package can be installed on Linux
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 test -f "$SOURCEPKG"
-R CMD INSTALL "$SOURCEPKG" > /dev/null
+echo "::group::Test if package can be installed"
+R CMD INSTALL "$SOURCEPKG"
+echo "::endgroup::"
 
 # Upon successful install, set output values
 echo ::set-output name=DISTRO::$DISTRO
