@@ -57,9 +57,11 @@ echo "::group::R CMD build"
 R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
 echo "::endgroup::"
 if [ "$VIGNETTE_FAILURE" ]; then
+echo "::group::R CMD build (trying without vignettes)"
 echo "---- ERROR: failed to run: R CMD build -----"
 echo "Trying to build source package without vignettes...."
 R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
+echo "::endgroup::"
 fi
 #mv tmpgit ${REPO}/.git
 
