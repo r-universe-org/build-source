@@ -104,7 +104,7 @@ fi
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
 if [ "$VIGNETTE_FAILURE" ]; then
-echo "Installation OK but failed to build vignettes, see above."
+echo "Installation OK but failed to build vignettes, see 'R CMD build' above."
 exit 1
 else
 exit 0
