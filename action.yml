@@ -10,6 +10,9 @@ inputs:
   subdir:
     description: 'Subdirectory in which the package lives'
     required: false
+  branch:
+    description: 'Name of the branch we are tracking'
+    required: false
 outputs:
   PACKAGE:
     description: 'Name of the package'  
@@ -28,3 +31,4 @@ runs:
     - ${{ inputs.url }}
     - ${{ inputs.ref }}
     - ${{ inputs.subdir }}
+    - ${{ inputs.branch }}

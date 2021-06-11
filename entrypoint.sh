@@ -3,6 +3,7 @@ set -e
 echo "Building ${1} in ${PWD}"
 echo "CommitRef: ${2}"
 echo "Subdir: ${3}"
+echo "Branch: ${4}"
 
 # Setup build environment
 if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
