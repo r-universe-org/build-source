@@ -50,6 +50,11 @@ echo "::endgroup::"
 echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 #fi
 
+# Replace or add "Repository:" in DESCRIPTION
+if [ "${MY_UNIVERSE}" ]; then
+sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${PKGDIR}/DESCRIPTION"
+fi
+
 # Build source package. Try vignettes, but build without otherwise.
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
