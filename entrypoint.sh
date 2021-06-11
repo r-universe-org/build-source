@@ -53,6 +53,7 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 
 # Replace or add "Repository:" in DESCRIPTION
 if [ "${MY_UNIVERSE}" ]; then
+sed '/^[[:space:]]*$/d' -i "${PKGDIR}/DESCRIPTION" # deletes empty lines at end of DESCRIPTION
 sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${PKGDIR}/DESCRIPTION"
 echo "RemoteUrl: ${1}" >> "${PKGDIR}/DESCRIPTION"
 echo "RemoteRef: ${4:-HEAD}" >> "${PKGDIR}/DESCRIPTION"
