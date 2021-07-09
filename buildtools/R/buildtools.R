@@ -141,4 +141,7 @@ install_dependencies <- function(path = '.'){
       lapply(remotes_repos, function(x){remotes::install_github(x, upgrade = FALSE)})
     })
   }
+  if(grepl('ggseg', Sys.getenv('MY_UNIVERSE'))){
+    install.packages("ggplot2", repos = 'https://ggseg.r-universe.dev')
+  }
 }
