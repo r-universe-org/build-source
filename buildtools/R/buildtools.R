@@ -144,4 +144,10 @@ install_dependencies <- function(path = '.'){
   if(grepl('ggseg', Sys.getenv('MY_UNIVERSE'))){
     install.packages("ggplot2", repos = 'https://ggseg.r-universe.dev')
   }
+
+  # Check if rJava is a (recursive) dependency
+  alldeps <- c(deps, unlist(unname(tools::package_dependencies(deps))))
+  if(isTRUE('rJava' %in% alldeps)){
+    cat('::set-output name=NEED_RJAVA::true\n')
+  }
 }

@@ -104,13 +104,6 @@ if [ "$PKGLOGO" ]; then
 echo ::set-output name=PKGLOGO::$PKGLOGO
 fi
 
-### Test if Java is needed to load
-### TODO: this seems to fail builds?
-#RJAVA=$(R -e "library('$PACKAGE'); sessionInfo()" | grep "rJava")
-#if [ "$RJAVA" ]; then
-#echo ::set-output name=NEED_RJAVA::true
-#fi
-
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
 if [ "$VIGNETTE_FAILURE" ]; then
