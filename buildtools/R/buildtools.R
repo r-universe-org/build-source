@@ -126,7 +126,7 @@ url_exists <- function(url){
 package_sysdeps_string <- function(pkg){
   str <- maketools::package_sysdeps_string(pkg = pkg)
   if(file.exists('/NEED_RJAVA')){
-    str <- paste(str, maketools::package_sysdeps_string('rJava'))
+    str <- paste(str, maketools::package_sysdeps_string('rJava'), sep = ',')
   }
   trimws(str)
 }
