@@ -153,7 +153,7 @@ install_dependencies <- function(path = '.'){
 
   # Check if rJava is a (recursive) dependency
   harddeps <- remotes::local_package_deps()
-  alldeps <- sort(unique(c(harddeps, unlist(unname(tools::package_dependencies(harddeps))))))
+  alldeps <- sort(unique(c(harddeps, unlist(unname(tools::package_dependencies(harddeps, recursive = TRUE))))))
   #cat("Hard dependencies:", paste(alldeps, collapse=', '), '\n', file = stderr())
   if(isTRUE('rJava' %in% alldeps)){
     cat('::set-output name=NEED_RJAVA::true\n')
