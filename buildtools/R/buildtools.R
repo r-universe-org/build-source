@@ -128,7 +128,7 @@ package_sysdeps_string <- function(pkg){
   if(file.exists('/NEED_RJAVA')){
     str <- paste(str, maketools::package_sysdeps_string('rJava'))
   }
-  return(str)
+  trimws(str)
 }
 
 #' @rdname buildtools
