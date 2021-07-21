@@ -123,7 +123,13 @@ url_exists <- function(url){
 }
 
 #' @importFrom maketools package_sysdeps_string
-package_sysdeps_string <- maketools::package_sysdeps_string
+package_sysdeps_string <- function(pkg){
+  str <- maketools::package_sysdeps_string(pkg = pkg)
+  if(file.exists('/NEED_RJAVA')){
+    str <- paste(str, maketools::package_sysdeps_string('rJava'))
+  }
+  return(str)
+}
 
 #' @rdname buildtools
 #' @export
@@ -142,7 +148,7 @@ install_dependencies <- function(path = '.'){
     })
   }
   if(grepl('ggseg', Sys.getenv('MY_UNIVERSE'))){
-    install.packages("ggplot2", repos = 'https://ggseg.r-universe.dev')
+    utils::install.packages("ggplot2", repos = 'https://ggseg.r-universe.dev')
   }
 
   # Check if rJava is a (recursive) dependency
@@ -151,5 +157,6 @@ install_dependencies <- function(path = '.'){
   #cat("Hard dependencies:", paste(alldeps, collapse=', '), '\n', file = stderr())
   if(isTRUE('rJava' %in% alldeps)){
     cat('::set-output name=NEED_RJAVA::true\n')
+    file.create('/NEED_RJAVA')
   }
 }
