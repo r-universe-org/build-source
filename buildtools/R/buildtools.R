@@ -125,10 +125,12 @@ url_exists <- function(url){
 #' @importFrom maketools package_sysdeps_string
 package_sysdeps_string <- function(pkg){
   str <- maketools::package_sysdeps_string(pkg = pkg)
-  if(file.exists('/NEED_RJAVA')){
-    str <- paste(str, maketools::package_sysdeps_string('rJava'), sep = ',')
-  }
-  trimws(str)
+  if(!file.exists('/NEED_RJAVA'))
+    return(str)
+  java <- maketools::package_sysdeps_string('rJava')
+  if(!nchar(str))
+    return(java)
+  paste(str, java, sep = ', ')
 }
 
 #' @rdname buildtools
