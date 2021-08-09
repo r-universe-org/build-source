@@ -26,7 +26,8 @@ outputs:
     description: 'Base64 encoded JSON vignettes list'
 runs:
   using: 'docker'
-  image: 'docker://runiverse/build-source'
+  image: 'docker://ghcr.io/r-universe-org/build-source'
+#  image: 'docker://runiverse/build-source'
   args:
     - ${{ inputs.url }}
     - ${{ inputs.ref }}
