@@ -137,6 +137,16 @@ package_sysdeps_string <- function(pkg){
 #' @export
 install_dependencies <- function(path = '.'){
   setwd(path)
+
+  # Try to install missing sysdeps.
+  # This only installs the first match; system_requirements may return many recursive sysdeps.
+  # But most sysdeps are preinstalled for us anyway
+  ubuntu <- gsub(" ", "-", tolower(substring(osVersion,1,12)))
+  aptline <- remotes::system_requirements(ubuntu)
+  if(length(aptline) && !grepl('libcurl', aptline[1])){
+    system(aptline[1])
+  }
+
   deps <- remotes::local_package_deps(dependencies=TRUE)
   utils::install.packages(deps)
   remotes <- as.data.frame(read.dcf('DESCRIPTION'))$Remotes
