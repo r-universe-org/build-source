@@ -159,9 +159,6 @@ install_dependencies <- function(path = '.'){
       lapply(remotes_repos, function(x){remotes::install_github(x, upgrade = FALSE)})
     })
   }
-  if(grepl('ggseg', Sys.getenv('MY_UNIVERSE'))){
-    utils::install.packages("ggplot2", repos = 'https://ggseg.r-universe.dev')
-  }
 
   # Check if rJava is a (recursive) dependency
   harddeps <- remotes::local_package_deps()
