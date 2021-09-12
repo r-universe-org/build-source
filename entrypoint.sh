@@ -4,6 +4,7 @@ echo "Building ${1} in ${PWD}"
 echo "CommitRef: ${2}"
 echo "Subdir: ${3}"
 echo "Branch: ${4}"
+echo "Articles: ${5}"
 
 # Setup build environment
 if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
@@ -44,6 +45,12 @@ echo "::endgroup::"
 
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw
+
+# Do not build articles (vignettes) for remotes
+if [ "${5}" == "false" ]; then
+  BUILD_ARGS="${BUILD_ARGS} --no-build-vignettes"
+  rm -Rf ${PKGDIR}/vignettes
+fi
 
 # Override rmarkdown engine
 #if ls ${PKGDIR}/vignettes/*; then

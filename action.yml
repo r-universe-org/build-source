@@ -13,6 +13,9 @@ inputs:
   branch:
     description: 'Name of the branch we are tracking'
     required: false
+  articles:
+    description: 'Should we build articles (vignettes)'
+    required: false
 outputs:
   PACKAGE:
     description: 'Name of the package'  
@@ -33,3 +36,4 @@ runs:
     - ${{ inputs.ref }}
     - ${{ inputs.subdir }}
     - ${{ inputs.branch }}
+    - ${{ inputs.articles }}
