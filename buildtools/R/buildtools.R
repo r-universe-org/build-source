@@ -147,9 +147,14 @@ install_dependencies <- function(path = '.'){
     system(aptline[1])
   }
 
+  desc <- as.data.frame(read.dcf('DESCRIPTION'))
   deps <- remotes::local_package_deps(dependencies=TRUE)
+
+  # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
+  deps <- unique(c(deps, desc$VignetteBuilder))
+
   utils::install.packages(deps)
-  remotes <- as.data.frame(read.dcf('DESCRIPTION'))$Remotes
+  remotes <- desc$Remotes
 
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
