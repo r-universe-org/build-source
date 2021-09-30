@@ -3,6 +3,7 @@
 export(find_logo)
 export(install_dependencies)
 export(package_sysdeps_string)
+export(read_description_field)
 export(render_article)
 export(replace_rmarkdown_engine)
 export(vignettes_base64)

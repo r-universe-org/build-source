@@ -5,6 +5,7 @@
 \alias{package_sysdeps_string}
 \alias{vignettes_base64}
 \alias{install_dependencies}
+\alias{read_description_field}
 \title{Build tools}
 \usage{
 find_logo(path, git_url, subdir = "")
@@ -12,6 +13,8 @@ find_logo(path, git_url, subdir = "")
 vignettes_base64(repo, pkg = basename(repo), subdir = "")
 
 install_dependencies(path = ".")
+
+read_description_field(field, path = ".")
 }
 \arguments{
 \item{path}{root directory of package}

@@ -18,7 +18,11 @@ inputs:
     required: false
 outputs:
   PACKAGE:
-    description: 'Name of the package'  
+    description: 'Name of the package'
+  VERSION:
+    description: 'Version of the package'
+  MAINTAINER:
+    description: 'Maintainer of the package'
   SOURCEPKG:
     description: 'Filename of the source package'
   COMMIT_TIMESTAMP:

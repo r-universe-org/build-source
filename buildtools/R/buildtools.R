@@ -176,3 +176,11 @@ install_dependencies <- function(path = '.'){
     }
   }
 }
+
+#' @rdname buildtools
+#' @export
+read_description_field <- function(field, path = '.'){
+  desc <- tools:::.read_description(file.path(path, 'DESCRIPTION'))
+  extra <- tools:::.expand_package_description_db_R_fields(desc)
+  as.list(trimws(c(desc, extra)))[[field]]
+}

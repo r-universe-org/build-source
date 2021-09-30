@@ -28,7 +28,6 @@ SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
-COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(grep '^Package:' "${PKGDIR}/DESCRIPTION" | sed 's/^Package://')
 VERSION=$(grep '^Version:' "${PKGDIR}/DESCRIPTION" | sed 's/^Version://')
@@ -37,6 +36,15 @@ VERSION=$(echo -n "${VERSION//[[:space:]]/}")
 PKG_VERSION="${PACKAGE}_${VERSION}"
 SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
+
+# Export some outputs (even upon failure)
+MAINTAINER=$(Rscript -e "cat(buildtools::read_description_field('Maintainer', '$PACKAGE'))")
+COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
+echo ::set-output name=MAINTAINER::$MAINTAINER
+echo ::set-output name=DISTRO::$DISTRO
+echo ::set-output name=PACKAGE::$PACKAGE
+echo ::set-output name=VERSION::$VERSION
+echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 
 # Get dependencies
 echo "::group::Installing R dependencies"
@@ -91,12 +99,8 @@ echo "::group::Test if package can be installed"
 R CMD INSTALL "$SOURCEPKG"
 echo "::endgroup::"
 
-# Upon successful install, set output values
-echo ::set-output name=DISTRO::$DISTRO
-echo ::set-output name=PACKAGE::$PACKAGE
-echo ::set-output name=VERSION::$VERSION
+# Upon successful install, set output value
 echo ::set-output name=SOURCEPKG::$SOURCEPKG
-echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 
 # Lookup system dependencies
 SYSDEPS=$(Rscript -e "cat(buildtools::package_sysdeps_string('$PACKAGE'))")
