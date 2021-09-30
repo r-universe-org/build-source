@@ -141,7 +141,7 @@ install_dependencies <- function(path = '.'){
   # Try to install missing sysdeps.
   # This only installs the first match; system_requirements may return many recursive sysdeps.
   # But most sysdeps are preinstalled for us anyway
-  ubuntu <- gsub(" ", "-", tolower(substring(osVersion,1,12)))
+  ubuntu <- gsub(" ", "-", tolower(substring(utils::osVersion,1,12)))
   aptline <- remotes::system_requirements(ubuntu)
   if(length(aptline) && !grepl('libcurl', aptline[1])){
     system(aptline[1])
@@ -178,6 +178,7 @@ install_dependencies <- function(path = '.'){
 }
 
 #' @rdname buildtools
+#' @param field which field from the description to show
 #' @export
 read_description_field <- function(field, path = '.'){
   desc <- tools:::.read_description(file.path(path, 'DESCRIPTION'))

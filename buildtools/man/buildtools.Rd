@@ -26,6 +26,8 @@ read_description_field(field, path = ".")
 \item{repo}{path to the git repository}
 
 \item{pkg}{name of the installed package}
+
+\item{field}{which field from the description to show}
 }
 \description{
 Get some extra info about packages.
