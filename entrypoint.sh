@@ -38,7 +38,7 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Export some outputs (even upon failure)
-MAINTAINER=$(Rscript -e "cat(buildtools::read_description_field('Maintainer', '$PACKAGE'))")
+MAINTAINER=$(Rscript -e "cat(buildtools::read_description_field('Maintainer', '${PKGDIR}'))")
 COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
 echo ::set-output name=MAINTAINER::$MAINTAINER
 echo ::set-output name=DISTRO::$DISTRO
