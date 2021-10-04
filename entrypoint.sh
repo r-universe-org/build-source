@@ -91,19 +91,19 @@ echo "::endgroup::"
 fi
 #mv tmpgit ${REPO}/.git
 
-# Confirm that package can be installed on Linux
-# For now we don't do a full check to speed up building of subsequent Win/Mac binaries
-test -f "$SOURCEPKG"
-echo "::group::Test if package can be installed"
-R CMD INSTALL "$SOURCEPKG"
-echo "::endgroup::"
-
 # Test for filesize enforced by pkg server
+test -f "$SOURCEPKG"
 FILESIZE=$(stat -c%s "$SOURCEPKG")
 if (( FILESIZE >  104857600 )); then
 echo "File $SOURCEPKG is more than 100MB. This is currently not allowed."
 exit 1
 fi
+
+# Confirm that package can be installed on Linux
+# For now we don't do a full check to speed up building of subsequent Win/Mac binaries
+echo "::group::Test if package can be installed"
+R CMD INSTALL "$SOURCEPKG"
+echo "::endgroup::"
 
 # Upon successful install, set output value
 echo ::set-output name=SOURCEPKG::$SOURCEPKG
