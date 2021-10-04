@@ -15,7 +15,7 @@ REPO=$(basename $1)
 # Clone, and checkout the revision if any
 # Removed --depth 1 because we want to read vignette c/m times
 echo "::group::Cloning R package repository"
-git clone "$1" "${REPO}"
+git clone "$1" "${REPO} --recurse-submodules"
 if [ "${2}" ]; then
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
