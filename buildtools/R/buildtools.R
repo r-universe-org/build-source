@@ -142,10 +142,14 @@ install_dependencies <- function(path = '.'){
   # This only installs the first match; system_requirements may return many recursive sysdeps.
   # But most sysdeps are preinstalled for us anyway
   ubuntu <- gsub(" ", "-", tolower(substring(utils::osVersion,1,12)))
-  aptline <- remotes::system_requirements(ubuntu)
-  if(length(aptline) && !grepl('libcurl', aptline[1])){
-    system(aptline[1])
-  }
+  tryCatch({
+    aptline <- remotes::system_requirements(ubuntu)
+    if(length(aptline) && !grepl('libcurl', aptline[1])){
+      system(aptline[1])
+    }
+  }, error = function(e){
+    message("Problem looking for system requirements: ", e$message)
+  })
 
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
   deps <- remotes::local_package_deps(dependencies=TRUE)
