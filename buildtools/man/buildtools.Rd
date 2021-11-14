@@ -4,6 +4,7 @@
 \alias{find_logo}
 \alias{package_sysdeps_string}
 \alias{vignettes_base64}
+\alias{commit_info_base64}
 \alias{install_dependencies}
 \alias{read_description_field}
 \title{Build tools}
@@ -11,6 +12,8 @@
 find_logo(path, git_url, subdir = "")
 
 vignettes_base64(repo, pkg = basename(repo), subdir = "")
+
+commit_info_base64(repo = repo)
 
 install_dependencies(path = ".")
 

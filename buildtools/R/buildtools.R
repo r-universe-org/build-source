@@ -67,6 +67,16 @@ vignettes_base64 <- function(repo, pkg = basename(repo), subdir = ""){
   }
 }
 
+#' @export
+#' @rdname buildtools
+commit_info_base64 <- function(repo = repo){
+  info <- gert::git_commit_info(repo = repo)
+  out <- info[c("id", "author", "committer", "message", "time")]
+  out$time <- unbox(out$time)
+  json <- jsonlite::toJSON(out, auto_unbox = TRUE)
+  base64_gzip(json)
+}
+
 vignettes_info <- function(repo, pkg, subdir = ""){
   repo <- gert::git_open(repo = repo)
   vignettes <- as.data.frame(tools::getVignetteInfo(pkg))

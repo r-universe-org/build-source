@@ -116,6 +116,10 @@ echo ::set-output name=SYSDEPS::$SYSDEPS
 VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
+# Get commit metadata
+COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
+echo ::set-output name=COMMITINFO::$COMMITINFO
+
 # Look for a package logo
 PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")
 if [ "$PKGLOGO" ]; then
