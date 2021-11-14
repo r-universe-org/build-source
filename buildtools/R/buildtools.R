@@ -73,8 +73,8 @@ commit_info_base64 <- function(repo = repo){
   info <- gert::git_commit_info(repo = repo)
   out <- info[c("id", "author", "committer", "message", "time")]
   out$message <- substring(out$message, 1, 2000) #Do not overflow http headers
-  out$time <- jsonlite::unbox(out$time)
-  json <- jsonlite::toJSON(out, auto_unbox = TRUE, POSIXt = 'mongo')
+  out$time <- unclass(out$time)
+  json <- jsonlite::toJSON(out, auto_unbox = TRUE)
   base64_gzip(json)
 }
 
