@@ -46,7 +46,7 @@ echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 
 # Get maintainer details
 MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
-echo ::set-output name=MAINTAINERINFO::MAINTAINERINFO
+echo ::set-output name=MAINTAINERINFO::$MAINTAINERINFO
 
 # Get dependencies
 echo "::group::Installing R dependencies"
