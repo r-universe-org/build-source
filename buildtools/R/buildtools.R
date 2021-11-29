@@ -224,7 +224,7 @@ get_maintainer_info <- function(path = '.'){
 #' @export
 #' @rdname buildtools
 maintainer_info_base64 <- function(path = '.'){
-  info <- get_maintainer_info(path = '.')
+  info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)
   base64_gzip(json)
 }
