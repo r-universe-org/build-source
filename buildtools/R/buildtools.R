@@ -212,6 +212,9 @@ get_maintainer_info <- function(path = '.'){
     name = trimws(sub("<(.*)>", '', maintainerline)),
     email =  trimws(sub("^.*<(.*)>.*$", '\\1', maintainerline))
   )
+  login <- Sys.getenv('MAINTAINERLOGIN', "")
+  if(nchar(login))
+    info$login <- login
   aar <- x["Authors@R"]
   if(is.na(aar)) return(info)
   authors <- utils:::.read_authors_at_R_field(aar)

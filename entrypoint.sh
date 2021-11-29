@@ -44,6 +44,10 @@ echo ::set-output name=PACKAGE::$PACKAGE
 echo ::set-output name=VERSION::$VERSION
 echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 
+# Get maintainer details
+MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
+echo ::set-output name=MAINTAINERINFO::MAINTAINERINFO
+
 # Get dependencies
 echo "::group::Installing R dependencies"
 Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
@@ -117,10 +121,6 @@ echo ::set-output name=VIGNETTES::$VIGNETTES
 # Get commit metadata
 COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
-
-# Get maitnainer details
-MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
-echo ::set-output name=MAINTAINERINFO::MAINTAINERINFO
 
 # Look for a package logo
 PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")
