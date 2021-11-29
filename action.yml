@@ -21,14 +21,14 @@ outputs:
     description: 'Name of the package'
   VERSION:
     description: 'Version of the package'
-  MAINTAINER:
-    description: 'Maintainer of the package'
   SOURCEPKG:
     description: 'Filename of the source package'
   COMMIT_TIMESTAMP:
     description: 'Time of the last commit'
   PKGLOGO:
     description: 'Path to logo within pkg dir'
+  MAINTAINERINFO:
+    description: 'Base64 encoded JSON list with maintainer data'
   VIGNETTES:
     description: 'Base64 encoded JSON vignettes list'
   COMMITINFO:

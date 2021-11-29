@@ -38,9 +38,7 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Export some outputs (even upon failure)
-MAINTAINER=$(Rscript -e "cat(buildtools::read_description_field('Maintainer', '${PKGDIR}'))")
 COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
-echo ::set-output name=MAINTAINER::$MAINTAINER
 echo ::set-output name=DISTRO::$DISTRO
 echo ::set-output name=PACKAGE::$PACKAGE
 echo ::set-output name=VERSION::$VERSION
@@ -119,6 +117,10 @@ echo ::set-output name=VIGNETTES::$VIGNETTES
 # Get commit metadata
 COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
+
+# Get maitnainer details
+MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
+echo ::set-output name=MAINTAINERINFO::MAINTAINERINFO
 
 # Look for a package logo
 PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")

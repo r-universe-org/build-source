@@ -7,6 +7,8 @@
 \alias{commit_info_base64}
 \alias{install_dependencies}
 \alias{read_description_field}
+\alias{get_maintainer_info}
+\alias{maintainer_info_base64}
 \title{Build tools}
 \usage{
 find_logo(path, git_url, subdir = "")
@@ -18,6 +20,10 @@ commit_info_base64(repo = repo)
 install_dependencies(path = ".")
 
 read_description_field(field, path = ".")
+
+get_maintainer_info(path = ".")
+
+maintainer_info_base64(path = ".")
 }
 \arguments{
 \item{path}{root directory of package}

@@ -200,3 +200,31 @@ read_description_field <- function(field, path = '.'){
   extra <- tools:::.expand_package_description_db_R_fields(desc)
   as.list(gsub("'", "", trimws(c(desc, extra)), fixed = TRUE))[[field]]
 }
+
+#' @rdname buildtools
+#' @export
+get_maintainer_info <- function(path = '.'){
+  # see also tools:::.expand_package_description_db_R_fields
+  x <- tools:::.read_description(file.path(path, 'DESCRIPTION'))
+  extra <- tools:::.expand_package_description_db_R_fields(x)
+  maintainerline <- as.list(gsub("'", "", trimws(c(x, extra)), fixed = TRUE))$Maintainer
+  info <- list(
+    name = trimws(sub("<(.*)>", '', maintainerline)),
+    email =  trimws(sub("^.*<(.*)>.*$", '\\1', maintainerline))
+  )
+  aar <- x["Authors@R"]
+  if(is.na(aar)) return(info)
+  authors <- utils:::.read_authors_at_R_field(aar)
+  maintainer <- Filter(function(x){"cre" %in% x$role}, authors)
+  if(!length(maintainer)) return(info)
+  info$orcid <- as.list(maintainer[[1]]$comment)$ORCID
+  return(info)
+}
+
+#' @export
+#' @rdname buildtools
+maintainer_info_base64 <- function(path = '.'){
+  info <- get_maintainer_info(path = '.')
+  json <- jsonlite::toJSON(info, auto_unbox = TRUE)
+  base64_gzip(json)
+}
