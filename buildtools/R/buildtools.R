@@ -125,7 +125,8 @@ vignette_author <- function(inputs, repo = repo){
 
 base64_gzip <- function(bin){
   buf <- memCompress(bin, 'gzip')
-  gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
+  b64 <- gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
+  chartr('+/', '-_', b64)
 }
 
 url_exists <- function(url){
