@@ -215,7 +215,7 @@ get_maintainer_info <- function(path = '.'){
   )
   login <- Sys.getenv('MAINTAINERLOGIN', "")
   if(nchar(login))
-    info$login <- login
+    info$login <- tolower(login)
   aar <- x["Authors@R"]
   if(is.na(aar)) return(info)
   authors <- utils:::.read_authors_at_R_field(aar)
