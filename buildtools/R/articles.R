@@ -62,4 +62,16 @@ replace_rmarkdown_engine <- function(){
       }
     }, tangle = rsp_engine$tangle, pattern = rsp_engine$pattern)
   })
+
+  # Mainly Dirk's vignettes
+  setHook(packageEvent("simplermarkdown", "onLoad"), function(...) {
+    message("Found simplermarkdown! Replacing mdweave_to_html theme...")
+    old_engine <- tools::vignetteEngine('mdweave_to_html', package='simplermarkdown')
+    tools::vignetteEngine('mdweave_to_html', package = 'simplermarkdown', weave = function(file, ...){
+      mdfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.md'))
+      simplermarkdown:::mdweave(file, mdfile, ...)
+      htmlfile <- render_article(mdfile)
+      file.copy(htmlfile, '.')
+    }, tangle = old_engine$tangle, pattern = old_engine$pattern)
+  })
 }
