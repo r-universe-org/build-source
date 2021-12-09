@@ -71,7 +71,7 @@ replace_rmarkdown_engine <- function(){
       mdfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.md'))
       simplermarkdown:::mdweave(file, mdfile, ...)
       htmlfile <- render_article(mdfile)
-      file.copy(htmlfile, '.')
+      file.copy(htmlfile, '.', overwrite = TRUE)
     }, tangle = old_engine$tangle, pattern = old_engine$pattern)
   })
 }
