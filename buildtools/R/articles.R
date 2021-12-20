@@ -36,7 +36,15 @@ replace_rmarkdown_engine <- function(){
   tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = rmd_engine$tangle,
     pattern = rmd_engine$pattern, weave = function(..., output_format = NULL){
       rmd_engine$weave(..., output_format = r_universe_format())
-    })
+    }
+  )
+
+  notangle_rmd_engine <- tools::vignetteEngine('rmarkdown_notangle', package = 'knitr')
+  tools::vignetteEngine('rmarkdown_notangle', package = 'knitr', tangle = notangle_rmd_engine$tangle,
+    pattern = notangle_rmd_engine$pattern, weave = function(..., output_format = NULL){
+      notangle_rmd_engine$weave(..., output_format = r_universe_format())
+    }
+  )
 
   # For backward compatibility with old vignettes that use legacy knitr::knitr engine
   old_engine <- tools::vignetteEngine('knitr', package = 'knitr')
