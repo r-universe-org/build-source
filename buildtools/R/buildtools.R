@@ -169,6 +169,12 @@ install_dependencies <- function(path = '.'){
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
   deps <- unique(c(deps, desc$VignetteBuilder))
 
+  if ("Additional_repositories" %in% names(desc)) {
+    additional <- desc[["Additional_repositories"]]
+    additional <- strsplit(additional, ",", fixed = TRUE)[[1]]
+    options(repos = c(getOption("repos"), additional))
+  }
+
   utils::install.packages(deps)
   remotes <- desc$Remotes
 
