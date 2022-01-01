@@ -3,6 +3,8 @@ FROM runiverse/base
 COPY buildtools /pkg
 COPY entrypoint.sh /entrypoint.sh
 COPY pdftinytex /root/bin/pdftinytex
+COPY dummykey/id_rsa /root/.ssh/id_rsa
+COPY dummykey/id_rsa.pub /root/.ssh/id_rsa.pub
 
 RUN R -e 'install.packages("remotes");remotes::install_local("/pkg")'
 
