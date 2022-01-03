@@ -10,7 +10,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     curl,
-    gert (>= 1.4.9000),
+    gert (>= 1.5.0),
     jsonlite,
     knitr,
     maketools,
@@ -18,6 +18,5 @@ Imports:
     rmarkdown,
     yaml
 Remotes: 
-    jeroen/maketools,
-    r-lib/gert
+    jeroen/maketools
 RoxygenNote: 7.1.2
