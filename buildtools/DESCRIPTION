@@ -18,6 +18,5 @@ Imports:
     rmarkdown,
     yaml
 Remotes: 
-    jeroen/maketools,
-    r-lib/gert
+    jeroen/maketools
 RoxygenNote: 7.1.2
