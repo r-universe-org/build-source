@@ -222,7 +222,7 @@ get_maintainer_info <- function(path = '.'){
   maintainer <- Filter(function(x){"cre" %in% x$role}, authors)
   if(!length(maintainer)) return(info)
   orcid <- as.list(maintainer[[1]]$comment)$ORCID
-  pattern <- '0000-[0-9]{4}-[0-9]{4}-[0-9X]{4}'
+  pattern <- '0000-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]'
   m <- regexpr(pattern, orcid)
   result <- regmatches(orcid, m)
   if(length(result)){
