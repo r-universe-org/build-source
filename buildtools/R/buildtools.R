@@ -221,7 +221,8 @@ get_maintainer_info <- function(path = '.'){
   authors <- utils:::.read_authors_at_R_field(aar)
   maintainer <- Filter(function(x){"cre" %in% x$role}, authors)
   if(!length(maintainer)) return(info)
-  info$orcid <- as.list(maintainer[[1]]$comment)$ORCID
+  orcid <- as.list(maintainer[[1]]$comment)$ORCID
+  info$orcid <- sub('.*(0000-[0-9]{4}-[0-9]{4}-[0-9X]{4}).*', '\\1', orcid)
   return(info)
 }
 
