@@ -163,6 +163,8 @@ install_dependencies <- function(path = '.'){
     message("Problem looking for system requirements: ", e$message)
   })
 
+  validate_repos()
+
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
   message("Running: remotes::local_package_deps(dependencies=TRUE)")
   deps <- remotes::local_package_deps(dependencies=TRUE)
@@ -239,4 +241,15 @@ maintainer_info_base64 <- function(path = '.'){
   info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)
   base64_gzip(json)
+}
+
+validate_repos <- function(){
+  allrepos <- getOption('repos')
+  for(repo in allrepos){
+    message("Testing: ", repo)
+    pkgs <- available.packages(repos = repo)
+    message("Found: ", nrow(pkgs), " packages")
+    as.numeric_version(pkgs[,'Version'])
+    message("Versions OK")
+  }
 }
