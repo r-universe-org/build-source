@@ -62,6 +62,9 @@ echo "::group::Installing R dependencies"
 Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
 echo "::endgroup::"
 
+# Generate CITATION.cff
+Rscript -e "buildtools::try_write_cff('$PKGDIR')"
+
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw
 

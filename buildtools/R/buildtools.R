@@ -238,6 +238,13 @@ get_maintainer_info <- function(path = '.'){
 
 #' @export
 #' @rdname buildtools
+try_write_cff <- function(path = '.'){
+  setwd(path)
+  try(cffr::cff_write(dependencies = FALSE, gh_keywords = FALSE, verbose = TRUE))
+}
+
+#' @export
+#' @rdname buildtools
 maintainer_info_base64 <- function(path = '.'){
   info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)

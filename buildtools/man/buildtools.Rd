@@ -8,6 +8,7 @@
 \alias{install_dependencies}
 \alias{read_description_field}
 \alias{get_maintainer_info}
+\alias{try_write_cff}
 \alias{maintainer_info_base64}
 \title{Build tools}
 \usage{
@@ -22,6 +23,8 @@ install_dependencies(path = ".")
 read_description_field(field, path = ".")
 
 get_maintainer_info(path = ".")
+
+try_write_cff(path = ".")
 
 maintainer_info_base64(path = ".")
 }
