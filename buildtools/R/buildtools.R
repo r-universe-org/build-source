@@ -246,7 +246,7 @@ maintainer_info_base64 <- function(path = '.'){
 
 precache_rspm <- function(){
   url <- getOption('repos')['CRAN']
-  for(i in 1:10){
+  for(i in 1:3){
     unlink(list.files(tempdir(), pattern = 'packagemanager.rstudio.com', full.names = TRUE))
     pkgs <- available.packages(repos = url)
     message("Found ", nrow(pkgs), " packages on rspm")
@@ -254,6 +254,7 @@ precache_rspm <- function(){
       message("OK")
       break
     } else {
+      if(i == 3) stop("Failed to access RSPM repository")
       message("Retrying...")
     }
   }
