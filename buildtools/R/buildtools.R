@@ -163,7 +163,8 @@ install_dependencies <- function(path = '.'){
     message("Problem looking for system requirements: ", e$message)
   })
 
-  validate_repos()
+  # Try to work around intermittend RSPM fails
+  precache_rspm()
 
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
   message("Running: remotes::local_package_deps(dependencies=TRUE)")
@@ -243,13 +244,16 @@ maintainer_info_base64 <- function(path = '.'){
   base64_gzip(json)
 }
 
-validate_repos <- function(){
-  allrepos <- getOption('repos')
-  for(repo in allrepos){
-    message("Testing: ", repo)
-    pkgs <- available.packages(repos = repo)
-    message("Found: ", nrow(pkgs), " packages")
-    as.numeric_version(pkgs[,'Version'])
-    message("Versions OK")
+precache_rspm <- function(){
+  url <- getOption('repos')['CRAN']
+  for(i in 1:10){
+    pkgs <- available.packages(repos = url)
+    message("Found ", nrow(pkgs), " packages on rspm")
+    if(nrow(pkgs) > 18500){
+      message("OK")
+      break
+    } else {
+      message("Retrying...")
+    }
   }
 }
