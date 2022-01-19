@@ -164,11 +164,13 @@ install_dependencies <- function(path = '.'){
   })
 
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
+  message("Running: remotes::local_package_deps(dependencies=TRUE)")
   deps <- remotes::local_package_deps(dependencies=TRUE)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
   deps <- unique(c(deps, desc$VignetteBuilder))
 
+  message("Running: utils::install.packages(deps)")
   utils::install.packages(deps)
   remotes <- desc$Remotes
 
