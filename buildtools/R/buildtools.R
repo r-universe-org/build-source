@@ -240,7 +240,13 @@ get_maintainer_info <- function(path = '.'){
 #' @rdname buildtools
 try_write_cff <- function(path = '.'){
   setwd(path)
-  try(cffr::cff_write(dependencies = FALSE, gh_keywords = FALSE, verbose = TRUE))
+  try({
+    # cff_write adds file to .Rbuildignore but we actually do want to include it
+    cffr::cff_write(dependencies = FALSE, gh_keywords = FALSE, verbose = TRUE)
+    dir.create('inst', showWarnings = FALSE)
+    file.copy('CITATION.cff', 'inst/')
+    unlink('CITATION.cff')
+  })
 }
 
 #' @export
