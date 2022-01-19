@@ -247,6 +247,7 @@ maintainer_info_base64 <- function(path = '.'){
 precache_rspm <- function(){
   url <- getOption('repos')['CRAN']
   for(i in 1:10){
+    unlink(list.files(tempdir(), pattern = 'packagemanager.rstudio.com', full.names = TRUE))
     pkgs <- available.packages(repos = url)
     message("Found ", nrow(pkgs), " packages on rspm")
     if(nrow(pkgs) > 18500){
