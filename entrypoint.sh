@@ -53,8 +53,8 @@ COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
 
 # DEBUGGING
-echo "::group::Checking contents of $MY_UNIVERSE"
-R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,c('Package', 'Version')])"
+echo "::group::Show contents of $MY_UNIVERSE"
+R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,'Version',drop=FALSE])"
 echo "::endgroup::"
 
 # Get dependencies
