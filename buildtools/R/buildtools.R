@@ -244,8 +244,8 @@ try_write_cff <- function(path = '.'){
     # cff_write adds file to .Rbuildignore but we actually do want to include it
     cffr::cff_write(dependencies = FALSE, gh_keywords = FALSE, verbose = TRUE)
     dir.create('inst', showWarnings = FALSE)
-    file.copy('citation.cff', 'inst/')
-    unlink('citation.cff')
+    file.copy('CITATION.cff', 'inst/citation.cff')
+    unlink('CITATION.cff')
   })
 }
 
