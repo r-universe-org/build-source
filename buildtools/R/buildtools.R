@@ -241,11 +241,14 @@ get_maintainer_info <- function(path = '.'){
 try_write_cff <- function(path = '.'){
   setwd(path)
   try({
+    # R CMD check warns about uppercase CITATION.*
+    cffr::cff_write(outfile = 'citation.cff', dependencies = FALSE, gh_keywords = FALSE)
     # cff_write adds file to .Rbuildignore but we actually do want to include it
-    cffr::cff_write(dependencies = FALSE, gh_keywords = FALSE, verbose = TRUE)
-    dir.create('inst', showWarnings = FALSE)
-    file.copy('CITATION.cff', 'inst/citation.cff')
-    unlink('CITATION.cff')
+    if(file.exists('.Rbuildignore')){
+      x <- readLines('.Rbuildignore')
+      x <- grep('citation.*cff', x, value = TRUE, invert = TRUE, ignore.case = TRUE)
+      writeLines(x, '.Rbuildignore')
+    }
   })
 }
 
