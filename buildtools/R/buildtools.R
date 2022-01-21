@@ -156,7 +156,7 @@ install_dependencies <- function(path = '.'){
   ubuntu <- gsub(" ", "-", tolower(substring(utils::osVersion,1,12)))
   tryCatch({
     aptline <- remotes::system_requirements(ubuntu)
-    if(length(aptline) && !grepl('libcurl', aptline[1])){
+    if(length(aptline) && !grepl('(libcurl|pandoc)', aptline[1])){
       system(aptline[1])
     }
   }, error = function(e){
