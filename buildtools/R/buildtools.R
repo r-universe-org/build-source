@@ -90,6 +90,7 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     }
     stats <- gert::git_stat_files(inputs, repo = repo)
     df$author = vignette_author(inputs, repo = repo)
+    df$engine = vignette_engines(inputs, repo = repo)
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
@@ -117,6 +118,18 @@ vignette_author <- function(inputs, repo = repo){
   vapply(files, function(x){
     tryCatch({
       normalize_author(rmarkdown::yaml_front_matter(x)$author)
+    }, error = function(e){
+      NA_character_
+    })
+  }, character(1), USE.NAMES = FALSE)
+}
+
+vignette_engines <- function(inputs, repo = repo){
+  path <- gert::git_info(repo)$path
+  files <- file.path(path, inputs)
+  vapply(files, function(x){
+    tryCatch({
+      tools:::getVignetteEngine(x)
     }, error = function(e){
       NA_character_
     })
