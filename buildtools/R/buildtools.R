@@ -261,7 +261,7 @@ get_gitstats <- function(url){
   contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
   logins <- vapply(contributors, function(x){x$login}, character(1))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
-  structure(as.list(counts), names = logins)
+  list(contributions = structure(as.list(counts), names = logins))
 }
 
 #' @export
