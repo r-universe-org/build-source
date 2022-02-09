@@ -52,6 +52,10 @@ echo ::set-output name=MAINTAINERINFO::$MAINTAINERINFO
 COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
 
+# Get commit metadata
+GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$1'))")
+echo ::set-output name=GITSTATS::$GITSTATS
+
 # DEBUGGING
 echo "::group::Show contents of $MY_UNIVERSE"
 R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,'Version',drop=FALSE])"

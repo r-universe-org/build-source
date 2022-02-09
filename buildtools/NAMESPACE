@@ -2,6 +2,8 @@
 
 export(commit_info_base64)
 export(find_logo)
+export(get_gitstats)
+export(get_gitstats_base64)
 export(get_maintainer_info)
 export(install_dependencies)
 export(maintainer_info_base64)

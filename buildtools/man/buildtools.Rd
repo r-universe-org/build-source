@@ -8,6 +8,8 @@
 \alias{install_dependencies}
 \alias{read_description_field}
 \alias{get_maintainer_info}
+\alias{get_gitstats}
+\alias{get_gitstats_base64}
 \alias{try_write_cff}
 \alias{maintainer_info_base64}
 \title{Build tools}
@@ -23,6 +25,10 @@ install_dependencies(path = ".")
 read_description_field(field, path = ".")
 
 get_maintainer_info(path = ".")
+
+get_gitstats(url)
+
+get_gitstats_base64(url)
 
 try_write_cff(path = ".")
 

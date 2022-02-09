@@ -249,6 +249,30 @@ get_maintainer_info <- function(path = '.'){
   return(info)
 }
 
+#' @rdname buildtools
+#' @export
+get_gitstats <- function(url){
+  if(!grepl('^https?://github.com', url)){
+    return(NULL)
+  }
+  repo <- sub("^https?://github.com/", "", url)
+  repo <- sub("/$", "", repo)
+  endpoint <- sprintf('/repos/%s/contributors', repo)
+  contributors <- gh::gh(endpoint, .limit = 500)
+  logins <- vapply(contributors, function(x){x$login}, character(1))
+  list(contributors = logins)
+}
+
+#' @export
+#' @rdname buildtools
+get_gitstats_base64 <- function(url){
+  gitstats <- tryCatch(get_gitstats(url), error = function(e){NULL})
+  if(length(gitstats)){
+    json <- jsonlite::toJSON(gitstats, auto_unbox = TRUE)
+    base64_gzip(json)
+  }
+}
+
 #' @export
 #' @rdname buildtools
 try_write_cff <- function(path = '.'){

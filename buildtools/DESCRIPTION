@@ -12,6 +12,7 @@ Imports:
     cffr,
     curl,
     gert (>= 1.5.0),
+    gh,
     jsonlite,
     knitr,
     maketools,
