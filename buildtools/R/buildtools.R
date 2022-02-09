@@ -258,7 +258,7 @@ get_gitstats <- function(url){
   repo <- sub("^https?://github.com/", "", url)
   repo <- sub("/$", "", repo)
   endpoint <- sprintf('/repos/%s/contributors', repo)
-  contributors <- gh::gh(endpoint, .limit = 500)
+  contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
   logins <- vapply(contributors, function(x){x$login}, character(1))
   list(contributors = logins)
 }
@@ -266,7 +266,10 @@ get_gitstats <- function(url){
 #' @export
 #' @rdname buildtools
 get_gitstats_base64 <- function(url){
-  gitstats <- tryCatch(get_gitstats(url), error = function(e){NULL})
+  gitstats <- tryCatch(get_gitstats(url), error = function(e){
+    message('Failed to get gitstats: ', e$message)
+    NULL
+  })
   if(length(gitstats)){
     json <- jsonlite::toJSON(gitstats, auto_unbox = TRUE)
     base64_gzip(json)
