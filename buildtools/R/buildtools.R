@@ -69,13 +69,29 @@ vignettes_base64 <- function(repo, pkg = basename(repo), subdir = ""){
 
 #' @export
 #' @rdname buildtools
-commit_info_base64 <- function(repo = repo){
+commit_info_base64 <- function(repo = '.'){
   info <- gert::git_commit_info(repo = repo)
   out <- info[c("id", "author", "committer", "message", "time")]
   out$message <- substring(out$message, 1, 2000) #Do not overflow http headers
   out$time <- unclass(out$time)
   json <- jsonlite::toJSON(out, auto_unbox = TRUE)
   base64_gzip(json)
+}
+
+# offline version of GitHub /stats/commit_activity
+# results may be slightly different due to the start day of a week, and also
+# the week 53 numbering.
+weekly_commits <- function(repo = '.'){
+  format_week <- function(x){
+    paste0(lubridate::isoyear(x), '-', sprintf('%02d', lubridate::isoweek(x)))
+  }
+  now <- Sys.Date()
+  start_date <- now - 375 # some extra days to prevent mid-week truncation
+  commit_dates <- gert::git_log(after = start_date, repo = repo, max = 999999)$time
+  commit_week <- format_week(commit_dates)
+  levels <- sort(unique(format_week(now - 0:365)))
+  counts <- table(factor(commit_week, levels = levels))
+  list(counts = as.integer(counts), range = range(levels))
 }
 
 vignettes_info <- function(repo, pkg, subdir = ""){
@@ -140,6 +156,12 @@ base64_gzip <- function(bin){
   buf <- memCompress(bin, 'gzip')
   b64 <- gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
   chartr('+/', '-_', b64)
+}
+
+base64_gunzip <- function(b64){
+  b64 <- chartr('-_', '+/', b64)
+  bin <- jsonlite::base64_dec(b64)
+  rawToChar(memDecompress(bin, 'gzip'))
 }
 
 url_exists <- function(url){
@@ -251,9 +273,12 @@ get_maintainer_info <- function(path = '.'){
 
 #' @rdname buildtools
 #' @export
-get_gitstats <- function(url){
+get_gitstats <- function(repo, url){
+  out <- list(
+    commits = weekly_commits(repo = repo)
+  )
   if(!grepl('^https?://github.com', url)){
-    return(NULL)
+    return(out)
   }
   repo <- sub("^https?://github.com/", "", url)
   repo <- sub("/$", "", repo)
@@ -261,9 +286,7 @@ get_gitstats <- function(url){
   contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
   logins <- vapply(contributors, function(x){x$login}, character(1))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
-  out <- list(
-    contributions = structure(as.list(counts), names = logins)
-  )
+  out$contributions = structure(as.list(counts), names = logins)
   topics <- gh::gh(sprintf('/repos/%s/topics', repo))
   if(length(topics$names))
     out$topics <- unlist(topics$names)

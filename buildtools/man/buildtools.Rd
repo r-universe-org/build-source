@@ -18,7 +18,7 @@ find_logo(path, git_url, subdir = "")
 
 vignettes_base64(repo, pkg = basename(repo), subdir = "")
 
-commit_info_base64(repo = repo)
+commit_info_base64(repo = ".")
 
 install_dependencies(path = ".")
 
@@ -26,7 +26,7 @@ read_description_field(field, path = ".")
 
 get_maintainer_info(path = ".")
 
-get_gitstats(url)
+get_gitstats(repo, url)
 
 get_gitstats_base64(url)
 

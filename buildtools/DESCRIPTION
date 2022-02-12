@@ -11,7 +11,7 @@ LazyData: true
 Imports:
     cffr,
     curl,
-    gert (>= 1.5.0),
+    gert (>= 1.5.9000),
     gh,
     jsonlite,
     knitr,
@@ -20,5 +20,6 @@ Imports:
     rmarkdown,
     yaml
 Remotes: 
-    jeroen/maketools
+    jeroen/maketools,
+    r-lib/gert
 RoxygenNote: 7.1.2
