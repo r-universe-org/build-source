@@ -81,6 +81,7 @@ commit_info_base64 <- function(repo = '.'){
 # offline version of GitHub /stats/commit_activity
 # results may be slightly different due to the start day of a week, and also
 # the week 53 numbering.
+# also gert assumes linear history and only counts commits in the main branch.
 weekly_commits <- function(repo = '.'){
   format_week <- function(x){
     paste0(lubridate::isoyear(x), '-', sprintf('%02d', lubridate::isoweek(x)))
