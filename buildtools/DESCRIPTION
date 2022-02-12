@@ -15,6 +15,7 @@ Imports:
     gh,
     jsonlite,
     knitr,
+    lubridate,
     maketools,
     remotes,
     rmarkdown,
