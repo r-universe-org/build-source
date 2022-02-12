@@ -296,8 +296,8 @@ get_gitstats <- function(repo, url){
 
 #' @export
 #' @rdname buildtools
-get_gitstats_base64 <- function(url){
-  gitstats <- tryCatch(get_gitstats(url), error = function(e){
+get_gitstats_base64 <- function(repo, url){
+  gitstats <- tryCatch(get_gitstats(repo = repo, url = url), error = function(e){
     message('Failed to get gitstats: ', e$message)
     NULL
   })

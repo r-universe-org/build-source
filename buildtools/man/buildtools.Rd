@@ -28,7 +28,7 @@ get_maintainer_info(path = ".")
 
 get_gitstats(repo, url)
 
-get_gitstats_base64(url)
+get_gitstats_base64(repo, url)
 
 try_write_cff(path = ".")
 
