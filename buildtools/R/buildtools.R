@@ -288,7 +288,7 @@ get_gitstats <- function(repo, url){
   contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
   logins <- vapply(contributors, function(x){x$login}, character(1))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
-  out$contributions = structure(as.list(counts), names = logins)
+  out$contributions = structure(as.list(counts), names = tolower(logins))
   topics <- gh::gh(sprintf('/repos/%s/topics', repo))
   if(length(topics$names))
     out$topics <- unlist(topics$names)
