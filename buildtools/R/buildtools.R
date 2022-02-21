@@ -93,7 +93,8 @@ weekly_commits <- function(repo = '.'){
   commit_week <- format_week(commit_dates)
   levels <- sort(unique(format_week(now - 0:365)))
   counts <- table(factor(commit_week, levels = levels))
-  list(counts = as.integer(counts), range = range(levels))
+  #list(counts = as.integer(counts), range = range(levels))
+  as.list(counts)
 }
 
 vignettes_info <- function(repo, pkg, subdir = ""){
@@ -277,7 +278,7 @@ get_maintainer_info <- function(path = '.'){
 #' @export
 get_gitstats <- function(repo, url){
   out <- list(
-    commits = weekly_commits(repo = repo)
+    updates = weekly_commits(repo = repo)
   )
   if(!grepl('^https?://github.com', url)){
     return(out)
