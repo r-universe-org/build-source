@@ -94,7 +94,8 @@ weekly_commits <- function(repo = '.'){
   levels <- sort(unique(format_week(now - 0:365)))
   counts <- table(factor(commit_week, levels = levels))
   #list(counts = as.integer(counts), range = range(levels))
-  data.frame(week=levels, n=as.integer(counts))
+  df <- data.frame(week=levels, n=as.integer(counts))
+  subset(df, n > 0)
 }
 
 vignettes_info <- function(repo, pkg, subdir = ""){
