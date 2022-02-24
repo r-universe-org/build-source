@@ -2,8 +2,8 @@
 #'
 #' Get some extra info about packages.
 #'
-#' @export find_logo package_sysdeps_string
-#' @aliases find_logo package_sysdeps_string
+#' @export find_logo
+#' @aliases find_logo
 #' @rdname buildtools
 #' @param path root directory of package
 #' @param git_url of the git repository
@@ -173,15 +173,19 @@ url_exists <- function(url){
   return(req$status < 400)
 }
 
-#' @importFrom maketools package_sysdeps_string
-package_sysdeps_string <- function(pkg){
-  str <- maketools::package_sysdeps_string(pkg = pkg)
-  if(!file.exists('/NEED_RJAVA'))
-    return(str)
-  java <- maketools::package_sysdeps_string('rJava')
-  if(!nchar(str))
-    return(java)
-  paste(str, java, sep = ', ')
+#' @export
+#' @rdname buildtools
+#' @importFrom maketools package_sysdeps
+sysdeps_base64 <- function(pkg){
+  sysdeps <- maketools::package_sysdeps(pkg)
+  if(file.exists('/NEED_RJAVA')){
+    sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rJava'))
+  }
+  df <- sysdeps[c('package', 'headers', 'source', 'version')]
+  if(is.data.frame(df) && nrow(df) > 0){
+    json <- jsonlite::toJSON(df, auto_unbox = TRUE)
+    base64_gzip(json)
+  }
 }
 
 #' @rdname buildtools

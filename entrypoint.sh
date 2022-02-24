@@ -129,7 +129,7 @@ echo "::endgroup::"
 echo ::set-output name=SOURCEPKG::$SOURCEPKG
 
 # Lookup system dependencies
-SYSDEPS=$(Rscript -e "cat(buildtools::package_sysdeps_string('$PACKAGE'))")
+SYSDEPS=$(Rscript -e "cat(buildtools::sysdeps_base64('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
 # Get vignette metadata

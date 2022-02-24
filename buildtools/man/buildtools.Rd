@@ -2,9 +2,9 @@
 % Please edit documentation in R/buildtools.R
 \name{find_logo}
 \alias{find_logo}
-\alias{package_sysdeps_string}
 \alias{vignettes_base64}
 \alias{commit_info_base64}
+\alias{sysdeps_base64}
 \alias{install_dependencies}
 \alias{read_description_field}
 \alias{get_maintainer_info}
@@ -19,6 +19,8 @@ find_logo(path, git_url, subdir = "")
 vignettes_base64(repo, pkg = basename(repo), subdir = "")
 
 commit_info_base64(repo = ".")
+
+sysdeps_base64(pkg)
 
 install_dependencies(path = ".")
 
