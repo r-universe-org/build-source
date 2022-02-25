@@ -181,7 +181,7 @@ sysdeps_base64 <- function(pkg){
   if(file.exists('/NEED_RJAVA')){
     sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rJava'))
   }
-  df <- sysdeps[c('package', 'headers', 'source', 'version')]
+  df <- sysdeps[!is.na(sysdeps$package), c('package', 'headers', 'source', 'version')]
   if(is.data.frame(df) && nrow(df) > 0){
     json <- jsonlite::toJSON(df, auto_unbox = TRUE)
     base64_gzip(json)
