@@ -202,6 +202,11 @@ install_dependencies <- function(path = '.'){
     if(length(aptline) && !grepl('(libcurl|pandoc)', aptline[1])){
       system(aptline[1])
     }
+    # Special case this library due to conflicts with libcurl4-openssl-dev
+    librdf <- grep('librdf0-dev', aptline, value = TRUE)
+    if(length(librdf)){
+      system(librdf[1])
+    }
   }, error = function(e){
     message("Problem looking for system requirements: ", e$message)
   })
