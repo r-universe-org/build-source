@@ -253,6 +253,13 @@ read_description_field <- function(field, path = '.'){
   as.list(gsub("'", "", trimws(c(desc, extra)), fixed = TRUE))[[field]]
 }
 
+get_schema_keywords <- function(path = '.'){
+  keywords <- read_description_field('X-schema.org-keywords', path)
+  if(length(keywords)){
+    trimws(strsplit(keywords, ',', fixed = TRUE)[[1]])
+  }
+}
+
 #' @rdname buildtools
 #' @export
 get_maintainer_info <- function(path = '.'){
@@ -282,12 +289,20 @@ get_maintainer_info <- function(path = '.'){
   return(info)
 }
 
+filter_topics <- function(x){
+  setdiff(x, c("r", "rstats", "cran", "r-package", "package", "r-stats"))
+}
+
 #' @rdname buildtools
 #' @export
 get_gitstats <- function(repo, url){
   out <- list(
     updates = weekly_commits(repo = repo)
   )
+  keywords <- filter_topics(get_schema_keywords(repo))
+  if(length(keywords)){
+    out$topics <- unique(keywords)
+  }
   if(!grepl('^https?://github.com', url)){
     return(out)
   }
@@ -299,8 +314,9 @@ get_gitstats <- function(repo, url){
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
   out$contributions = structure(as.list(counts), names = tolower(logins))
   topics <- gh::gh(sprintf('/repos/%s/topics', repo))
-  if(length(topics$names))
-    out$topics <- unlist(topics$names)
+  ghtopics <- filter_topics(unlist(topics$names))
+  if(length(ghtopics))
+    out$topics <- unique(c(out$topics, ghtopics))
   return(out)
 }
 
