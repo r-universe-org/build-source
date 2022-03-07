@@ -328,6 +328,8 @@ get_gitstats_base64 <- function(repo, url){
     NULL
   })
   if(length(gitstats)){
+    if(length(gitstats$topics))
+      gitstats$topics <- I(gitstats$topics)
     json <- jsonlite::toJSON(gitstats, auto_unbox = TRUE)
     base64_gzip(json)
   }
