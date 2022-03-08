@@ -28,9 +28,9 @@ read_description_field(field, path = ".")
 
 get_maintainer_info(path = ".")
 
-get_gitstats(repo, url)
+get_gitstats(repo, pkgdir, url)
 
-get_gitstats_base64(repo, url)
+get_gitstats_base64(repo, pkgdir, url)
 
 try_write_cff(path = ".")
 

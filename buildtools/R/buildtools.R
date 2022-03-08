@@ -295,11 +295,11 @@ filter_topics <- function(x){
 
 #' @rdname buildtools
 #' @export
-get_gitstats <- function(repo, url){
+get_gitstats <- function(repo, pkgdir, url){
   out <- list(
     updates = weekly_commits(repo = repo)
   )
-  keywords <- filter_topics(get_schema_keywords(repo))
+  keywords <- filter_topics(get_schema_keywords(pkgdir))
   if(length(keywords)){
     out$topics <- unique(keywords)
   }
@@ -322,8 +322,8 @@ get_gitstats <- function(repo, url){
 
 #' @export
 #' @rdname buildtools
-get_gitstats_base64 <- function(repo, url){
-  gitstats <- tryCatch(get_gitstats(repo = repo, url = url), error = function(e){
+get_gitstats_base64 <- function(repo, pkgdir, url){
+  gitstats <- tryCatch(get_gitstats(repo = repo, pkgdir = pkgdir, url = url), error = function(e){
     message('Failed to get gitstats: ', e$message)
     NULL
   })

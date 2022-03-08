@@ -53,7 +53,7 @@ COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
 
 # Get commit metadata
-GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$1'))")
+GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$1'))")
 echo ::set-output name=GITSTATS::$GITSTATS
 
 # DEBUGGING
