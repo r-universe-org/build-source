@@ -313,10 +313,13 @@ get_gitstats <- function(repo, pkgdir, url){
   logins <- vapply(contributors, function(x){x$login}, character(1))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
   out$contributions = structure(as.list(counts), names = tolower(logins))
-  topics <- gh::gh(sprintf('/repos/%s/topics', repo))
-  ghtopics <- filter_topics(unlist(topics$names))
+  ghinfo <- gh::gh(sprintf('/repos/%s', repo))
+  ghtopics <- filter_topics(unlist(ghinfo$topics))
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
+  out$organization <- identical(tolower(ghinfo$owner$type), 'organization')
+  if(length(ghinfo$stargazers_count))
+    out$stars <- ghinfo$stargazers_count
   return(out)
 }
 
