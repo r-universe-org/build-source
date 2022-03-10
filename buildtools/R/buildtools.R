@@ -317,7 +317,11 @@ get_gitstats <- function(repo, pkgdir, url){
   ghtopics <- filter_topics(unlist(ghinfo$topics))
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
-  out$organization <- identical(tolower(ghinfo$owner$type), 'organization')
+  if(ghinfo$owner$login == dirname(repo)){
+    out$organization <- identical(tolower(ghinfo$owner$type), 'organization')
+  } else {
+    message(sprintf('% seems transferred to %s!', repo, ghinfo$owner$login))
+  }
   if(length(ghinfo$stargazers_count))
     out$stars <- ghinfo$stargazers_count
   return(out)
