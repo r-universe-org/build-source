@@ -56,6 +56,12 @@ echo ::set-output name=COMMITINFO::$COMMITINFO
 GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$1'))")
 echo ::set-output name=GITSTATS::$GITSTATS
 
+# Look for a package logo
+PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")
+if [ "$PKGLOGO" ]; then
+echo ::set-output name=PKGLOGO::$PKGLOGO
+fi
+
 # DEBUGGING
 echo "::group::Show contents of $MY_UNIVERSE"
 R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,'Version',drop=FALSE])"
@@ -119,6 +125,14 @@ echo "File $SOURCEPKG is more than 100MB. This is currently not allowed."
 exit 1
 fi
 
+# Support Windows-only packages (but not articles which require installation)
+OSTYPE=$(Rscript -e "cat(buildtools::get_ostype('$PKGDIR'))")
+if [ "$OSTYPE" = "windows" ]; then
+echo "Skipping install/runtime checks for windows-only package"
+echo ::set-output name=SOURCEPKG::$SOURCEPKG
+exit 0
+fi
+
 # Confirm that package can be installed on Linux
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 echo "::group::Test if package can be installed"
@@ -135,12 +149,6 @@ echo ::set-output name=SYSDEPS::$SYSDEPS
 # Get vignette metadata
 VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
 echo ::set-output name=VIGNETTES::$VIGNETTES
-
-# Look for a package logo
-PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")
-if [ "$PKGLOGO" ]; then
-echo ::set-output name=PKGLOGO::$PKGLOGO
-fi
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"

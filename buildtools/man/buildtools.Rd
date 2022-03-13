@@ -7,6 +7,7 @@
 \alias{sysdeps_base64}
 \alias{install_dependencies}
 \alias{read_description_field}
+\alias{get_ostype}
 \alias{get_maintainer_info}
 \alias{get_gitstats}
 \alias{get_gitstats_base64}
@@ -25,6 +26,8 @@ sysdeps_base64(pkg)
 install_dependencies(path = ".")
 
 read_description_field(field, path = ".")
+
+get_ostype(path = ".")
 
 get_maintainer_info(path = ".")
 

@@ -253,6 +253,14 @@ read_description_field <- function(field, path = '.'){
   as.list(gsub("'", "", trimws(c(desc, extra)), fixed = TRUE))[[field]]
 }
 
+
+#' @rdname buildtools
+#' @param field which field from the description to show
+#' @export
+get_ostype <- function(path = '.'){
+  read_description_field('OS_type', path = path)
+}
+
 get_schema_keywords <- function(path = '.'){
   keywords <- read_description_field('X-schema.org-keywords', path)
   if(length(keywords)){
