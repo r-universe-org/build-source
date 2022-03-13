@@ -325,7 +325,7 @@ get_gitstats <- function(repo, pkgdir, url){
   ghtopics <- filter_topics(unlist(ghinfo$topics))
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
-  if(ghinfo$owner$login == dirname(repo)){
+  if(tolower(ghinfo$owner$login) == tolower(dirname(repo))){
     out$organization <- identical(tolower(ghinfo$owner$type), 'organization')
   } else {
     message(sprintf('% seems transferred to %s!', repo, ghinfo$owner$login))
