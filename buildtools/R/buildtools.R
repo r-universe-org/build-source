@@ -203,7 +203,7 @@ install_dependencies <- function(path = '.'){
       system(aptline[1])
     }
     # Special case extra libs that we don't have in the base image
-    extras <- grep('qgis|librdf0-dev', aptline, value = TRUE)
+    extras <- grep('qgis|librdf0-dev|default-jdk', aptline, value = TRUE)
     lapply(extras, system)
   }, error = function(e){
     message("Problem looking for system requirements: ", e$message)
