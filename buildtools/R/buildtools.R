@@ -173,6 +173,18 @@ url_exists <- function(url){
   return(req$status < 400)
 }
 
+sysdep_shortname <- function(x){
+  switch(x$package,
+    'libgfortran5' = 'fortran',
+    'libstdc++6' = "c++",
+    'libgomp1' = 'openmp',
+    'openjdk-11-jre-headless' = 'java',
+    'libpng16-16' = 'libpng',
+    'libtiff5' = 'libtiff',
+    sub('\\d+\\.\\d+$', "", x$source)
+  )
+}
+
 #' @export
 #' @rdname buildtools
 #' @importFrom maketools package_sysdeps
@@ -183,6 +195,10 @@ sysdeps_base64 <- function(pkg){
   }
   df <- sysdeps[!is.na(sysdeps$package), c('package', 'headers', 'source', 'version')]
   if(is.data.frame(df) && nrow(df) > 0){
+    df$name = NA_character_
+    for(i in seq_len(nrow(df))){
+      df$name[i] = sysdep_shortname(df[i,])
+    }
     json <- jsonlite::toJSON(df, auto_unbox = TRUE)
     base64_gzip(json)
   }
