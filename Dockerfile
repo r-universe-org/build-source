@@ -9,8 +9,5 @@ COPY dummykey/id_rsa.pub /root/.ssh/id_rsa.pub
 RUN chmod 400 /root/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN R -e 'install.packages("remotes");remotes::install_local("/pkg")'
 
-# Workaround 'System has not been booted with systemd as init system'
-RUN rm -f /usr/bin/timedatectl
-
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
