@@ -293,7 +293,7 @@ get_maintainer_info <- function(path = '.'){
   maintainerline <- as.list(gsub("'", "", trimws(c(x, extra)), fixed = TRUE))$Maintainer
   info <- list(
     name = trimws(sub("<(.*)>", '', maintainerline)),
-    email =  trimws(sub("^.*<(.*)>.*$", '\\1', maintainerline))
+    email =  tolower(trimws(sub("^.*<(.*)>.*$", '\\1', maintainerline)))
   )
   login <- Sys.getenv('MAINTAINERLOGIN', "")
   if(nchar(login))
