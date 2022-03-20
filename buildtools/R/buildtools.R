@@ -10,19 +10,22 @@
 #' @param subdir if the package lives in a subdir in the repo
 find_logo <- function (path, git_url, subdir = "") {
   # Match logic from pkgdown but return path relative package root.
-  files <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
+  rel_path <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
   cardimage <- find_opengraph_image(path = path)
   if(length(cardimage)){
     if(grepl('^http', cardimage)){
       return(cardimage)
     }
-    files <- c(cardimage, files)
+    rel_path <- c(cardimage, rel_path)
   }
-  candidates <- file.path(path, files)
-  logo <- utils::head(files[file.exists(candidates)], 1)
-  if(!length(logo))
+  abs_path <- file.path(path, rel_path)
+  if(!any(file.exists(abs_path))){
     return(NULL)
-  file_to_url(logo, git_url, subdir)
+  }
+  # pkg 'ragg' has huge svg logo
+  smallest <- which.min(file.info(abs_path)$size)
+  logo_path <- rel_path[smallest]
+  file_to_url(logo_path, git_url, subdir)
 }
 
 file_to_url <- function(logo, git_url, subdir){
