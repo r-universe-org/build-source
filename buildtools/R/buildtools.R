@@ -317,7 +317,7 @@ get_maintainer_info <- function(path = '.'){
 }
 
 filter_topics <- function(x){
-  setdiff(x, c("r", "rstats", "cran", "r-package", "package", "r-stats"))
+  setdiff(x, c("r", "rstats", "cran", "r-package", "rpackage", "package", "r-stats", "rstats-package"))
 }
 
 #' @rdname buildtools
