@@ -31,7 +31,7 @@ fi
 # Experimental: support pkgs like rJava
 if test -f "$PKGDIR/mkdist"; then
   echo "Trying ot run $PKGDIR/mkdist"
-  (cd $PKGDIR; ./mkdist) || true
+  (cd $PKGDIR; sh ./mkdist) || true
 fi
 
 DISTRO="$(lsb_release -sc)"
