@@ -28,6 +28,11 @@ SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
+# Get system dependencies
+echo "::group::Installing system dependencies"
+Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
+echo "::endgroup::"
+
 # Experimental: support pkgs like rJava
 if test -f "$PKGDIR/mkdist"; then
   echo "Trying ot run $PKGDIR/mkdist"

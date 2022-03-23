@@ -5,6 +5,7 @@
 \alias{vignettes_base64}
 \alias{commit_info_base64}
 \alias{sysdeps_base64}
+\alias{install_sysdeps}
 \alias{install_dependencies}
 \alias{read_description_field}
 \alias{get_ostype}
@@ -22,6 +23,8 @@ vignettes_base64(repo, pkg = basename(repo), subdir = "")
 commit_info_base64(repo = ".")
 
 sysdeps_base64(pkg)
+
+install_sysdeps(path = ".")
 
 install_dependencies(path = ".")
 

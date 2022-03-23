@@ -209,7 +209,7 @@ sysdeps_base64 <- function(pkg){
 
 #' @rdname buildtools
 #' @export
-install_dependencies <- function(path = '.'){
+install_sysdeps <- function(path = '.'){
   setwd(path)
 
   # Try to install missing sysdeps.
@@ -227,6 +227,12 @@ install_dependencies <- function(path = '.'){
   }, error = function(e){
     message("Problem looking for system requirements: ", e$message)
   })
+}
+
+#' @rdname buildtools
+#' @export
+install_dependencies <- function(path = '.'){
+  setwd(path)
 
   # Try to work around intermittend RSPM fails
   precache_rspm()
