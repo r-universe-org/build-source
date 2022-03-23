@@ -28,6 +28,12 @@ SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
+# Experimental: support pkgs like rJava
+if test -f "$PKGDIR/mkdist"; then
+  echo "Trying ot run $PKGDIR/mkdist"
+  (cd $PKGDIR; ./mkdist) || true
+fi
+
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(grep '^Package:' "${PKGDIR}/DESCRIPTION" | sed 's/^Package://')
 VERSION=$(grep '^Version:' "${PKGDIR}/DESCRIPTION" | sed 's/^Version://')
