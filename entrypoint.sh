@@ -34,9 +34,9 @@ Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
 echo "::endgroup::"
 
 # Experimental: support pkgs like rJava
-if test -f "$PKGDIR/mkdist"; then
-  echo "Trying to run $PKGDIR/mkdist"
-  (cd $PKGDIR; sh ./mkdist) || true
+if test -f "$PKGDIR/.prepare"; then
+  echo "Trying to run $PKGDIR/.prepare"
+  (cd $PKGDIR; sh .prepare) || true
 fi
 
 DISTRO="$(lsb_release -sc)"
