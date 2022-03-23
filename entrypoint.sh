@@ -35,7 +35,7 @@ echo "::endgroup::"
 
 # Experimental: support pkgs like rJava
 if test -f "$PKGDIR/mkdist"; then
-  echo "Trying ot run $PKGDIR/mkdist"
+  echo "Trying to run $PKGDIR/mkdist"
   (cd $PKGDIR; sh ./mkdist) || true
 fi
 

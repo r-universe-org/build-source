@@ -211,6 +211,10 @@ sysdeps_base64 <- function(pkg){
 #' @export
 install_sysdeps <- function(path = '.'){
   setwd(path)
+  if(grepl('java', basename(path), ignore.case = TRUE)){
+    # rJava description file cannot be parsed before 'mkdist'
+    system("apt-get install -y default-jdk")
+  }
 
   # Try to install missing sysdeps.
   # This only installs the first match; system_requirements may return many recursive sysdeps.
