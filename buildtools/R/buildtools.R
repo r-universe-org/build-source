@@ -383,7 +383,7 @@ get_gitstats_base64 <- function(repo, pkgdir, url){
 #' @rdname buildtools
 try_write_cff <- function(path = '.'){
   setwd(path)
-  try({
+  #try({
     unlink(c('citation.cff', 'CITATION.cff'))
     # R CMD check warns about uppercase CITATION.*
     cffr::cff_write(outfile = 'citation.cff', dependencies = FALSE, gh_keywords = FALSE)
@@ -393,7 +393,7 @@ try_write_cff <- function(path = '.'){
       x <- grep('citation.*cff', x, value = TRUE, invert = TRUE, ignore.case = TRUE)
       writeLines(x, '.Rbuildignore')
     }
-  })
+  #})
 }
 
 #' @export
