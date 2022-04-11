@@ -168,9 +168,9 @@ R CMD Rd2pdf --no-preview --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stde
 if [ "$MANUAL_FAILURE" ]; then
 cat stderr.txt
 else
-gunzip -k "$SOURCEPKG"
+gunzip "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE/manual.pdf"
-gzip -f ${SOURCEPKG%.gz}
+gzip ${SOURCEPKG%.gz}
 fi
 echo "::endgroup::"
 
