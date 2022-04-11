@@ -161,20 +161,27 @@ echo ::set-output name=SYSDEPS::$SYSDEPS
 VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
-# Inject pdf manual into the tar.gz
+# Build and insert pdf manual into the tar.gz
 echo "::group::Build pdf reference manual"
-R CMD Rd2pdf "$PKGDIR" 2> /dev/null
+R CMD Rd2pdf "$PKGDIR" 2> stderr.txt || MANUAL_FAILURE=1
+if [ "$MANUAL_FAILURE" ]; then
+cat stderr.txt
+else
 mkdir -p tmp/$PACKAGE
 mv "$PACKAGE.pdf" tmp/$PACKAGE/manual.pdf
 gunzip -k "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C tmp "$PACKAGE/manual.pdf"
 gzip -f ${SOURCEPKG%.gz}
+fi
 echo "::endgroup::"
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
 if [ "$VIGNETTE_FAILURE" ]; then
 echo "Installation OK but failed to build vignettes, see 'R CMD build' above."
+exit 1
+elif [ "$MANUAL_FAILURE" ]; then
+echo "Installation OK but failed to build PDF manual, see above."
 exit 1
 else
 exit 0
