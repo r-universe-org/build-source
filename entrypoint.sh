@@ -169,7 +169,7 @@ if [ "$MANUAL_FAILURE" ]; then
 cat stderr.txt
 else
 gunzip "$SOURCEPKG"
-tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE/manual.pdf"
+tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 fi
 echo "::endgroup::"
