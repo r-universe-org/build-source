@@ -163,14 +163,13 @@ echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Build and insert pdf manual into the tar.gz
 echo "::group::Build pdf reference manual"
-R CMD Rd2pdf "$PKGDIR" 2> stderr.txt || MANUAL_FAILURE=1
+mkdir -p outputs/$PACKAGE
+R CMD Rd2pdf --no-preview --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
 cat stderr.txt
 else
-mkdir -p tmp/$PACKAGE
-mv "$PACKAGE.pdf" tmp/$PACKAGE/manual.pdf
 gunzip -k "$SOURCEPKG"
-tar rfv ${SOURCEPKG%.gz} -C tmp "$PACKAGE/manual.pdf"
+tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE/manual.pdf"
 gzip -f ${SOURCEPKG%.gz}
 fi
 echo "::endgroup::"
