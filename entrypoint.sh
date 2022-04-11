@@ -162,12 +162,14 @@ VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SU
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Inject pdf manual into the tar.gz
+echo "::group::Build pdf reference manual"
 R CMD Rd2pdf "$PKGDIR" 2> /dev/null
 mkdir -p tmp/$PACKAGE
 mv "$PACKAGE.pdf" tmp/$PACKAGE/manual.pdf
 gunzip -k "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C tmp "$PACKAGE/manual.pdf"
 gzip -f ${SOURCEPKG%.gz}
+echo "::endgroup::"
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
