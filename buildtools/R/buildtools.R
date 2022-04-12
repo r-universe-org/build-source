@@ -101,6 +101,16 @@ weekly_commits <- function(repo = '.'){
   subset(df, n > 0)
 }
 
+latest_tags <- function(repo = '.'){
+  now <- Sys.Date()
+  df <- gert::git_tag_list(repo = repo)
+  df$date <- vapply(df$commit, function(ref){
+    as.Date(gert::git_commit_info(ref, repo = repo)$time)
+  }, now)
+  class(df$date) <- class(now)
+  df[df$date > (now - 365), c('name', 'date')]
+}
+
 vignettes_info <- function(repo, pkg, subdir = ""){
   repo <- gert::git_open(repo = repo)
   vignettes <- as.data.frame(tools::getVignetteInfo(pkg))
@@ -334,7 +344,8 @@ filter_topics <- function(x){
 #' @export
 get_gitstats <- function(repo, pkgdir, url){
   out <- list(
-    updates = weekly_commits(repo = repo)
+    updates = weekly_commits(repo = repo),
+    tags = latest_tags(repo = repo)
   )
   keywords <- filter_topics(get_schema_keywords(pkgdir))
   if(length(keywords)){
