@@ -108,7 +108,8 @@ latest_tags <- function(repo = '.'){
     as.Date(gert::git_commit_info(ref, repo = repo)$time)
   }, now)
   class(df$date) <- class(now)
-  df[df$date > (now - 365), c('name', 'date')]
+  df <- df[df$date > (now - 365), c('name', 'date')]
+  df[order(df$date),]
 }
 
 vignettes_info <- function(repo, pkg, subdir = ""){
