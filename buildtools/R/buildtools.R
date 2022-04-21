@@ -207,6 +207,9 @@ sysdeps_base64 <- function(pkg){
   if(file.exists('/NEED_RJAVA')){
     sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rJava'))
   }
+  if(file.exists('/NEED_JAGS')){
+    sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rjags'))
+  }
   df <- sysdeps[!is.na(sysdeps$package), c('package', 'headers', 'source', 'version')]
   if(is.data.frame(df) && nrow(df) > 0){
     df$name = NA_character_
@@ -287,6 +290,12 @@ install_dependencies <- function(path = '.'){
     if(isTRUE('rJava' %in% alldeps)){
       cat('::set-output name=NEED_RJAVA::true\n')
       file.create('/NEED_RJAVA')
+    }
+    if(any(c('rjags', 'runjags') %in% alldeps)){
+      if(!require('rjags'))
+        install.packages('rjags')
+      cat('::set-output name=NEED_JAGS::true\n')
+      file.create('/NEED_JAGS')
     }
   }
 }
