@@ -265,13 +265,6 @@ install_dependencies <- function(path = '.'){
   message("Running: utils::install.packages(deps)")
   utils::install.packages(deps)
 
-  # Workaround for rspm 4.2, reinstall packages with graphics device from source
-  gdpkgs <- intersect(row.names(installed.packages()), c("ragg", "magick", "ggiraph", "svglite", "Cairo", "RSVGTipsDevice"))
-  if(length(gdpkgs)){
-    message("Reinstalling GD packages from source: ", paste(gdpkgs, collapse = ', '))
-    utils::install.packages(gdpkgs, repos = 'https://cloud.r-project.org')
-  }
-
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
   remotes <- desc$Remotes
