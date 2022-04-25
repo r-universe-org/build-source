@@ -218,8 +218,10 @@ sysdeps_base64 <- function(pkg){
     for(i in seq_len(nrow(df))){
       df$name[i] = sysdep_shortname(df[i,])
       pkginfo <- apt_cache_info(df$package[i])
-      df$homepage[i] = pkginfo$homepage[1]
-      df$description[i] = pkginfo$description[1]
+      if(length(pkginfo$homepage))
+        df$homepage[i] = pkginfo$homepage[1]
+      if(length(pkginfo$description))
+        df$description[i] = pkginfo$description[1]
     }
     json <- jsonlite::toJSON(df, auto_unbox = TRUE)
     base64_gzip(json)
