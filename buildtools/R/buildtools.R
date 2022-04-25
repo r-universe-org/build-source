@@ -211,14 +211,28 @@ sysdeps_base64 <- function(pkg){
     sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rjags'))
   }
   df <- sysdeps[!is.na(sysdeps$package), c('package', 'headers', 'source', 'version')]
+  df$homepage = NA_character_
+  df$description = NA_character_
   if(is.data.frame(df) && nrow(df) > 0){
     df$name = NA_character_
     for(i in seq_len(nrow(df))){
       df$name[i] = sysdep_shortname(df[i,])
+      pkginfo <- apt_cache_info(df$package[i])
+      df$homepage[i] = pkginfo$homepage[1]
+      df$description[i] = pkginfo$description[1]
     }
     json <- jsonlite::toJSON(df, auto_unbox = TRUE)
     base64_gzip(json)
   }
+}
+
+apt_cache_info <- function(pkg){
+  out <- sys::exec_internal('apt-cache', c('show', pkg))
+  con <- rawConnection(out$stdout)
+  on.exit(close(con))
+  df <- as.data.frame(read.dcf(con))
+  names(df) <- tolower(names(df))
+  df
 }
 
 #' @rdname buildtools
