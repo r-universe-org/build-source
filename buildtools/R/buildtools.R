@@ -313,10 +313,10 @@ install_dependencies <- function(path = '.'){
   #cat(sprintf('::set-output name=CHECKDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(checkdeps)))))
 }
 
-recurse_deps <- function(pkg){
-  if(!length(pkg))
+recurse_deps <- function(pkgs){
+  if(!length(pkgs))
     return(character())
-  all <- sort(unique(c(pkg, unlist(unname(tools::package_dependencies(pkg, recursive = TRUE))))))
+  all <- sort(unique(c(pkgs, unlist(unname(tools::package_dependencies(pkgs, recursive = TRUE))))))
   setdiff(all, getOption('defaultPackages'))
 }
 
