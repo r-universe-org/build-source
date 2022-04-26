@@ -276,7 +276,7 @@ install_dependencies <- function(path = '.'){
   deps <- remotes::local_package_deps(dependencies=TRUE)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
-  deps <- unique(c(deps, desc$VignetteBuilder))
+  deps <- setdiff(unique(c(deps, desc$VignetteBuilder)), getOption('defaultPackages'))
 
   message("Running: utils::install.packages(deps)")
   utils::install.packages(deps)
@@ -293,23 +293,31 @@ install_dependencies <- function(path = '.'){
 
   # Check if rJava is a (recursive) dependency
   harddeps <- remotes::local_package_deps()
-  rundeps <- if(length(harddeps)){
-    alldeps <- sort(unique(c(harddeps, unlist(unname(tools::package_dependencies(harddeps, recursive = TRUE))))))
-    if(isTRUE('rJava' %in% alldeps)){
-      cat('::set-output name=NEED_RJAVA::true\n')
-      file.create('/NEED_RJAVA')
-    }
-    if(any(c('rjags', 'runjags') %in% alldeps)){
-      if(!require('rjags'))
-        install.packages('rjags')
-      cat('::set-output name=NEED_JAGS::true\n')
-      file.create('/NEED_JAGS')
-    }
-    setdiff(alldeps, getOption('defaultPackages'))
+  rundeps <- recurse_deps(harddeps)
+  if(isTRUE('rJava' %in% rundeps)){
+    cat('::set-output name=NEED_RJAVA::true\n')
+    file.create('/NEED_RJAVA')
+  }
+  if(isTRUE(any(c('rjags', 'runjags') %in% rundeps))){
+    if(!require('rjags'))
+      install.packages('rjags')
+    cat('::set-output name=NEED_JAGS::true\n')
+    file.create('/NEED_JAGS')
   }
 
-  # Store recursive (hard) dependencies
+  # Store recursive runtime and checktime dependencies
   cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(rundeps)))))
+
+  # Not used right now: mostly shows all the testthat/rmarkdown stack stuff
+  checkdeps <- setdiff(recurse_deps(setdiff(deps, rundeps)), rundeps)
+  cat(sprintf('::set-output name=CHECKDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(checkdeps)))))
+}
+
+recurse_deps <- function(pkg){
+  if(!length(pkg))
+    return(character())
+  all <- sort(unique(c(pkg, unlist(unname(tools::package_dependencies(pkg, recursive = TRUE))))))
+  setdiff(all, getOption('defaultPackages'))
 }
 
 #' @rdname buildtools
