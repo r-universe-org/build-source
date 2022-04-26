@@ -309,8 +309,8 @@ install_dependencies <- function(path = '.'){
   cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(rundeps)))))
 
   # Not used right now: mostly shows all the testthat/rmarkdown stack stuff
-  checkdeps <- setdiff(recurse_deps(setdiff(deps, rundeps)), rundeps)
-  cat(sprintf('::set-output name=CHECKDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(checkdeps)))))
+  #checkdeps <- setdiff(recurse_deps(setdiff(deps, rundeps)), rundeps)
+  #cat(sprintf('::set-output name=CHECKDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(checkdeps)))))
 }
 
 recurse_deps <- function(pkg){
