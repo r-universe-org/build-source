@@ -263,6 +263,9 @@ install_sysdeps <- function(path = '.'){
   })
 }
 
+# These are not on CRAN, so we filter them out
+basepkgs <- names(which(installed.packages()[ ,"Priority"] == "base", ))
+
 #' @rdname buildtools
 #' @export
 install_dependencies <- function(path = '.'){
@@ -276,7 +279,7 @@ install_dependencies <- function(path = '.'){
   deps <- remotes::local_package_deps(dependencies=TRUE)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
-  deps <- setdiff(unique(c(deps, desc$VignetteBuilder)), getOption('defaultPackages'))
+  deps <- setdiff(unique(c(deps, desc$VignetteBuilder)), basepkgs)
 
   message("Running: utils::install.packages(deps)")
   utils::install.packages(deps)
@@ -317,7 +320,7 @@ recurse_deps <- function(pkgs){
   if(!length(pkgs))
     return(character())
   all <- sort(unique(c(pkgs, unlist(unname(tools::package_dependencies(pkgs, recursive = TRUE))))))
-  setdiff(all, getOption('defaultPackages'))
+  setdiff(all, basepkgs)
 }
 
 #' @rdname buildtools
