@@ -295,7 +295,7 @@ install_dependencies <- function(path = '.'){
   harddeps <- remotes::local_package_deps()
   if(length(harddeps)){
     alldeps <- sort(unique(c(harddeps, unlist(unname(tools::package_dependencies(harddeps, recursive = TRUE))))))
-    #cat("Hard dependencies:", paste(alldeps, collapse=', '), '\n', file = stderr())
+    alldeps <- setdiff(alldeps, getOption('defaultPackages'))
     if(isTRUE('rJava' %in% alldeps)){
       cat('::set-output name=NEED_RJAVA::true\n')
       file.create('/NEED_RJAVA')
@@ -306,7 +306,10 @@ install_dependencies <- function(path = '.'){
       cat('::set-output name=NEED_JAGS::true\n')
       file.create('/NEED_JAGS')
     }
+  } else {
+    alldeps <- character()
   }
+  cat(sprintf('::set-output name=HARDDEPS::%s\n', base64_gzip(jsonlite::toJSON(alldeps))))
 }
 
 #' @rdname buildtools
