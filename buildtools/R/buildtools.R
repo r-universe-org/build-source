@@ -309,7 +309,9 @@ install_dependencies <- function(path = '.'){
   } else {
     alldeps <- character()
   }
-  cat(sprintf('::set-output name=HARDDEPS::%s\n', base64_gzip(jsonlite::toJSON(alldeps))))
+
+  # Store recursive (hard) dependencies
+  cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(alldeps))))
 }
 
 #' @rdname buildtools
