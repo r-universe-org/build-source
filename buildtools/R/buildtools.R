@@ -291,9 +291,16 @@ install_dependencies <- function(path = '.'){
     })
   }
 
-  # Check if rJava is a (recursive) dependency
+  # Store recursive runtime and checktime dependencies
   harddeps <- remotes::local_package_deps()
   rundeps <- recurse_deps(harddeps)
+  cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(rundeps)))))
+
+  # Not used right now: mostly shows all the testthat/rmarkdown stack stuff
+  #checkdeps <- setdiff(recurse_deps(setdiff(deps, rundeps)), rundeps)
+  #cat(sprintf('::set-output name=CHECKDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(checkdeps)))))
+
+  # Check if Java/JAGS are required
   if(isTRUE('rJava' %in% rundeps)){
     cat('::set-output name=NEED_RJAVA::true\n')
     file.create('/NEED_RJAVA')
@@ -304,13 +311,6 @@ install_dependencies <- function(path = '.'){
     cat('::set-output name=NEED_JAGS::true\n')
     file.create('/NEED_JAGS')
   }
-
-  # Store recursive runtime and checktime dependencies
-  cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(rundeps)))))
-
-  # Not used right now: mostly shows all the testthat/rmarkdown stack stuff
-  #checkdeps <- setdiff(recurse_deps(setdiff(deps, rundeps)), rundeps)
-  #cat(sprintf('::set-output name=CHECKDEPS::%s\n', base64_gzip(jsonlite::toJSON(as.character(checkdeps)))))
 }
 
 recurse_deps <- function(pkgs){
