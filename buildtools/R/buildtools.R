@@ -249,7 +249,10 @@ install_sysdeps <- function(path = '.'){
   # Try to install missing sysdeps.
   # This only installs the first match; system_requirements may return many recursive sysdeps.
   # But most sysdeps are preinstalled for us anyway
-  ubuntu <- gsub(" ", "-", tolower(substring(utils::osVersion,1,12)))
+
+  # Temp workaround for: https://github.com/r-lib/remotes/pull/705
+  #ubuntu <- gsub(" ", "-", tolower(substring(utils::osVersion,1,12)))
+  ubuntu <- 'ubuntu-20.04'
   tryCatch({
     aptline <- remotes::system_requirements(ubuntu)
     if(length(aptline) && !grepl('(libcurl|pandoc)', aptline[1])){
