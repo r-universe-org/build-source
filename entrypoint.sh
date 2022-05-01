@@ -167,12 +167,15 @@ mkdir -p outputs/$PACKAGE
 R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
 cat stderr.txt
-else
+fi
+echo "::endgroup::"
+
+# if outputs has any files, add them to tarball
+if [ "$(ls outputs/$PACKAGE)" ]; then
 gunzip "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 fi
-echo "::endgroup::"
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
