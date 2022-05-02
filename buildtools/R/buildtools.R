@@ -471,7 +471,7 @@ maintainer_info_base64 <- function(path = '.'){
 #' @rdname buildtools
 list_assets <- function(path){
   json <- jsonlite::toJSON(list.files(path))
-  cat(sprintf('echo ::set-output name=ASSETS::%s\n', base64_gzip(json)))
+  cat(sprintf('::set-output name=ASSETS::%s\n', base64_gzip(json)))
 }
 
 precache_rspm <- function(){
