@@ -83,11 +83,6 @@ echo "::group::Installing R dependencies"
 Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
 echo "::endgroup::"
 
-# Generate CITATION.cff
-echo "::group::Generate citation.cff"
-Rscript -e "buildtools::try_write_cff('$PKGDIR')"
-echo "::endgroup::"
-
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw
 
@@ -164,21 +159,26 @@ echo ::set-output name=VIGNETTES::$VIGNETTES
 # Build and insert pdf manual into the tar.gz
 echo "::group::Build readme and/or pdf reference manual"
 mkdir -p outputs/$PACKAGE
-R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr.txt || MANUAL_FAILURE=1
+R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
-cat stderr.txt
+cat stderr_manual.txt
 fi
 
 # Render readme
-README=$(Rscript -e "cat(buildtools::render_readme('$REPO', '$PKGDIR', 'outputs/$PACKAGE'))") || true
+Rscript -e "cat(buildtools::render_readme('$REPO', '$PKGDIR', 'outputs/$PACKAGE'))" || true
+echo "::endgroup::"
+
+# Generate CITATION.cff
+echo "::group::Generate citation.cff"
+Rscript -e "buildtools::generate_cff('$PKGDIR', 'outputs/$PACKAGE')"
+echo "::endgroup::"
 
 # if outputs has any files, add them to tarball
-if [ "$(ls outputs/$PACKAGE)" ]; then
+echo "::group::Adding extra files to tarball"
 gunzip "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
-fi
-
+Rscript -e "buildtools::list_assets('outputs/$PACKAGE')"
 echo "::endgroup::"
 
 # TODO: can we explicitly set action status/outcome in GHA?
@@ -187,7 +187,8 @@ if [ "$VIGNETTE_FAILURE" ]; then
 echo "Installation OK but failed to build vignettes, see 'R CMD build' above."
 exit 1
 elif [ "$MANUAL_FAILURE" ]; then
-echo "Installation OK but failed to build PDF manual, see above."
+echo "Installation OK but failed to build PDF manual:"
+cat stderr_manual.txt
 exit 1
 else
 exit 0

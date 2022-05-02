@@ -13,8 +13,9 @@
 \alias{get_gitstats}
 \alias{get_gitstats_base64}
 \alias{render_readme}
-\alias{try_write_cff}
+\alias{generate_cff}
 \alias{maintainer_info_base64}
+\alias{list_assets}
 \title{Build tools}
 \usage{
 find_logo(path, git_url, subdir = "")
@@ -41,9 +42,11 @@ get_gitstats_base64(repo, pkgdir, url)
 
 render_readme(repo, pkgdir, outdir)
 
-try_write_cff(path = ".")
+generate_cff(path, outdir)
 
 maintainer_info_base64(path = ".")
+
+list_assets(path)
 }
 \arguments{
 \item{path}{root directory of package}

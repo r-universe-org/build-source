@@ -444,26 +444,17 @@ render_readme <- function(repo, pkgdir, outdir){
   readme <- Filter(file.exists, candidates)
   if(length(readme)){
     readme <- readme[1]
-    setwd(dirname(readme))
-    render_article(basename(readme), output_file = file.path(outdir, 'readme.html'))
+    setwd(dirname(readme)) # Pandoc emits some warnings about missing title
+    suppressWarnings(render_article(basename(readme), output_file = file.path(outdir, 'readme.html')))
   }
 }
 
 #' @export
 #' @rdname buildtools
-try_write_cff <- function(path = '.'){
+generate_cff <- function(path, outdir){
   setwd(path)
-  #try({
-    unlink(c('citation.cff', 'CITATION.cff'))
-    # R CMD check warns about uppercase CITATION.*
-    cffr::cff_write(outfile = 'citation.cff', dependencies = FALSE, gh_keywords = FALSE)
-    # cff_write adds file to .Rbuildignore but we actually do want to include it
-    if(file.exists('.Rbuildignore')){
-      x <- readLines('.Rbuildignore')
-      x <- grep('citation.*cff', x, value = TRUE, invert = TRUE, ignore.case = TRUE)
-      writeLines(x, '.Rbuildignore')
-    }
-  #})
+  outfile <- file.path(normalizePath(outdir), 'citation.cff')
+  cffr::cff_write(outfile = outfile, dependencies = FALSE, gh_keywords = FALSE)
 }
 
 #' @export
@@ -472,6 +463,14 @@ maintainer_info_base64 <- function(path = '.'){
   info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)
   base64_gzip(json)
+}
+
+#' @export
+#' @rdname buildtools
+list_assets <- function(path){
+  json <- jsonlite::toJSON(list.files(path))
+  cat("ASSETS: ", json, "\n")
+  cat(sprintf('echo ::set-output name=ASSETS::%s\n', base64_gzip(json)))
 }
 
 precache_rspm <- function(){
