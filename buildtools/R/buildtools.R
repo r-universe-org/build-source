@@ -444,16 +444,18 @@ render_readme <- function(repo, pkgdir, outdir){
   readme <- Filter(file.exists, candidates)
   if(length(readme)){
     readme <- readme[1]
-    setwd(dirname(readme)) # Pandoc emits some warnings about missing title
-    suppressWarnings(render_article(basename(readme), output_file = file.path(outdir, 'readme.html')))
+    setwd(dirname(readme))
+    render_article(basename(readme), output_file = file.path(outdir, 'readme.html'))
+  } else {
+    message("No suitable readme file found")
   }
 }
 
 #' @export
 #' @rdname buildtools
 generate_cff <- function(path, outdir){
+  outfile <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.cff')
   setwd(path)
-  outfile <- file.path(normalizePath(outdir), 'citation.cff')
   cffr::cff_write(outfile = outfile, dependencies = FALSE, gh_keywords = FALSE)
 }
 
@@ -469,7 +471,6 @@ maintainer_info_base64 <- function(path = '.'){
 #' @rdname buildtools
 list_assets <- function(path){
   json <- jsonlite::toJSON(list.files(path))
-  cat("ASSETS: ", json, "\n")
   cat(sprintf('echo ::set-output name=ASSETS::%s\n', base64_gzip(json)))
 }
 
