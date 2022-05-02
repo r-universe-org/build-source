@@ -162,13 +162,15 @@ VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SU
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Build and insert pdf manual into the tar.gz
-echo "::group::Build pdf reference manual"
+echo "::group::Build readme and/or pdf reference manual"
 mkdir -p outputs/$PACKAGE
 R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
 cat stderr.txt
 fi
-echo "::endgroup::"
+
+# Render readme
+README=$(Rscript -e "cat(buildtools::render_readme('$REPO', '$PKGDIR', 'outputs/$PACKAGE'))") || true
 
 # if outputs has any files, add them to tarball
 if [ "$(ls outputs/$PACKAGE)" ]; then
@@ -176,6 +178,8 @@ gunzip "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 fi
+
+echo "::endgroup::"
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"

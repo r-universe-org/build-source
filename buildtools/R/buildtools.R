@@ -435,6 +435,22 @@ get_gitstats_base64 <- function(repo, pkgdir, url){
 
 #' @export
 #' @rdname buildtools
+render_readme <- function(repo, pkgdir, outdir){
+  # Same rules as pkgdown
+  outdir <- normalizePath(outdir, mustWork = TRUE)
+  candidates <- c("README.md", 'readme.md', 'index.md')
+  # In case of subdir pkg; prefer readme from pkgdir over global readme
+  candidates <- c(file.path(pkgdir, candidates), file.path(repo, candidates))
+  readme <- Filter(file.exists, candidates)
+  if(length(readme)){
+    readme <- readme[1]
+    setwd(dirname(readme))
+    render_article(basename(readme), output_file = file.path(outdir, 'readme.html'))
+  }
+}
+
+#' @export
+#' @rdname buildtools
 try_write_cff <- function(path = '.'){
   setwd(path)
   #try({

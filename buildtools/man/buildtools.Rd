@@ -12,6 +12,7 @@
 \alias{get_maintainer_info}
 \alias{get_gitstats}
 \alias{get_gitstats_base64}
+\alias{render_readme}
 \alias{try_write_cff}
 \alias{maintainer_info_base64}
 \title{Build tools}
@@ -37,6 +38,8 @@ get_maintainer_info(path = ".")
 get_gitstats(repo, pkgdir, url)
 
 get_gitstats_base64(repo, pkgdir, url)
+
+render_readme(repo, pkgdir, outdir)
 
 try_write_cff(path = ".")
 
