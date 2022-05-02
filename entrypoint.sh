@@ -112,7 +112,7 @@ fi
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
-R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} || VIGNETTE_FAILURE=1
+R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 2>&1 | tee pdfmanual.txt || VIGNETTE_FAILURE=1
 echo "::endgroup::"
 if [ "$VIGNETTE_FAILURE" ]; then
 echo "::group::R CMD build (trying without vignettes)"
@@ -165,7 +165,7 @@ cat stderr_manual.txt
 fi
 
 # Render readme
-Rscript -e "cat(buildtools::render_readme('$REPO', '$PKGDIR', 'outputs/$PACKAGE'))" || true
+Rscript -e "cat(buildtools::render_readme('$REPO', '$PKGDIR', 'outputs/$PACKAGE'))" 2> stderr_readme.txt || README_FAILURE=1
 echo "::endgroup::"
 
 # Generate CITATION.cff
@@ -184,11 +184,16 @@ echo "::endgroup::"
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
 if [ "$VIGNETTE_FAILURE" ]; then
-echo "Installation OK but failed to build vignettes, see 'R CMD build' above."
+echo "Installation OK but failed to build vignettes"
+tail -n50 pdfmanual.txt
 exit 1
 elif [ "$MANUAL_FAILURE" ]; then
 echo "Installation OK but failed to build PDF manual:"
 cat stderr_manual.txt
+exit 1
+elif [ "$README_FAILURE" ]; then
+echo "Installation OK but failed to render README:"
+cat stderr_readme.txt
 exit 1
 else
 exit 0
