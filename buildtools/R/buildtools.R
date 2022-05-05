@@ -346,7 +346,7 @@ get_ostype <- function(path = '.'){
 get_schema_keywords <- function(path = '.'){
   keywords <- read_description_field('X-schema.org-keywords', path)
   if(length(keywords)){
-    trimws(strsplit(keywords, ',', fixed = TRUE)[[1]])
+    tolower(trimws(strsplit(keywords, ',', fixed = TRUE)[[1]]))
   }
 }
 
