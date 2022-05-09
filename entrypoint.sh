@@ -112,15 +112,15 @@ fi
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
-(R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS}  2>&1 | tee buildlog.txt) || VIGNETTE_FAILURE=1
+if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 2>&1 | tee buildlog.txt; then
+VIGNETTE_FAILURE=1
 echo "::endgroup::"
-if [ "$VIGNETTE_FAILURE" ]; then
 echo "::group::R CMD build (trying without vignettes)"
 echo "---- ERROR: failed to run: R CMD build -----"
 echo "Trying to build source package without vignettes...."
 R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
-echo "::endgroup::"
 fi
+echo "::endgroup::"
 #mv tmpgit ${REPO}/.git
 
 # Test for filesize enforced by pkg server
