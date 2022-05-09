@@ -112,7 +112,7 @@ fi
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
-if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 2> >(tee stderr_build.log); then
+if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 2>&1 | tee stderr_build.log; then
 VIGNETTE_FAILURE=1
 echo "::endgroup::"
 echo "::group::R CMD build (trying without vignettes)"
@@ -184,7 +184,7 @@ echo "::endgroup::"
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
 if [ "$VIGNETTE_FAILURE" ]; then
-echo "Installation OK but failed to build vignettes"
+echo "Installation OK but failed to build vignettes:"
 cat stderr_build.log
 exit 1
 elif [ "$MANUAL_FAILURE" ]; then
