@@ -435,20 +435,43 @@ get_gitstats_base64 <- function(repo, pkgdir, url){
 
 #' @export
 #' @rdname buildtools
-render_readme <- function(repo, pkgdir, outdir){
+find_readme_url <- function(url, subdir = NULL){
   # Same rules as pkgdown
-  outdir <- normalizePath(outdir, mustWork = TRUE)
   candidates <- c("README.md", 'readme.md', 'index.md')
-  # In case of subdir pkg; prefer readme from pkgdir over global readme
-  candidates <- c(file.path(pkgdir, candidates), file.path(repo, candidates))
-  readme <- Filter(file.exists, candidates)
-  if(length(readme)){
-    readme <- readme[1]
-    setwd(dirname(readme))
-    render_article(basename(readme), output_file = file.path(outdir, 'readme.html'))
-  } else {
-    message("No suitable readme file found")
+  rawurls <- sprintf("%s/raw/HEAD/%s", url, candidates)
+  if(length(subdir) && nchar(subdir)){
+    rawurls <- c(sprintf("%s/raw/HEAD/%s", url, file.path(subdir, candidates)), rawurls)
   }
+  for(x in rawurls){
+    if(url_exists(x)){
+      return(x)
+    }
+  }
+}
+
+#' @export
+#' @rdname buildtools
+render_readme <- function(url, outdir = '.'){
+  base <- dirname(url)
+  md <- readLines(url)
+  html <- commonmark::markdown_html(md, extensions = TRUE)
+  doc <- xml2::read_html(html)
+  for(img in xml2::xml_find_all(doc, '//img')){
+    ref <- xml2::xml_attr(img, 'src')
+    if(!grepl("https?://", ref)){
+      xml2::xml_attr(img, 'src') <- paste0(base, '/', ref)
+    }
+  }
+  for(a in xml2::xml_find_all(doc, '//a')){
+    ref <- xml2::xml_attr(a, 'href')
+    if(!grepl("https?://", ref)){
+      xml2::xml_attr(a, 'href') <- paste0(base, '/', ref)
+    }
+  }
+  body <- xml2::xml_child(doc)
+  xml2::xml_name(body) <- 'div'
+  xml2::xml_attr(body, 'class') <- 'commonmark-readme-html'
+  writeLines(as.character(body), file.path(outdir, 'readme.html'))
 }
 
 #' @export

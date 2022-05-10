@@ -10,6 +10,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     cffr,
+    commonmark,
     curl,
     gert (>= 1.6.0),
     gh,
@@ -19,5 +20,6 @@ Imports:
     maketools,
     remotes,
     rmarkdown,
-    yaml
+    yaml,
+    xml2
 RoxygenNote: 7.1.2

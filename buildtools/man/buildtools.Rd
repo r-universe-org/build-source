@@ -12,6 +12,7 @@
 \alias{get_maintainer_info}
 \alias{get_gitstats}
 \alias{get_gitstats_base64}
+\alias{find_readme_url}
 \alias{render_readme}
 \alias{generate_cff}
 \alias{maintainer_info_base64}
@@ -40,7 +41,9 @@ get_gitstats(repo, pkgdir, url)
 
 get_gitstats_base64(repo, pkgdir, url)
 
-render_readme(repo, pkgdir, outdir)
+find_readme_url(url, subdir = NULL)
+
+render_readme(url, outdir = ".")
 
 generate_cff(path, outdir)
 

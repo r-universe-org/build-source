@@ -10,12 +10,13 @@ echo "Articles: ${5}"
 if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
 
 # Get the package dir
-REPO=$(basename $1)
+URL="$1"
+REPO=$(basename $URL)
 
 # Clone, and checkout the revision if any
 # Removed --depth 1 because we want to read vignette c/m times
 echo "::group::Cloning R package repository"
-git clone --recurse-submodules "$1" "${REPO}"
+git clone --recurse-submodules "$URL" "${REPO}"
 if [ "${2}" ]; then
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
@@ -64,11 +65,11 @@ COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
 
 # Get commit metadata
-GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$1'))")
+GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$URL'))")
 echo ::set-output name=GITSTATS::$GITSTATS
 
 # Look for a package logo
-PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$1', '$SUBDIR'))")
+PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$URL', '$SUBDIR'))")
 if [ "$PKGLOGO" ]; then
 echo ::set-output name=PKGLOGO::$PKGLOGO
 fi
@@ -164,8 +165,14 @@ if [ "$MANUAL_FAILURE" ]; then
 cat stderr_manual.txt
 fi
 
-# Render readme
-Rscript -e "cat(buildtools::render_readme('$REPO', '$PKGDIR', 'outputs/$PACKAGE'))" 2> stderr_readme.txt || README_FAILURE=1
+# Find readme URL
+README=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
+if [ "$README" ]; then
+echo ::set-output name=README::$README
+Rscript -e "cat(buildtools::render_readme('$README', 'outputs/$PACKAGE'))" 2> stderr_readme.txt || README_FAILURE=1
+else
+echo "No readme file found"
+fi
 echo "::endgroup::"
 
 # Generate CITATION.cff
