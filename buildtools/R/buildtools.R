@@ -464,7 +464,7 @@ render_readme <- function(url, outdir = '.'){
   }
   for(a in xml2::xml_find_all(doc, '//a')){
     ref <- xml2::xml_attr(a, 'href')
-    if(!grepl("https?://", ref)){
+    if(!grepl("https?://", ref) && !grepl('^#', ref)){
       xml2::xml_attr(a, 'href') <- paste0(base, '/', ref)
     }
   }
