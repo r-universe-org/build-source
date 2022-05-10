@@ -472,6 +472,7 @@ render_readme <- function(url, outdir = '.'){
   xml2::xml_name(body) <- 'div'
   xml2::xml_attr(body, 'class') <- 'commonmark-readme-html'
   writeLines(as.character(body), file.path(outdir, 'readme.html'))
+  writeLines(md, file.path(outdir, 'readme.md'))
 }
 
 #' @export
