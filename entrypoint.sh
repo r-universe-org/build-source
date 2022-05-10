@@ -112,7 +112,7 @@ fi
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
-if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 1>&2 2> >(tee stderr_build.log); then
+if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 1> >(tee stderr_build.log); then
 VIGNETTE_FAILURE=1
 echo "::endgroup::"
 echo "::group::R CMD build (trying without vignettes)"
