@@ -437,7 +437,7 @@ get_gitstats_base64 <- function(repo, pkgdir, url){
 #' @rdname buildtools
 find_readme_url <- function(url, subdir = NULL){
   # Same rules as pkgdown
-  candidates <- c("README.md", 'readme.md', 'index.md')
+  candidates <- c("README.md", 'readme.md', 'index.md', '.github/README.md', 'docs/README.md')
   rawurls <- sprintf("%s/raw/HEAD/%s", url, candidates)
   if(length(subdir) && nchar(subdir)){
     rawurls <- c(sprintf("%s/raw/HEAD/%s", url, file.path(subdir, candidates)), rawurls)
