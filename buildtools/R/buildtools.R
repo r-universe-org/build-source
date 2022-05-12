@@ -456,6 +456,7 @@ render_readme <- function(url, outdir = '.'){
   md <- readLines(url)
   html <- commonmark::markdown_html(md, extensions = TRUE)
   doc <- xml2::read_html(html)
+  badges_extract(doc)
   for(img in xml2::xml_find_all(doc, '//img')){
     ref <- xml2::xml_attr(img, 'src')
     if(!grepl("https?://", ref)){
