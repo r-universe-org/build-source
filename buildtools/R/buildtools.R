@@ -255,6 +255,7 @@ install_sysdeps <- function(path = '.'){
   ubuntu <- 'ubuntu-20.04'
   tryCatch({
     aptline <- remotes::system_requirements(ubuntu)
+    system("apt-get update")
     if(length(aptline) && !grepl('(libcurl|pandoc)', aptline[1])){
       system(aptline[1])
     }
