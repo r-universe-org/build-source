@@ -479,10 +479,14 @@ render_readme <- function(url, outdir = '.'){
 
 #' @export
 #' @rdname buildtools
-generate_cff <- function(path, outdir){
-  outfile <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.cff')
+generate_citation_files <- function(path, outdir){
+  citation_cff <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.cff')
+  citation_json <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.json')
   setwd(path)
-  cffr::cff_write(outfile = outfile, dependencies = FALSE, gh_keywords = FALSE)
+  cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
+  if(file.exists('inst/CITATION')){
+    jsonlite::write_json(citation(basename(outdir)), citation_json, force=TRUE, auto_unbox = TRUE)
+  }
 }
 
 #' @export

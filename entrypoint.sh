@@ -176,8 +176,8 @@ fi
 echo "::endgroup::"
 
 # Generate CITATION.cff
-echo "::group::Generate citation.cff"
-Rscript -e "buildtools::generate_cff('$PKGDIR', 'outputs/$PACKAGE')"
+echo "::group::Generate citation.cff / citation.json"
+Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')"
 echo "::endgroup::"
 
 # if outputs has any files, add them to tarball

@@ -14,7 +14,7 @@
 \alias{get_gitstats_base64}
 \alias{find_readme_url}
 \alias{render_readme}
-\alias{generate_cff}
+\alias{generate_citation_files}
 \alias{maintainer_info_base64}
 \alias{list_assets}
 \title{Build tools}
@@ -45,7 +45,7 @@ find_readme_url(url, subdir = NULL)
 
 render_readme(url, outdir = ".")
 
-generate_cff(path, outdir)
+generate_citation_files(path, outdir)
 
 maintainer_info_base64(path = ".")
 
