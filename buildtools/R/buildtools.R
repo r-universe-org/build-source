@@ -486,7 +486,8 @@ generate_citation_files <- function(path, outdir){
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   if(file.exists('inst/CITATION')){
-    citation <- utils::readCitationFile('inst/CITATION')
+    meta <- as.list(read.dcf('DESCRIPTION'))
+    citation <- utils::readCitationFile('inst/CITATION', meta)
     jsonlite::write_json(citation, citation_json, force=TRUE, auto_unbox = TRUE)
     writeLines(capture.output(print(citation, bibtex = TRUE)), citation_txt)
   }
