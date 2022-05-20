@@ -482,10 +482,13 @@ render_readme <- function(url, outdir = '.'){
 generate_citation_files <- function(path, outdir){
   citation_cff <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.cff')
   citation_json <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.json')
+  citation_txt <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.txt')
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   if(file.exists('inst/CITATION')){
-    jsonlite::write_json(utils::readCitationFile('inst/CITATION'), citation_json, force=TRUE, auto_unbox = TRUE)
+    citation <- utils::readCitationFile('inst/CITATION')
+    jsonlite::write_json(citation, citation_json, force=TRUE, auto_unbox = TRUE)
+    writeLines(capture.output(print(citation, bibtex = TRUE)), citation_txt)
   }
 }
 
