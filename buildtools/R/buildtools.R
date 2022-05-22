@@ -401,7 +401,7 @@ get_gitstats <- function(repo, pkgdir, url){
     out$topics <- unique(keywords)
   }
   pkgname <- read_description_field('Package', pkgdir)
-  out$cranurl <- identical(tolower(url), tolower(get_official_url(pkgname)))
+  out$cranurl <- identical(tolower(url), try(tolower(get_official_url(pkgname))))
   if(!grepl('^https?://github.com', url)){
     return(out)
   }
