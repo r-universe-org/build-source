@@ -384,6 +384,11 @@ filter_topics <- function(x){
   setdiff(x, c("r", "rstats", "cran", "r-package", "rpackage", "package", "r-stats", "rstats-package"))
 }
 
+get_official_url <- function(pkg){
+  df <- read.csv('https://r-universe-org.github.io/cran-to-git/crantogit.csv')
+  df[df$package == pkg, 'url']
+}
+
 #' @rdname buildtools
 #' @export
 get_gitstats <- function(repo, pkgdir, url){
@@ -395,6 +400,8 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(keywords)){
     out$topics <- unique(keywords)
   }
+  pkgname <- read_description_field('Package', pkgdir)
+  out$cranurl <- identical(tolower(url), tolower(get_official_url(pkgname)))
   if(!grepl('^https?://github.com', url)){
     return(out)
   }
