@@ -514,7 +514,7 @@ maintainer_info_base64 <- function(path = '.'){
 #' @export
 #' @rdname buildtools
 list_assets <- function(path){
-  json <- jsonlite::toJSON(list.files(path, recursive = TRUE))
+  json <- jsonlite::toJSON(list.files(path, recursive = TRUE, all.files = TRUE))
   cat(sprintf('::set-output name=ASSETS::%s\n', base64_gzip(json)))
 }
 
