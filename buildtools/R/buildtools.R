@@ -487,10 +487,12 @@ render_readme <- function(url, outdir = '.'){
 #' @export
 #' @rdname buildtools
 generate_citation_files <- function(path, outdir){
-  citation_cff <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.cff')
-  citation_json <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.json')
-  citation_txt <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.txt')
-  citation_html <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.html')
+  cite_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'cite')
+  dir.create(cite_dir)
+  citation_cff <- file.path(cite_dir, 'citation.cff')
+  citation_json <- file.path(cite_dir, 'citation.json')
+  citation_txt <- file.path(cite_dir, 'citation.txt')
+  citation_html <- file.path(cite_dir, 'citation.html')
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   if(file.exists('inst/CITATION')){
@@ -512,7 +514,7 @@ maintainer_info_base64 <- function(path = '.'){
 #' @export
 #' @rdname buildtools
 list_assets <- function(path){
-  json <- jsonlite::toJSON(list.files(path))
+  json <- jsonlite::toJSON(list.files(path, recursive = TRUE))
   cat(sprintf('::set-output name=ASSETS::%s\n', base64_gzip(json)))
 }
 
