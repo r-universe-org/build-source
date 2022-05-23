@@ -490,12 +490,14 @@ generate_citation_files <- function(path, outdir){
   citation_cff <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.cff')
   citation_json <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.json')
   citation_txt <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.txt')
+  citation_html <- file.path(normalizePath(outdir, mustWork = TRUE), 'citation.html')
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   if(file.exists('inst/CITATION')){
     ct <- citation(basename(outdir))
     jsonlite::write_json(ct, citation_json, force=TRUE, auto_unbox = TRUE, pretty = TRUE)
     writeLines(capture.output(print(ct, bibtex = TRUE)), citation_txt)
+    writeLines(tools::toHTML(ct), citation_html)
   }
 }
 
