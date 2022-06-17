@@ -176,8 +176,10 @@ fi
 echo "::endgroup::"
 
 # Generate CITATION.cff
+# NB: CITATION file can contain a script and fail, for example:
+# https://github.com/girke-lab/fmcsR/blob/master/inst/CITATION
 echo "::group::Generate citation.cff / citation.json"
-Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')"
+Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" || CITATION_FAILURE=1
 echo "::endgroup::"
 
 # if outputs has any files, add them to tarball
@@ -201,6 +203,9 @@ exit 1
 elif [ "$README_FAILURE" ]; then
 echo "Installation OK but failed to render README:"
 cat stderr_readme.txt
+exit 1
+elif [ "$CITATION_FAILURE" ]; then
+echo "Package OK but failed to generate citation files"
 exit 1
 else
 exit 0
