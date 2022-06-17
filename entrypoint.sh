@@ -178,7 +178,7 @@ echo "::endgroup::"
 # Generate CITATION.cff
 # NB: CITATION file can contain a script and fail, for example:
 # https://github.com/girke-lab/fmcsR/blob/master/inst/CITATION
-echo "::group::Generate citation.cff / citation.json"
+echo "::group::Generate citation files"
 Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" || CITATION_FAILURE=1
 echo "::endgroup::"
 
@@ -205,7 +205,7 @@ echo "Installation OK but failed to render README:"
 cat stderr_readme.txt
 exit 1
 elif [ "$CITATION_FAILURE" ]; then
-echo "Package OK but failed to generate citation files"
+echo "Package OK but problem generating citation files (see above)"
 exit 1
 else
 exit 0
