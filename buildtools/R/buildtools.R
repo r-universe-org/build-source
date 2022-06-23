@@ -524,7 +524,7 @@ precache_rspm <- function(){
     unlink(list.files(tempdir(), pattern = 'packagemanager.rstudio.com', full.names = TRUE))
     pkgs <- available.packages(repos = url)
     message("Found ", nrow(pkgs), " packages on rspm")
-    if(nrow(pkgs) > 18000){
+    if(nrow(pkgs) > 17000){
       message("OK")
       break
     } else {
