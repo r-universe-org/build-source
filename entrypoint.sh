@@ -39,6 +39,11 @@ if test -f "$PKGDIR/.prepare"; then
   echo "Trying to run $PKGDIR/.prepare"
   (cd $PKGDIR; sh .prepare) || true
 fi
+if [ "$REPO" = "arrow" ]; then
+  DATE=$(date -d yesterday +%Y%m%d)
+  (cd $PKGDIR; sed -i "s/.9000$/.$DATE/" DESCRIPTION)
+  (cd $PKGDIR; make sync-cpp; cp -f ../dev/tasks/homebrew-formulae/autobrew/apache-arrow.rb tools/apache-arrow.rb)
+fi
 
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(grep '^Package:' "${PKGDIR}/DESCRIPTION" | sed 's/^Package://')
@@ -113,8 +118,6 @@ fi
 # R is weird like that, it should be possible to build the package even if there is a documentation bug.
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
-export LIBARROW_MINIMAL=true
-export ARROW_R_DEV=true
 if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 1> >(tee stderr_build.log); then
 VIGNETTE_FAILURE=1
 echo "::endgroup::"
