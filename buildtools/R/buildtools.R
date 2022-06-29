@@ -487,7 +487,7 @@ render_readme <- function(url, outdir = '.'){
 #' @export
 #' @rdname buildtools
 generate_citation_files <- function(path, outdir){
-  cite_dir <- file.path(normalizePath(outdir, mustWork = TRUE), '.meta')
+  cite_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(cite_dir)
   citation_cff <- file.path(cite_dir, 'citation.cff')
   citation_json <- file.path(cite_dir, 'citation.json')
