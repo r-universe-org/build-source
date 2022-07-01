@@ -38,7 +38,6 @@ outputs:
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/r-universe-org/build-source'
-#  image: 'docker://runiverse/build-source'
   args:
     - ${{ inputs.url }}
     - ${{ inputs.ref }}
