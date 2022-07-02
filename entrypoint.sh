@@ -43,7 +43,7 @@ elif [ "$REPO" = "arrow" ]; then
   (cd $PKGDIR; sed -i "s/.9000$/.$DATE/" DESCRIPTION)
   (cd $PKGDIR; make sync-cpp; cp -f ../dev/tasks/homebrew-formulae/autobrew/apache-arrow.rb tools/apache-arrow.rb)
 elif [ "$REPO" = "duckdb" ]; then
-  (cd $PKGDIR; python3 rconfigure.py)
+  (cd $PKGDIR; DUCKDB_R_EXTENSIONS="excel,fts,json,visualizer" python3 rconfigure.py)
 fi
 
 DISTRO="$(lsb_release -sc)"
