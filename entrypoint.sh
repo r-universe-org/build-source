@@ -188,6 +188,10 @@ echo "::group::Generate citation files"
 Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" || CITATION_FAILURE=1
 echo "::endgroup::"
 
+echo "::group::Generate package metadata"
+Rscript -e "buildtools::generate_metadata_files('$PACKAGE', 'outputs/$PACKAGE')"
+echo "::endgroup::"
+
 # if outputs has any files, add them to tarball
 echo "::group::Adding extra files to tarball"
 gunzip "$SOURCEPKG"

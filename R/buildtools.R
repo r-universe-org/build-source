@@ -487,12 +487,12 @@ render_readme <- function(url, outdir = '.'){
 #' @export
 #' @rdname buildtools
 generate_citation_files <- function(path, outdir){
-  cite_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
-  dir.create(cite_dir)
-  citation_cff <- file.path(cite_dir, 'citation.cff')
-  citation_json <- file.path(cite_dir, 'citation.json')
-  citation_txt <- file.path(cite_dir, 'citation.txt')
-  citation_html <- file.path(cite_dir, 'citation.html')
+  extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
+  dir.create(extra_dir, showWarnings = FALSE)
+  citation_cff <- file.path(extra_dir, 'citation.cff')
+  citation_json <- file.path(extra_dir, 'citation.json')
+  citation_txt <- file.path(extra_dir, 'citation.txt')
+  citation_html <- file.path(extra_dir, 'citation.html')
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   if(file.exists('inst/CITATION')){
@@ -501,6 +501,19 @@ generate_citation_files <- function(path, outdir){
     writeLines(capture.output(print(ct, bibtex = TRUE)), citation_txt)
     writeLines(tools::toHTML(ct), citation_html)
   }
+}
+
+#' @export
+#' @rdname buildtools
+generate_metadata_files <- function(package, outdir){
+  extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
+  dir.create(extra_dir, showWarnings = FALSE)
+  exports <- sort(getNamespaceExports(package))
+  datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title")])
+  jsonlite::write_json(list(
+    exports = exports,
+    datasets = datasets
+  ), path = file.path(extra_dir, 'contents.json'))
 }
 
 #' @export

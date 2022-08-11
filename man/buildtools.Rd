@@ -15,6 +15,7 @@
 \alias{find_readme_url}
 \alias{render_readme}
 \alias{generate_citation_files}
+\alias{generate_metadata_files}
 \alias{maintainer_info_base64}
 \alias{list_assets}
 \title{Build tools}
@@ -46,6 +47,8 @@ find_readme_url(url, subdir = NULL)
 render_readme(url, outdir = ".")
 
 generate_citation_files(path, outdir)
+
+generate_metadata_files(package, outdir)
 
 maintainer_info_base64(path = ".")
 
