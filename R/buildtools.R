@@ -418,7 +418,7 @@ get_gitstats <- function(repo, pkgdir, url){
   }
   if(length(ghinfo$stargazers_count))
     out$stars <- ghinfo$stargazers_count
-  out$contributions = tryCatch(list_contributions(repo), function(e){
+  out$contributions = tryCatch(list_contributions(repo), error = function(e){
     message(e)
     NULL
   })
