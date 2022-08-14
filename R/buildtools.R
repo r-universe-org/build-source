@@ -510,6 +510,8 @@ generate_metadata_files <- function(package, outdir){
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(getNamespaceExports(package))
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title")])
+  if(nrow(datasets))
+    names(datasets) <- c('name', 'title')
   jsonlite::write_json(list(
     exports = exports,
     datasets = datasets
