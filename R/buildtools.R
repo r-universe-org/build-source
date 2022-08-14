@@ -407,11 +407,6 @@ get_gitstats <- function(repo, pkgdir, url){
   }
   repo <- sub("^https?://github.com/", "", url)
   repo <- sub("/$", "", repo)
-  endpoint <- sprintf('/repos/%s/contributors', repo)
-  contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
-  logins <- vapply(contributors, function(x){x$login}, character(1))
-  counts <- vapply(contributors, function(x){x$contributions}, integer(1))
-  out$contributions = structure(as.list(counts), names = tolower(logins))
   ghinfo <- gh::gh(sprintf('/repos/%s', repo))
   ghtopics <- filter_topics(unlist(ghinfo$topics))
   if(length(ghtopics))
@@ -423,16 +418,26 @@ get_gitstats <- function(repo, pkgdir, url){
   }
   if(length(ghinfo$stargazers_count))
     out$stars <- ghinfo$stargazers_count
+  out$contributions = tryCatch(list_contributions(repo), function(e){
+    message(e)
+    NULL
+  })
   return(out)
 }
+
+list_contributions <- function(repo){
+  endpoint <- sprintf('/repos/%s/contributors', repo)
+  contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
+  logins <- vapply(contributors, function(x){x$login}, character(1))
+  counts <- vapply(contributors, function(x){x$contributions}, integer(1))
+  structure(as.list(counts), names = tolower(logins))
+}
+
 
 #' @export
 #' @rdname buildtools
 get_gitstats_base64 <- function(repo, pkgdir, url){
-  gitstats <- tryCatch(get_gitstats(repo = repo, pkgdir = pkgdir, url = url), error = function(e){
-    message('Failed to get gitstats: ', e$message)
-    NULL
-  })
+  gitstats <- get_gitstats(repo = repo, pkgdir = pkgdir, url = url)
   if(length(gitstats)){
     if(length(gitstats$topics))
       gitstats$topics <- I(gitstats$topics)
