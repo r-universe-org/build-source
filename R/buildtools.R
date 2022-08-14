@@ -508,7 +508,7 @@ generate_citation_files <- function(path, outdir){
 generate_metadata_files <- function(package, outdir){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
-  exports <- sort(getNamespaceExports(package))
+  exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title")])
   if(nrow(datasets))
     names(datasets) <- c('name', 'title')
