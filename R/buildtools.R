@@ -396,11 +396,16 @@ get_gitstats <- function(repo, pkgdir, url){
     updates = weekly_commits(repo = repo),
     tags = latest_tags(repo = repo)
   )
+  pkgname <- read_description_field('Package', pkgdir)
   keywords <- filter_topics(get_schema_keywords(pkgdir))
+  biocinfo <- bioc_release(pkgname)
+  if(length(biocinfo)){
+    out$bioconductor <- biocinfo
+    keywords <- c('bioconductor', keywords)
+  }
   if(length(keywords)){
     out$topics <- unique(keywords)
   }
-  pkgname <- read_description_field('Package', pkgdir)
   out$cranurl <- identical(tolower(url), try(tolower(get_official_url(pkgname))))
   if(!grepl('^https?://github.com', url)){
     return(out)
@@ -551,5 +556,17 @@ precache_rspm <- function(){
       if(i == 3) stop("Failed to access RSPM repository")
       message("Retrying...")
     }
+  }
+}
+
+bioc_release <- function(package){
+  bioc_version <- as.character(tools:::.BioC_version_associated_with_R_version())
+  bioc <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', bioc_version))
+  info <- bioc[[package]]
+  if(length(info)){
+    list(
+      version = info$Version,
+      bioc = bioc_version
+    )
   }
 }
