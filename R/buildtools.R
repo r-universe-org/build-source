@@ -398,7 +398,7 @@ get_gitstats <- function(repo, pkgdir, url){
   )
   pkgname <- read_description_field('Package', pkgdir)
   keywords <- filter_topics(get_schema_keywords(pkgdir))
-  biocinfo <- bioc_release(pkgname)
+  biocinfo <- bioc_releases(pkgname)
   if(length(biocinfo)){
     out$bioconductor <- biocinfo
     keywords <- c('bioconductor-package', keywords)
@@ -559,14 +559,17 @@ precache_rspm <- function(){
   }
 }
 
-bioc_release <- function(package){
-  bioc_version <- as.character(tools:::.BioC_version_associated_with_R_version())
-  bioc <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', bioc_version))
-  info <- bioc[[package]]
-  if(length(info)){
-    list(
-      version = info$Version,
-      bioc = bioc_version
-    )
+bioc_releases <- function(package){
+  yml <- yaml::read_yaml("https://bioconductor.org/config.yaml")
+  bioc_devel <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', yml$devel_version))
+  pkg_devel <- bioc_devel[[package]]
+  if(length(pkg_devel)){
+    out <- list(devel = list(version = pkg_devel$Version, bioc = yml$devel_version))
+    bioc_release <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', yml$release_version))
+    pkg_release <- bioc_release[[package]]
+    if(length(pkg_release)){
+      out <- c(out, list(release = list(version = pkg_release$Version, bioc = yml$release_version)))
+    }
+    out
   }
 }
