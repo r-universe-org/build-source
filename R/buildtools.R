@@ -401,7 +401,7 @@ get_gitstats <- function(repo, pkgdir, url){
   biocinfo <- bioc_release(pkgname)
   if(length(biocinfo)){
     out$bioconductor <- biocinfo
-    keywords <- c('bioconductor', keywords)
+    keywords <- c('bioconductor-package', keywords)
   }
   if(length(keywords)){
     out$topics <- unique(keywords)
