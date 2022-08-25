@@ -398,7 +398,7 @@ get_gitstats <- function(repo, pkgdir, url){
   )
   pkgname <- read_description_field('Package', pkgdir)
   keywords <- filter_topics(get_schema_keywords(pkgdir))
-  biocinfo <- bioc_releases(pkgname)
+  biocinfo <- tryCatch(bioc_releases(pkgname), error = message)
   if(length(biocinfo)){
     out$bioconductor <- biocinfo
     keywords <- c('bioconductor-package', keywords)
