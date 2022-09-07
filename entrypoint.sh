@@ -148,8 +148,8 @@ fi
 
 # Confirm that package can be installed on Linux
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
-echo "::group::Test if package can be installed"
-R CMD INSTALL "$SOURCEPKG"
+echo "::group::install package and generate html docs"
+R CMD INSTALL "$SOURCEPKG" --html
 echo "::endgroup::"
 
 # Upon successful install, set output value
@@ -164,8 +164,18 @@ VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SU
 echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Build and insert pdf manual into the tar.gz
-echo "::group::Build readme and/or pdf reference manual"
+echo "::group::Build readme and manuals"
 mkdir -p outputs/$PACKAGE
+
+# Copy installed HTML manuals into source package
+HTMLDIR=$(Rscript -e "cat(system.file('html',package='$PACKAGE'))")
+if [ "$HTMLDIR" ]; then
+cp -Rv $HTMLDIR outputs/$PACKAGE/htmldocs
+else
+echo "No HTML docs found??"
+fi
+
+# Generate PDF manual
 R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
 cat stderr_manual.txt
