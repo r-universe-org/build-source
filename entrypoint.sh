@@ -6,6 +6,10 @@ echo "Subdir: ${3}"
 echo "Branch: ${4}"
 echo "Articles: ${5}"
 
+# start fake X server
+nohup Xvfb :6 -screen 0 1280x1024x24 > /X.log 2>&1 &
+export DISPLAY=:6
+
 # Setup build environment
 if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
 
