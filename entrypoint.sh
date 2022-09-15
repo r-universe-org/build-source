@@ -199,7 +199,7 @@ Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" 
 echo "::endgroup::"
 
 echo "::group::Generate package metadata"
-Rscript -e "buildtools::generate_metadata_files('$PACKAGE', 'outputs/$PACKAGE')"
+Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE')"
 echo "::endgroup::"
 
 # if outputs has any files, add them to tarball

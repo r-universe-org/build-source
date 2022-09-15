@@ -515,16 +515,18 @@ generate_citation_files <- function(path, outdir){
 
 #' @export
 #' @rdname buildtools
-generate_metadata_files <- function(package, outdir){
+generate_metadata_files <- function(package, repo, subdir, outdir){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"),drop=F])
+  vignettes <- vignettes_info(repo = repo, pkg = package, subdir = subdir)
   if(nrow(datasets))
     names(datasets) <- c('name', 'title')
   jsonlite::write_json(list(
     exports = exports,
-    datasets = datasets
+    datasets = datasets,
+    vignettes = vignettes
   ), path = file.path(extra_dir, 'contents.json'))
 }
 
