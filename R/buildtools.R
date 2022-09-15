@@ -523,7 +523,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir){
   sysdeps <- sysdeps_info(pkg = package)
   if(nrow(datasets))
     names(datasets) <- c('name', 'title')
+  assets <- sort(c('extra/contents.json', list.files(outdir, recursive = TRUE, all.files = TRUE)))
   out <- list(
+    assets = assets,
     exports = exports,
     datasets = datasets,
     sysdeps = sysdeps,

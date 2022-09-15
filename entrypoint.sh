@@ -207,7 +207,7 @@ echo "::group::Adding extra files to tarball"
 gunzip "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
-Rscript -e "buildtools::list_assets('outputs/$PACKAGE')"
+#Rscript -e "buildtools::list_assets('outputs/$PACKAGE')"
 echo "::endgroup::"
 
 # TODO: can we explicitly set action status/outcome in GHA?
