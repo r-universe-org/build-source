@@ -519,7 +519,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
-  datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"),drop=F])
+  datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
+  if(nrow(datasets) == 0)
+    datasets <- NULL
   vignettes <- vignettes_info(repo = repo, pkg = package, subdir = subdir)
   sysdeps <- sysdeps_info(pkg = package)
   if(nrow(datasets))
