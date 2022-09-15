@@ -202,7 +202,7 @@ sysdep_shortname <- function(x){
 #' @export
 #' @rdname buildtools
 #' @importFrom maketools package_sysdeps
-sysdeps_base64 <- function(pkg){
+sysdeps_info <- function(pkg){
   sysdeps <- maketools::package_sysdeps(pkg)
   if(file.exists('/NEED_RJAVA')){
     sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rJava'))
@@ -223,8 +223,7 @@ sysdeps_base64 <- function(pkg){
       if(length(pkginfo$description))
         df$description[i] = pkginfo$description[1]
     }
-    json <- jsonlite::toJSON(df, auto_unbox = TRUE)
-    base64_gzip(json)
+    return(df)
   }
 }
 
@@ -521,13 +520,16 @@ generate_metadata_files <- function(package, repo, subdir, outdir){
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"),drop=F])
   vignettes <- vignettes_info(repo = repo, pkg = package, subdir = subdir)
+  sysdeps <- sysdeps_info(pkg = package)
   if(nrow(datasets))
     names(datasets) <- c('name', 'title')
-  jsonlite::write_json(list(
+  out <- list(
     exports = exports,
     datasets = datasets,
+    sysdeps = sysdeps,
     vignettes = vignettes
-  ), path = file.path(extra_dir, 'contents.json'))
+  )
+  jsonlite::write_json(Filter(length, out), path = file.path(extra_dir, 'contents.json'))
 }
 
 #' @export

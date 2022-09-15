@@ -4,7 +4,7 @@
 \alias{find_logo}
 \alias{vignettes_base64}
 \alias{commit_info_base64}
-\alias{sysdeps_base64}
+\alias{sysdeps_info}
 \alias{install_sysdeps}
 \alias{install_dependencies}
 \alias{read_description_field}
@@ -26,7 +26,7 @@ vignettes_base64(repo, pkg = basename(repo), subdir = "")
 
 commit_info_base64(repo = ".")
 
-sysdeps_base64(pkg)
+sysdeps_info(pkg)
 
 install_sysdeps(path = ".")
 
@@ -48,7 +48,7 @@ render_readme(url, outdir = ".")
 
 generate_citation_files(path, outdir)
 
-generate_metadata_files(package, outdir)
+generate_metadata_files(package, repo, subdir, outdir)
 
 maintainer_info_base64(path = ".")
 

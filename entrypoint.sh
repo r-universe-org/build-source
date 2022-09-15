@@ -156,8 +156,8 @@ echo "::endgroup::"
 echo ::set-output name=SOURCEPKG::$SOURCEPKG
 
 # Lookup system dependencies
-SYSDEPS=$(Rscript -e "cat(buildtools::sysdeps_base64('$PACKAGE'))")
-echo ::set-output name=SYSDEPS::$SYSDEPS
+#SYSDEPS=$(Rscript -e "cat(buildtools::sysdeps_base64('$PACKAGE'))")
+#echo ::set-output name=SYSDEPS::$SYSDEPS
 
 # Moved to contents.json
 #VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
