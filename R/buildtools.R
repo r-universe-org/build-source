@@ -526,10 +526,13 @@ generate_metadata_files <- function(package, repo, subdir, outdir){
     names(datasets) <- c('name', 'title')
   assets <- sort(c('extra/contents.json', list.files(outdir, recursive = TRUE, all.files = TRUE)))
   rundeps <- readRDS('/tmp/rundeps.rds') # never NULL
+  readme_url <- Sys.getenv('README_URL')
+  readme <- if(nchar(readme_url) > 0) jsonlite::unbox(readme_url)
   out <- list(
     assets = assets,
     exports = exports,
     datasets = datasets,
+    readme = readme,
     rundeps = rundeps,
     sysdeps = sysdeps,
     vignettes = vignettes

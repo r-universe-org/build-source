@@ -182,10 +182,10 @@ cat stderr_manual.txt
 fi
 
 # Find readme URL
-README=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
-if [ "$README" ]; then
-echo ::set-output name=README::$README
-Rscript -e "cat(buildtools::render_readme('$README', 'outputs/$PACKAGE'))" 2> stderr_readme.txt || README_FAILURE=1
+export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
+if [ "$README_URL" ]; then
+echo ::set-output name=README::$README_URL
+Rscript -e "cat(buildtools::render_readme('$README_URL', 'outputs/$PACKAGE'))" 2> stderr_readme.txt || README_FAILURE=1
 else
 echo "No readme file found"
 fi
