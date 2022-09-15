@@ -159,9 +159,9 @@ echo ::set-output name=SOURCEPKG::$SOURCEPKG
 SYSDEPS=$(Rscript -e "cat(buildtools::sysdeps_base64('$PACKAGE'))")
 echo ::set-output name=SYSDEPS::$SYSDEPS
 
-# Get vignette metadata
-VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
-echo ::set-output name=VIGNETTES::$VIGNETTES
+# Moved to contents.json
+#VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
+#echo ::set-output name=VIGNETTES::$VIGNETTES
 
 # Build and insert pdf manual into the tar.gz
 echo "::group::Build readme and manuals"
