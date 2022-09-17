@@ -541,7 +541,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     assets = assets,
     exports = exports,
     datasets = datasets,
-    logo = jsonlite::unbox(logo),
+    pkglogo = jsonlite::unbox(logo),
     readme = jsonlite::unbox(readme),
     rundeps = rundeps,
     sysdeps = sysdeps,
