@@ -520,12 +520,13 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
-  if(nrow(datasets) == 0)
+  if(nrow(datasets) > 0){
+    names(datasets) <- c('name', 'title')
+  } else {
     datasets <- NULL
+  }
   vignettes <- vignettes_info(repo = repo, pkg = package, subdir = subdir)
   sysdeps <- sysdeps_info(pkg = package)
-  if(nrow(datasets))
-    names(datasets) <- c('name', 'title')
   assets <- sort(c('extra/contents.json', list.files(outdir, recursive = TRUE, all.files = TRUE)))
   rundeps <- readRDS('/tmp/rundeps.rds') # never NULL
   readme_url <- Sys.getenv('README_URL')
