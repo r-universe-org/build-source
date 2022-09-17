@@ -75,10 +75,10 @@ GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$U
 echo ::set-output name=GITSTATS::$GITSTATS
 
 # Look for a package logo
-PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$URL', '$SUBDIR'))")
-if [ "$PKGLOGO" ]; then
-echo ::set-output name=PKGLOGO::$PKGLOGO
-fi
+#PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$URL', '$SUBDIR'))")
+#if [ "$PKGLOGO" ]; then
+#echo ::set-output name=PKGLOGO::$PKGLOGO
+#fi
 
 # DEBUGGING
 echo "::group::Show contents of $MY_UNIVERSE"
@@ -199,7 +199,7 @@ Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" 
 echo "::endgroup::"
 
 echo "::group::Generate package metadata"
-Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE')"
+Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL')"
 echo "::endgroup::"
 
 # if outputs has any files, add them to tarball

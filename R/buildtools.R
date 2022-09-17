@@ -515,7 +515,7 @@ generate_citation_files <- function(path, outdir){
 
 #' @export
 #' @rdname buildtools
-generate_metadata_files <- function(package, repo, subdir, outdir){
+generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
@@ -530,10 +530,12 @@ generate_metadata_files <- function(package, repo, subdir, outdir){
   rundeps <- readRDS('/tmp/rundeps.rds') # never NULL
   readme_url <- Sys.getenv('README_URL')
   readme <- if(nchar(readme_url) > 0) jsonlite::unbox(readme_url)
+  logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
   out <- list(
     assets = assets,
     exports = exports,
     datasets = datasets,
+    logo = logo,
     readme = readme,
     rundeps = rundeps,
     sysdeps = sysdeps,
