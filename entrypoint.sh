@@ -152,9 +152,6 @@ echo "::group::install package and generate html docs"
 R CMD INSTALL "$SOURCEPKG" --html
 echo "::endgroup::"
 
-# Upon successful install, set output value
-echo ::set-output name=SOURCEPKG::$SOURCEPKG
-
 # Lookup system dependencies
 #SYSDEPS=$(Rscript -e "cat(buildtools::sysdeps_base64('$PACKAGE'))")
 #echo ::set-output name=SYSDEPS::$SYSDEPS
@@ -209,6 +206,9 @@ tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 #Rscript -e "buildtools::list_assets('outputs/$PACKAGE')"
 echo "::endgroup::"
+
+# Upon successful install, set output value
+echo ::set-output name=SOURCEPKG::$SOURCEPKG
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
