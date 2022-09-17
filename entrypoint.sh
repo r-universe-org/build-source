@@ -141,15 +141,14 @@ fi
 # Support Windows-only packages (but not articles which require installation)
 OSTYPE=$(Rscript -e "cat(buildtools::get_ostype('$PKGDIR'))")
 if [ "$OSTYPE" = "windows" ]; then
-echo "Skipping install/runtime checks for windows-only package"
-echo ::set-output name=SOURCEPKG::$SOURCEPKG
-exit 0
+echo "Fake install for windows-only package"
+INSTALLARGS="--fake"
 fi
 
 # Confirm that package can be installed on Linux
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 echo "::group::install package and generate html docs"
-R CMD INSTALL "$SOURCEPKG" --html
+R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
 echo "::endgroup::"
 
 # Lookup system dependencies
