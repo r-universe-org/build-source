@@ -515,16 +515,21 @@ generate_citation_files <- function(path, outdir){
 
 #' @export
 #' @rdname buildtools
+get_package_datasets <- function(package){
+  datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
+  if(nrow(datasets) > 0){
+    names(datasets) <- c('name', 'title')
+    return(datasets)
+  }
+}
+
+#' @export
+#' @rdname buildtools
 generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
-  datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
-  if(nrow(datasets) > 0){
-    names(datasets) <- c('name', 'title')
-  } else {
-    datasets <- NULL
-  }
+  datasets <- get_package_datasets(package = package)
   vignettes <- vignettes_info(repo = repo, pkg = package, subdir = subdir)
   sysdeps <- sysdeps_info(pkg = package)
   assets <- sort(c('extra/contents.json', list.files(outdir, recursive = TRUE, all.files = TRUE)))
