@@ -538,7 +538,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   readme <- if(nchar(readme_url) > 0) readme_url
   logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
   gitstats <- get_gitstats(repo, pkgdir, git_url)
-  cranurl <- identical(tolower(git_url), try(tolower(get_official_url(pkgname))))
+  cranurl <- identical(tolower(git_url), try(tolower(get_official_url(package))))
   out <- list(
     assets = assets,
     cranurl = jsonlite::unbox(cranurl),
