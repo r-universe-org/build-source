@@ -406,7 +406,7 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(keywords)){
     out$topics <- unique(keywords)
   }
-  out$cranurl <- identical(tolower(url), try(tolower(get_official_url(pkgname))))
+  #out$cranurl <- identical(tolower(url), try(tolower(get_official_url(pkgname))))
   if(!grepl('^https?://github.com', url)){
     return(out)
   }
@@ -417,12 +417,12 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
   if(tolower(ghinfo$owner$login) == tolower(dirname(repo))){
-    out$organization <- identical(tolower(ghinfo$owner$type), 'organization')
+    out$organization <- jsonlite::unbox(identical(tolower(ghinfo$owner$type), 'organization'))
   } else {
     message(sprintf('% seems transferred to %s!', repo, ghinfo$owner$login))
   }
   if(length(ghinfo$stargazers_count))
-    out$stars <- ghinfo$stargazers_count
+    out$stars <- jsonlite::unbox(ghinfo$stargazers_count)
   out$contributions = tryCatch(list_contributions(repo), error = function(e){
     message(e)
     NULL
@@ -538,8 +538,10 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   readme <- if(nchar(readme_url) > 0) readme_url
   logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
   gitstats <- get_gitstats(repo, pkgdir, git_url)
+  cranurl <- identical(tolower(git_url), try(tolower(get_official_url(pkgname))))
   out <- list(
     assets = assets,
+    cranurl = jsonlite::unbox(cranurl),
     exports = exports,
     datasets = datasets,
     gitstats = gitstats,
