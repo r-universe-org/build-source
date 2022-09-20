@@ -301,7 +301,7 @@ install_dependencies <- function(path = '.'){
   harddeps <- remotes::local_package_deps()
   rundeps <- as.character(recurse_deps(harddeps))
   saveRDS(rundeps, '/tmp/rundeps.rds')
-  cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(rundeps))))
+  #cat(sprintf('::set-output name=RUNDEPS::%s\n', base64_gzip(jsonlite::toJSON(rundeps))))
 
   # Not used right now: mostly shows all the testthat/rmarkdown stack stuff
   #checkdeps <- setdiff(recurse_deps(setdiff(deps, rundeps)), rundeps)
