@@ -537,10 +537,12 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   readme_url <- Sys.getenv('README_URL')
   readme <- if(nchar(readme_url) > 0) readme_url
   logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
+  gitstats <- get_gitstats(repo, pkgdir, git_url)
   out <- list(
     assets = assets,
     exports = exports,
     datasets = datasets,
+    gitstats = gitstats,
     pkglogo = jsonlite::unbox(logo),
     readme = jsonlite::unbox(readme),
     rundeps = rundeps,
