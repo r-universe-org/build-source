@@ -539,7 +539,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
   gitstats <- get_gitstats(repo, pkgdir, git_url)
   if(length(gitstats$contributions)){
-    gitstats$contributions <- jsonlite::unbox(data.frame(gitstats$contributions))
+    gitstats$contributions <- lapply(gitstats$contributions, jsonlite::unbox)
   }
   cranurl <- identical(tolower(git_url), try(tolower(get_official_url(package))))
   out <- list(
