@@ -71,8 +71,8 @@ COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
 
 # Get commit metadata
-GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$URL'))")
-echo ::set-output name=GITSTATS::$GITSTATS
+#GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$URL'))")
+#echo ::set-output name=GITSTATS::$GITSTATS
 
 # Look for a package logo
 #PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$URL', '$SUBDIR'))")
