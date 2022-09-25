@@ -56,11 +56,9 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Export some outputs (even upon failure)
-COMMIT_TIMESTAMP="$(git --git-dir=${REPO}/.git log -1 --format=%ct)"
 echo ::set-output name=DISTRO::$DISTRO
 echo ::set-output name=PACKAGE::$PACKAGE
 echo ::set-output name=VERSION::$VERSION
-echo ::set-output name=COMMIT_TIMESTAMP::$COMMIT_TIMESTAMP
 
 # Get maintainer details
 MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
@@ -69,16 +67,6 @@ echo ::set-output name=MAINTAINERINFO::$MAINTAINERINFO
 # Get commit metadata
 COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo ::set-output name=COMMITINFO::$COMMITINFO
-
-# Get commit metadata
-#GITSTATS=$(Rscript -e "cat(buildtools::get_gitstats_base64('$REPO','$PKGDIR','$URL'))")
-#echo ::set-output name=GITSTATS::$GITSTATS
-
-# Look for a package logo
-#PKGLOGO=$(Rscript -e "cat(buildtools::find_logo('$PKGDIR', '$URL', '$SUBDIR'))")
-#if [ "$PKGLOGO" ]; then
-#echo ::set-output name=PKGLOGO::$PKGLOGO
-#fi
 
 # DEBUGGING
 echo "::group::Show contents of $MY_UNIVERSE"
@@ -151,14 +139,6 @@ echo "::group::install package and generate html docs"
 R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
 echo "::endgroup::"
 
-# Lookup system dependencies
-#SYSDEPS=$(Rscript -e "cat(buildtools::sysdeps_base64('$PACKAGE'))")
-#echo ::set-output name=SYSDEPS::$SYSDEPS
-
-# Moved to contents.json
-#VIGNETTES=$(Rscript -e "cat(buildtools::vignettes_base64('$REPO','$PACKAGE','$SUBDIR'))")
-#echo ::set-output name=VIGNETTES::$VIGNETTES
-
 # Build and insert pdf manual into the tar.gz
 echo "::group::Build readme and manuals"
 mkdir -p outputs/$PACKAGE
@@ -180,7 +160,6 @@ fi
 # Find readme URL
 export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
 if [ "$README_URL" ]; then
-#echo ::set-output name=README::$README_URL
 Rscript -e "cat(buildtools::render_readme('$README_URL', 'outputs/$PACKAGE'))" 2> stderr_readme.txt || README_FAILURE=1
 else
 echo "No readme file found"
