@@ -309,13 +309,11 @@ install_dependencies <- function(path = '.'){
 
   # Check if Java/JAGS are required
   if(isTRUE('rJava' %in% rundeps)){
-    cat('::set-output name=NEED_RJAVA::true\n')
     file.create('/NEED_RJAVA')
   }
   if(isTRUE(any(c('rjags', 'runjags') %in% rundeps))){
     if(!require('rjags'))
       install.packages('rjags')
-    cat('::set-output name=NEED_JAGS::true\n')
     file.create('/NEED_JAGS')
   }
 }
@@ -563,13 +561,6 @@ maintainer_info_base64 <- function(path = '.'){
   info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)
   base64_gzip(json)
-}
-
-#' @export
-#' @rdname buildtools
-list_assets <- function(path){
-  json <- jsonlite::toJSON(list.files(path, recursive = TRUE, all.files = TRUE))
-  cat(sprintf('::set-output name=ASSETS::%s\n', base64_gzip(json)))
 }
 
 precache_rspm <- function(){

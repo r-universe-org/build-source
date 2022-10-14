@@ -56,17 +56,17 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Export some outputs (even upon failure)
-echo ::set-output name=DISTRO::$DISTRO
-echo ::set-output name=PACKAGE::$PACKAGE
-echo ::set-output name=VERSION::$VERSION
+echo "DISTRO=$DISTRO" >> $GITHUB_OUTPUT
+echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
+echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
 # Get maintainer details
 MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
-echo ::set-output name=MAINTAINERINFO::$MAINTAINERINFO
+echo "MAINTAINERINFO=$MAINTAINERINFO" >> $GITHUB_OUTPUT
 
 # Get commit metadata
 COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
-echo ::set-output name=COMMITINFO::$COMMITINFO
+echo "COMMITINFO=$COMMITINFO" >> $GITHUB_OUTPUT
 
 # DEBUGGING
 echo "::group::Show contents of $MY_UNIVERSE"
@@ -77,6 +77,14 @@ echo "::endgroup::"
 echo "::group::Installing R dependencies"
 Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
 echo "::endgroup::"
+
+# These are set in install_dependencies() above
+if [ -f "/NEED_RJAVA" ]; then
+  echo "NEED_RJAVA=true" >> $GITHUB_OUTPUT
+fi
+if [ -f "/NEED_JAGS" ]; then
+  echo "NEED_JAGS=true" >> $GITHUB_OUTPUT
+fi
 
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw
@@ -182,11 +190,10 @@ echo "::group::Adding extra files to tarball"
 gunzip "$SOURCEPKG"
 tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
-#Rscript -e "buildtools::list_assets('outputs/$PACKAGE')"
 echo "::endgroup::"
 
 # Upon successful install, set output value
-echo ::set-output name=SOURCEPKG::$SOURCEPKG
+echo "SOURCEPKG=$SOURCEPKG" >> $GITHUB_OUTPUT
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"

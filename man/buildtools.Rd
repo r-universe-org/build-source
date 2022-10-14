@@ -15,9 +15,9 @@
 \alias{find_readme_url}
 \alias{render_readme}
 \alias{generate_citation_files}
+\alias{get_package_datasets}
 \alias{generate_metadata_files}
 \alias{maintainer_info_base64}
-\alias{list_assets}
 \title{Build tools}
 \usage{
 find_logo(path, git_url, subdir = "")
@@ -48,11 +48,11 @@ render_readme(url, outdir = ".")
 
 generate_citation_files(path, outdir)
 
-generate_metadata_files(package, repo, subdir, outdir)
+get_package_datasets(package)
+
+generate_metadata_files(package, repo, subdir, outdir, pkgdir, git_url)
 
 maintainer_info_base64(path = ".")
-
-list_assets(path)
 }
 \arguments{
 \item{path}{root directory of package}
