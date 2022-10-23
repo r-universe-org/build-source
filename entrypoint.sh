@@ -198,7 +198,7 @@ echo "::endgroup::"
 echo "SOURCEPKG=$SOURCEPKG" >> $GITHUB_OUTPUT
 
 # If a binary package was created rename and output
-if [ "$LINUXBINARY" ]; then
+if [ "$LINUXBINARY" ] && [ -f "$LINUXBINARY" ]; then
 BINARYPKG="${PKG_VERSION}-${DISTRO}.tar.gz"
 mv "$LINUXBINARY" "$BINARYPKG"
 echo "BINARYPKG=$BINARYPKG" >> $GITHUB_OUTPUT
