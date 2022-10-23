@@ -53,7 +53,6 @@ PACKAGE=$(echo -n "${PACKAGE//[[:space:]]/}")
 VERSION=$(echo -n "${VERSION//[[:space:]]/}")
 PKG_VERSION="${PACKAGE}_${VERSION}"
 SOURCEPKG="${PKG_VERSION}.tar.gz"
-BINARYPKG="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 
 # Export some outputs (even upon failure)
 echo "DISTRO=$DISTRO" >> $GITHUB_OUTPUT
@@ -139,6 +138,9 @@ OSTYPE=$(Rscript -e "cat(buildtools::get_ostype('$PKGDIR'))")
 if [ "$OSTYPE" = "windows" ]; then
 echo "Fake install for windows-only package"
 INSTALLARGS="--fake"
+else
+INSTALLARGS="--build"
+LINUXBINARY="${PKG_VERSION}_R_x86_64-pc-linux-gnu.tar.gz"
 fi
 
 # Confirm that package can be installed on Linux
@@ -194,6 +196,13 @@ echo "::endgroup::"
 
 # Upon successful install, set output value
 echo "SOURCEPKG=$SOURCEPKG" >> $GITHUB_OUTPUT
+
+# If a binary package was created rename and output
+if [ "$LINUXBINARY" ]; then
+BINARYPKG="${PKG_VERSION}-${DISTRO}.tar.gz"
+mv "$LINUXBINARY" "$BINARYPKG"
+echo "BINARYPKG=$BINARYPKG" >> $GITHUB_OUTPUT
+fi
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
