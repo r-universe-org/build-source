@@ -15,6 +15,7 @@
 \alias{find_readme_url}
 \alias{render_readme}
 \alias{generate_citation_files}
+\alias{get_help_aliases}
 \alias{get_package_datasets}
 \alias{generate_metadata_files}
 \alias{maintainer_info_base64}
@@ -47,6 +48,8 @@ find_readme_url(url, subdir = NULL)
 render_readme(url, outdir = ".")
 
 generate_citation_files(path, outdir)
+
+get_help_aliases(package)
 
 get_package_datasets(package)
 

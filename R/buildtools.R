@@ -513,6 +513,23 @@ generate_citation_files <- function(path, outdir){
 
 #' @export
 #' @rdname buildtools
+get_help_aliases <- function(package){
+  # This assumes package was built with --html
+  path <- system.file(package = package)
+  rds <- file.path(path, "help", "aliases.rds")
+  if(nchar(rds) && file.exists(rds)){
+    out <- readRDS(rds)
+    if(length(out)){
+      lst <- split(names(out), unname(out))
+      df <- data.frame(page = paste0(names(lst), '.html'))
+      df$topics <- unname(lst)
+      df
+    }
+  }
+}
+
+#' @export
+#' @rdname buildtools
 get_package_datasets <- function(package){
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
   if(nrow(datasets) > 0){
@@ -540,12 +557,14 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     gitstats$contributions <- lapply(gitstats$contributions, jsonlite::unbox)
   }
   cranurl <- identical(tolower(git_url), try(tolower(get_official_url(package))))
+  helppages <- get_help_aliases(package)
   out <- list(
     assets = assets,
     cranurl = jsonlite::unbox(cranurl),
     exports = exports,
     datasets = datasets,
     gitstats = gitstats,
+    help = helppages,
     pkglogo = jsonlite::unbox(logo),
     readme = jsonlite::unbox(readme),
     rundeps = rundeps,
