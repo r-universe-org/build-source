@@ -146,7 +146,7 @@ fi
 # Confirm that package can be installed on Linux
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 echo "::group::install package and generate html docs"
-export _R_HELP_LINKS_TO_TOPICS_=FALSE
+#export _R_HELP_LINKS_TO_TOPICS_=FALSE
 R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
 echo "::endgroup::"
 
