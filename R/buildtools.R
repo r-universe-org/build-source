@@ -492,6 +492,23 @@ render_readme <- function(url, outdir = '.'){
   writeLines(md, file.path(outdir, 'readme.md'))
 }
 
+
+#' @export
+#' @rdname buildtools
+render_news_files <- function(package, outdir){
+  extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
+  dir.create(extra_dir, showWarnings = FALSE)
+  news <- tools:::.build_news_db(package)
+  if(length(news)){
+    txt <- paste(unlist(format(news)), collapse = "\n\n")
+    html <- tools::toHTML(news, title = sprintf('NEWS for %s', package), logo=F, up=NULL,top=NULL)
+    writeLines(txt, file.path(extra_dir, 'NEWS.txt'))
+    writeLines(html, file.path(extra_dir, 'NEWS.html'))
+  } else {
+    message("No NEWS found")
+  }
+}
+
 #' @export
 #' @rdname buildtools
 generate_citation_files <- function(path, outdir){

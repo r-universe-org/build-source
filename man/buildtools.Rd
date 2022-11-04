@@ -14,6 +14,7 @@
 \alias{get_gitstats_base64}
 \alias{find_readme_url}
 \alias{render_readme}
+\alias{render_news_files}
 \alias{generate_citation_files}
 \alias{get_help_aliases}
 \alias{get_package_datasets}
@@ -46,6 +47,8 @@ get_gitstats_base64(repo, pkgdir, url)
 find_readme_url(url, subdir = NULL)
 
 render_readme(url, outdir = ".")
+
+render_news_files(package, outdir)
 
 generate_citation_files(path, outdir)
 

@@ -184,6 +184,11 @@ echo "::group::Generate citation files"
 Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" || CITATION_FAILURE=1
 echo "::endgroup::"
 
+# Parse and render NEWS if present
+echo "::group::Generate NEWS files"
+Rscript -e "buildtools::render_news_files('$PKGDIR', 'outputs/$PACKAGE')" || NEWS_FAILURE=1
+echo "::endgroup::"
+
 echo "::group::Generate package metadata"
 Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL')"
 echo "::endgroup::"
