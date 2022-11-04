@@ -186,7 +186,7 @@ echo "::endgroup::"
 
 # Parse and render NEWS if present
 echo "::group::Generate NEWS files"
-Rscript -e "buildtools::render_news_files('$PKGDIR', 'outputs/$PACKAGE')" || NEWS_FAILURE=1
+Rscript -e "buildtools::render_news_files('$PACKAGE', 'outputs/$PACKAGE')" || NEWS_FAILURE=1
 echo "::endgroup::"
 
 echo "::group::Generate package metadata"
