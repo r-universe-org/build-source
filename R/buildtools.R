@@ -504,6 +504,7 @@ render_news_files <- function(package, outdir){
     html <- tools::toHTML(news, title = sprintf('NEWS for %s', package), logo=F, up=NULL,top=NULL)
     writeLines(txt, file.path(extra_dir, 'NEWS.txt'))
     writeLines(html, file.path(extra_dir, 'NEWS.html'))
+    cat(list.files(extra_dir, full.names = T), sep = '\n')
   } else {
     message("No NEWS found")
   }
