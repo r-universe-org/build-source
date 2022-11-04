@@ -495,7 +495,7 @@ render_readme <- function(url, outdir = '.'){
 
 #' @export
 #' @rdname buildtools
-render_news_files <- function(package, outdir){
+render_news_files <- function(package, outdir = '.'){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   news <- tools:::.build_news_db(package)
@@ -504,7 +504,9 @@ render_news_files <- function(package, outdir){
       # Try to add CRAN release dates (similar to pkgdown)
       # NB: dates in HTML are only shown starting R-4.3 (pr@82796)
       dateurl <- paste0("https://crandb.r-pkg.org/", package, "/all")
-      timeline <- jsonlite::fromJSON(dateurl)$timeline
+      pkgdata <- jsonlite::fromJSON(dateurl)
+      stopifnot(identical(package, pkgdata$name))
+      timeline <- pkgdata$timeline
       news$Date <- vapply(news$Version, function(ver){
         x <- timeline[[ver]]
         ifelse(length(x), as.character(as.Date(x)), NA_character_)

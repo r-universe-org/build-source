@@ -48,7 +48,7 @@ find_readme_url(url, subdir = NULL)
 
 render_readme(url, outdir = ".")
 
-render_news_files(package, outdir)
+render_news_files(package, outdir = ".")
 
 generate_citation_files(path, outdir)
 
