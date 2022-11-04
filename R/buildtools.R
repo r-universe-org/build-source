@@ -515,7 +515,8 @@ render_news_files <- function(package, outdir = '.'){
       message("Did not find CRAN timeline data for package: ", package)
     })
     txt <- paste(unlist(format(news)), collapse = "\n\n")
-    html <- tools::toHTML(news, title = 'NEWS', logo=F, up=NULL,top=NULL)
+    html <- tools::toHTML(news, title = 'NEWS', logo = FALSE, up = NULL, top = NULL,
+                          css='https://r-universe.dev/static/news-styles.css')
     html <- gsub('<h2>Changes in version', paste0('<h2>', package), html, fixed = TRUE)
     writeLines(txt, file.path(extra_dir, 'NEWS.txt'))
     writeLines(html, file.path(extra_dir, 'NEWS.html'))
