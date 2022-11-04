@@ -500,6 +500,16 @@ render_news_files <- function(package, outdir){
   dir.create(extra_dir, showWarnings = FALSE)
   news <- tools:::.build_news_db(package)
   if(length(news)){
+    try({
+      # Try to add CRAN release dates (similar to pkgdown)
+      # NB: dates in HTML are only shown starting R-4.3 (pr@82796)
+      dateurl <- paste0("https://crandb.r-pkg.org/", package, "/all")
+      timeline <- jsonlite::fromJSON(dateurl)$timeline
+      news$Date <- vapply(news$Version, function(ver){
+        x <- timeline[[ver]]
+        ifelse(length(x), as.character(as.Date(x)), NA_character_)
+      }, character(1))
+    })
     txt <- paste(unlist(format(news)), collapse = "\n\n")
     html <- tools::toHTML(news, title = sprintf('NEWS for %s', package), logo=F, up=NULL,top=NULL)
     writeLines(txt, file.path(extra_dir, 'NEWS.txt'))
