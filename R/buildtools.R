@@ -516,8 +516,9 @@ render_news_files <- function(package, outdir = '.', url = NULL){
     })
     txt <- paste(unlist(format(news)), collapse = "\n\n")
     html <- tools::toHTML(news, title = 'NEWS', logo = FALSE, up = NULL, top = NULL,
-                          css='https://r-universe.dev/static/news-styles.css')
+                          css = 'https://r-universe.dev/static/news-styles.css')
     html <- gsub('<h2>Changes in version', paste0('<h2>', package), html, fixed = TRUE)
+    html <- gsub("(\\([-0-9]+\\))</h2>", '<span class="crandate">\\1</span></h2>', html)
     if(length(url)){
       html <- repo_auto_link(html, url)
     }
