@@ -495,7 +495,7 @@ render_readme <- function(url, outdir = '.'){
 
 #' @export
 #' @rdname buildtools
-render_news_files <- function(package, outdir = '.'){
+render_news_files <- function(package, outdir = '.', url = NULL){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   news <- tools:::.build_news_db(package)
@@ -518,9 +518,12 @@ render_news_files <- function(package, outdir = '.'){
     html <- tools::toHTML(news, title = 'NEWS', logo = FALSE, up = NULL, top = NULL,
                           css='https://r-universe.dev/static/news-styles.css')
     html <- gsub('<h2>Changes in version', paste0('<h2>', package), html, fixed = TRUE)
+    if(length(url)){
+      html <- repo_auto_link(html, url)
+    }
     writeLines(txt, file.path(extra_dir, 'NEWS.txt'))
     writeLines(html, file.path(extra_dir, 'NEWS.html'))
-    cat(list.files(extra_dir, full.names = T), sep = '\n')
+    cat(list.files(extra_dir, full.names = TRUE), sep = '\n')
   } else {
     message("No NEWS found")
   }

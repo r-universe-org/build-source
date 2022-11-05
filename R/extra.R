@@ -49,3 +49,26 @@ badges_extract <- function(html) {
 
   as.character(badges)
 }
+
+
+
+# Adapted from pkgdown
+repo_auto_link <- function(text, source_url) {
+  if(grepl('https://github.com', source_url)){
+    url <- list(
+      user = 'https://github.com/',
+      issue = paste0(source_url, '/issues/')
+    )
+
+    if (!is.null(url$user)) {
+      user_link <- paste0("\\1<a href='", url$user, "\\2'>@\\2</a>")
+      text <- gsub("(\\s|^|\\()@([-\\w]+)", user_link, text, perl = TRUE)
+    }
+
+    if (!is.null(url$issue)) {
+      issue_link <- paste0("<a href='", url$issue, "\\2'>#\\2</a>")
+      text <- gsub("(\\(|\\s)#(\\d+)", paste0("\\1", issue_link), text, perl = TRUE)
+    }
+  }
+  text
+}
