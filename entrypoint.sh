@@ -157,6 +157,7 @@ mkdir -p outputs/$PACKAGE
 # Copy installed HTML manuals into source package
 HTMLDIR=$(Rscript -e "cat(system.file('html',package='$PACKAGE'))")
 if [ "$HTMLDIR" ]; then
+Rscript -e "buildtools::tweak_help_files('$HTMLDIR')" || true
 cp -Rv $HTMLDIR outputs/$PACKAGE/htmldocs
 else
 echo "No HTML docs found??"
