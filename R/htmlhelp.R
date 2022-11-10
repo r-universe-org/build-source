@@ -31,7 +31,7 @@ inject_help_css_js <- function(path){
   xml2::xml_remove(xml2::xml_find_all(doc, "//a[img[@class = 'arrow']]"))
 
   # Remove .html extension for hyperlinks under /help
-  links <- xml2::xml_find_all(doc, "//a")
+  links <- xml2::xml_find_all(doc, "//a[@href]")
   xml2::xml_set_attr(links, 'href', sub("(/help/.*)\\.html$", '\\1', xml2::xml_attr(links, 'href')))
   xml2::xml_set_attr(links, 'href', sub("00Index.html$", './', xml2::xml_attr(links, 'href')))
 
