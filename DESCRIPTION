@@ -15,11 +15,14 @@ Imports:
     gert (>= 1.6.0),
     gh,
     jsonlite,
+    katex,
     knitr,
     lubridate,
     maketools,
+    memoise,
     remotes,
     rmarkdown,
+    V8,
     yaml,
     xml2
 RoxygenNote: 7.2.1

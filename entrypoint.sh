@@ -181,9 +181,10 @@ echo "::endgroup::"
 # Generate CITATION.cff
 # NB: CITATION file can contain a script and fail, for example:
 # https://github.com/girke-lab/fmcsR/blob/master/inst/CITATION
-echo "::group::Render NEWS, citation files, metadata"
+echo "::group::Render NEWS, citation files, html-manual, metadata"
 Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE')" || CITATION_FAILURE=1
 Rscript -e "buildtools::render_news_files('$PACKAGE', 'outputs/$PACKAGE', '$URL')" || NEWS_FAILURE=1
+Rscript -e "buildtools::render_html_manual('$PACKAGE', 'outputs/$PACKAGE')" || HTMLMANUAL_FAILURE=1
 Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL')"
 echo "::endgroup::"
 
@@ -220,6 +221,9 @@ cat stderr_readme.txt
 exit 1
 elif [ "$CITATION_FAILURE" ]; then
 echo "Package OK but problem generating citation files (see above)"
+exit 1
+elif [ "$HTMLMANUAL_FAILURE" ]; then
+echo "Package OK but problem generating HTML reference manual (see above)"
 exit 1
 else
 exit 0
