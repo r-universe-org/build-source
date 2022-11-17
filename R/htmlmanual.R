@@ -8,6 +8,7 @@
 #' @export
 render_html_manual <- function(package, outdir = '.'){
   message("Rendering HTML reference manual for package: ", package)
+  dir.create(outdir, showWarnings = FALSE)
   manfiles <- new.env(parent = emptyenv())
   installdir <- system.file(package = package, mustWork = TRUE)
   desc <- package_desc(installdir)
