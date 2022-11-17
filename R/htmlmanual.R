@@ -154,7 +154,7 @@ find_package_url_internal <- function(package){
   } else if(package %in% universe_list(Sys.getenv("MY_UNIVERSE"))){
     sprintf('%s/%s', Sys.getenv("MY_UNIVERSE"), package)
   } else if(package %in% basepkgs){
-    'https://r-universe.dev/base'
+    'https://r-universe.dev/manuals'
   }
 }
 
