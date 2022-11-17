@@ -15,9 +15,10 @@ render_html_manual <- function(package, outdir = '.'){
   lazyLoad(file.path(installdir, 'help', package), env = manfiles)
   links <- tools::findHTMLlinks(installdir)
   aliases <- readRDS(file.path(installdir, "help", "aliases.rds"))
-  doc <- xml2::read_html(system.file(package = 'buildtools', 'help-template/manual.html'))
+  doc <- xml2::read_html(system.file(package = 'buildtools', 'help-template/manual.html'), options = c("RECOVER", "NOERROR"))
   body <- xml2::xml_find_first(doc, '//body')
   xml2::xml_set_attr(body, 'class', 'macintosh')
+  xml2::xml_set_text(xml2::xml_find_first(doc, '//title'), sprintf("Package '%s' reference manual", desc$package))
   xml2::xml_set_text(xml2::xml_find_first(body, '//h1'), sprintf("Package '%s'", desc$package))
   lapply(xml2::xml_find_all(doc, "//td[starts-with(@class,'description')]"), function(node){
     field <- substring(xml2::xml_attr(node, 'class'), 13)
