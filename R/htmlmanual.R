@@ -170,6 +170,11 @@ package_desc <- function(path){
   desc <- as.list(tools:::.read_description(file.path(path, 'DESCRIPTION')))
   names(desc) <- tolower(names(desc))
   desc$date <- trimws(strsplit(desc$built, ';')[[1]][3])
+  desc$source <- if(length(desc$remoteurl)){
+    desc$remoteurl
+  } else {
+    desc$repository
+  }
   desc
 }
 
