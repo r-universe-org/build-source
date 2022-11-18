@@ -160,7 +160,7 @@ render_math <- function(doc){
   macros = list("\\R"= "\\textsf{R}", "\\mbox"= "\\text", "\\code"= "\\texttt")
   lapply(xml2::xml_find_all(doc, "//code[@class = 'reqn']"), function(x){
     input <- trimws(xml2::xml_text(x))
-    output <- katex::katex_html(input, preview = FALSE, macros = macros, throwOnError = FALSE)
+    output <- katex::katex_html(input, preview = FALSE, macros = macros, displayMode = FALSE, throwOnError = FALSE)
     newnode <- xml2::read_xml(paste0('<code class="reqn">', trimws(output), '</code>'))
     xml2::xml_replace(x, xml2::xml_root(newnode))
   })
