@@ -88,7 +88,7 @@ fix_links <- function(doc, package){
       linkpkg <- x[2]
       topic <- x[4]
       if(linkpkg == package){
-        if(length(aliases[topic]))
+        if(!is.na(aliases[topic]))
           topic <- aliases[topic]
         return(paste0("#", topic))
       } else if(all(c(linkpkg,package) %in% basepkgs)){
