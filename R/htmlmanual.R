@@ -28,7 +28,7 @@ render_html_manual <- function(package, outdir = '.'){
     render_one_page(page_id, rd = manfiles[[page_id]], package = package, links = links)
   })
   lapply(nodes, xml2::xml_add_child, .x = body)
-  fix_links(doc, package, aliases)
+  fix_links(doc, package)
   fix_images(doc, package)
   prismjs::prism_process_xmldoc(doc)
   render_math(doc)
@@ -66,11 +66,12 @@ render_one_page <- function(page_id, rd, package, links){
   headertable <- xml2::xml_find_first(doc, "//table[.//td[text() = 'R Documentation']]")
   xml2::xml_remove(headertable)
   titlenode <- xml2::xml_find_first(doc, '//h2')
+  page_title <- xml2::xml_text(titlenode)
   titlelink <- xml2::xml_replace(titlenode, 'a')
   xml2::xml_set_attr(titlelink, 'href', paste0("#", page_id))
   xml2::xml_set_attr(titlelink, 'style', 'text-decoration: none; color:black;')
   xml2::xml_add_child(titlelink, titlenode)
-  return(container)
+  structure(container, id = page_id, title = page_title)
 }
 
 fix_links <- function(doc, package){
