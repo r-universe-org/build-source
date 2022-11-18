@@ -31,7 +31,7 @@ render_html_manual <- function(package, outdir = '.'){
   })
   lapply(nodes, xml2::xml_add_child, .x = body)
   fix_links(doc, package, aliases)
-  highlight_code(doc)
+  prismjs::prism_process_xmldoc(doc)
   render_math(doc)
   outfile <- file.path(outdir, paste0(package, '.html'))
   xml2::write_html(doc, outfile)
@@ -102,22 +102,6 @@ fix_links <- function(doc, package, aliases){
 
   # Remove dead links produced above
   xml2::xml_set_attr(xml2::xml_find_all(doc, "//a[@href = '#']"), 'href', NULL)
-}
-
-highlight_code <- function(doc){
-  ctx <- V8::v8()
-  ctx$source(system.file('js/prism-r.js', package = 'buildtools'))
-  highlight_r <- function(txt){
-    ctx$assign('input', txt)
-    ctx$eval("Prism.highlight(input, Prism.languages.r, 'r')", serialize = FALSE)
-  }
-  lapply(xml2::xml_find_all(doc, "//pre[code[@class = 'language-R']]"), function(x){
-    input <- trimws(xml2::xml_text(x))
-    output <- highlight_r(input)
-    newnode <- xml2::read_xml(paste0('<pre class="language-r"><code class="language-r">', trimws(output), '</code></pre>'))
-    xml2::xml_replace(x, xml2::xml_root(newnode))
-  })
-  return(doc)
 }
 
 # Simulate what happens in R katex-config.js script

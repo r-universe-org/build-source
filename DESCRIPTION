@@ -17,12 +17,13 @@ Imports:
     jsonlite,
     katex,
     knitr,
+    prismjs,
     lubridate,
     maketools,
     memoise,
     remotes,
     rmarkdown,
-    V8,
     yaml,
     xml2
 RoxygenNote: 7.2.1
+Remotes: ropensci/prismjs
