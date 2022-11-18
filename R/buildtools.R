@@ -620,6 +620,17 @@ maintainer_info_base64 <- function(path = '.'){
   base64_gzip(json)
 }
 
+# This is a hack, it relies on the 'manual-page' and <a><h2></a> structure that we generate earlier
+get_help_titles_from_manual <- function(path){
+  if(!file.exists(path))
+    stop("Failed to find HTML manual needed to extract titles")
+  doc <- xml2::read_html(path)
+  containers <- xml2::xml_find_all(doc, "//div[@class='container manual-page']")
+  pages <- xml2::xml_attr(containers, 'id')
+  titles <- xml2::xml_text(xml2::xml_find_first(containers, 'a/h2'))
+  structure(as.list(titles), names = pages)
+}
+
 precache_rspm <- function(){
   url <- getOption('repos')['CRAN']
   for(i in 1:3){
