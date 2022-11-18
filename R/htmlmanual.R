@@ -32,6 +32,7 @@ render_html_manual <- function(package, outdir = '.'){
   fix_images(doc, package)
   prismjs::prism_process_xmldoc(doc)
   render_math(doc)
+  make_index(doc, nodes)
   outfile <- file.path(outdir, paste0(package, '.html'))
   xml2::write_html(doc, outfile)
   return(outfile)
@@ -69,7 +70,7 @@ render_one_page <- function(page_id, rd, package, links){
   page_title <- xml2::xml_text(titlenode)
   titlelink <- xml2::xml_replace(titlenode, 'a')
   xml2::xml_set_attr(titlelink, 'href', paste0("#", page_id))
-  xml2::xml_set_attr(titlelink, 'style', 'text-decoration: none; color:black;')
+  xml2::xml_set_attr(titlelink, 'class', 'help-page-title')
   xml2::xml_add_child(titlelink, titlenode)
   structure(container, id = page_id, title = page_title)
 }
@@ -124,6 +125,19 @@ fix_images <- function(doc, package){
     # TODO: maybe better just remove these images, because they seem mostly
     # intended for pkgdown, and don't show up in the PDF manual either...
     xml2::xml_set_attr(x, 'src', image_base64(img))
+  })
+}
+
+make_index <- function(doc, nodes){
+  index <- xml2::xml_find_first(doc, "//ul[@id='help-index-list']")
+  lapply(nodes, function(x){
+    id <- attr(x, 'id')
+    title <- attr(x, 'title')
+    li <- xml2::xml_add_child(index, 'li')
+    xml2::xml_set_attr(li, 'class', 'help-index-item')
+    a <- xml2::xml_add_child(li, 'a')
+    xml2::xml_set_attr(a, 'href', paste0("#", id))
+    xml2::xml_set_text(a, title)
   })
 }
 
