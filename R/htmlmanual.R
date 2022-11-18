@@ -172,8 +172,10 @@ package_desc <- function(path){
   desc$date <- trimws(strsplit(desc$built, ';')[[1]][3])
   desc$source <- if(length(desc$remoteurl)){
     desc$remoteurl
-  } else {
+  } else if(length(desc$repository)){
     desc$repository
+  } else {
+    desc$priority # should be base only
   }
   desc
 }
