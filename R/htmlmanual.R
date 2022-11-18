@@ -31,6 +31,7 @@ render_html_manual <- function(package, outdir = '.'){
   })
   lapply(nodes, xml2::xml_add_child, .x = body)
   fix_links(doc, package, aliases)
+  fix_images(doc, package)
   prismjs::prism_process_xmldoc(doc)
   render_math(doc)
   outfile <- file.path(outdir, paste0(package, '.html'))
@@ -102,6 +103,31 @@ fix_links <- function(doc, package, aliases){
 
   # Remove dead links produced above
   xml2::xml_set_attr(xml2::xml_find_all(doc, "//a[@href = '#']"), 'href', NULL)
+}
+
+fix_images <- function(doc, package){
+  images <- xml2::xml_find_all(doc, "//img[starts-with(@src,'../help/')]")
+  lapply(images, function(x){
+    helpdir <- system.file(package = package, 'help', mustWork = TRUE)
+    img <- file.path(helpdir, xml2::xml_attr(x, 'src'))
+    if(!file.exists(img)){
+      stop("Document references non-existing image: ", xml2::xml_attr(x, 'src'))
+    }
+    xml2::xml_set_attr(x, 'src', image_base64(img))
+  })
+}
+
+image_base64 <- function(path){
+  ext <- tolower(utils::tail(strsplit(path, '.', fixed = TRUE)[[1]], 1))
+  type <- switch(ext,
+                 svg = 'image/svg+xml',
+                 png = 'image/png',
+                 jpeg = 'image/jpeg',
+                 jpg = 'image/jpeg',
+                 stop("Unknown image extension: ", path))
+  content <- readBin(path, raw(), file.info(path)$size)
+  b64 <- gsub('\n', '', jsonlite::base64_enc(content), fixed = TRUE)
+  sprintf('data:%s;base64,%s', type, b64)
 }
 
 # Simulate what happens in R katex-config.js script
