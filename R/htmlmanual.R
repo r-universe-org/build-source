@@ -86,11 +86,14 @@ fix_links <- function(doc, package){
   newlinks <- vapply(parsedlinks, function(x){
     if(length(x) == 4){
       linkpkg <- x[2]
-      topic <- x[4]
+      topic <- URLdecode(gsub("+", "%", x[4], fixed = TRUE))
       if(linkpkg == package){
-        if(!is.na(aliases[topic]))
-          topic <- aliases[topic]
-        return(paste0("#", topic))
+        target <- aliases[topic]
+        if(!is.na(target)){
+          return(paste0("#", target))
+        } else {
+          message("Failed to resolve help alias to: ", linkpkg, "::", topic)
+        }
       } else if(all(c(linkpkg,package) %in% basepkgs)){
         # Remove this clause when manuals are published and link to full r-universe URL
         # This way e.g. Matrix links both correct from its own universe and base-manual
