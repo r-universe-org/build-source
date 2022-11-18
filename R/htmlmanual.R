@@ -9,10 +9,9 @@
 render_html_manual <- function(package, outdir = '.'){
   message("Rendering HTML reference manual for package: ", package)
   dir.create(outdir, showWarnings = FALSE)
-  manfiles <- new.env(parent = emptyenv())
   installdir <- system.file(package = package, mustWork = TRUE)
+  manfiles <- load_rd_env(package)
   desc <- package_desc(installdir)
-  lazyLoad(file.path(installdir, 'help', package), env = manfiles)
   links <- tools::findHTMLlinks(installdir)
   aliases <- readRDS(file.path(installdir, "help", "aliases.rds"))
   doc <- xml2::read_html(system.file(package = 'buildtools', 'help-template/manual.html'), options = c("RECOVER", "NOERROR"))
@@ -45,6 +44,13 @@ render_base_manuals <- function(outdir = '.'){
   lapply(basepkgs, render_html_manual, outdir = outdir)
 }
 
+#TODO: maybe use tools::Rd_db() instead ?
+load_rd_env <- function(package){
+  manfiles <- new.env(parent = emptyenv())
+  installdir <- system.file(package = package, mustWork = TRUE)
+  lazyLoad(file.path(installdir, 'help', package), env = manfiles)
+  return(manfiles)
+}
 
 render_one_page <- function(page_id, rd, package, links){
   #rd <- tools:::parse_Rd(path)
