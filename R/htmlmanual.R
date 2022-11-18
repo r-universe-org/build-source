@@ -13,7 +13,6 @@ render_html_manual <- function(package, outdir = '.'){
   manfiles <- load_rd_env(package)
   desc <- package_desc(installdir)
   links <- tools::findHTMLlinks(installdir)
-  aliases <- readRDS(file.path(installdir, "help", "aliases.rds"))
   doc <- xml2::read_html(system.file(package = 'buildtools', 'help-template/manual.html'), options = c("RECOVER", "NOERROR"))
   body <- xml2::xml_find_first(doc, '//body')
   xml2::xml_set_attr(body, 'class', 'macintosh')
@@ -74,7 +73,9 @@ render_one_page <- function(page_id, rd, package, links){
   return(container)
 }
 
-fix_links <- function(doc, package, aliases){
+fix_links <- function(doc, package){
+  installdir <- system.file(package = package, mustWork = TRUE)
+  aliases <- readRDS(file.path(installdir, "help", "aliases.rds"))
   links <- xml2::xml_find_all(doc, "//a[starts-with(@href,'../../')]")
   xml2::xml_set_attr(links, 'href', sub("00Index.html$", './', xml2::xml_attr(links, 'href')))
   linkvalues <- substring(xml2::xml_attr(links, 'href'), 7)
