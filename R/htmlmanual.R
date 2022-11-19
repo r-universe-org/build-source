@@ -59,7 +59,7 @@ render_one_page <- function(page_id, rd, package, links){
   out <- tempfile(fileext = '.html')
   #Sys.setenv('_R_HELP_LINKS_TO_TOPICS_' = FALSE)
   #Sys.setenv('_R_HELP_ENABLE_ENHANCED_HTML_' = FALSE)
-  page_name <- get_rd_name(rd)
+  page_name <- tools:::.Rd_get_name(rd)
   html <- tools::Rd2HTML(rd, package = package, out = out, stages=c("build", "install", "render"),
                          Links = links, stylesheet="", dynamic = FALSE)
   doc <- xml2::read_html(html)
@@ -145,11 +145,6 @@ make_index <- function(doc, nodes){
     xml2::xml_set_attr(a, 'href', paste0("#", id))
     xml2::xml_set_text(a, title)
   })
-}
-
-get_rd_name <- function(rd){
-  rdout <- tools:::prepare_Rd(rd)
-  trimws(as.character(rdout[[2L]][[1L]]))
 }
 
 image_base64 <- function(path){
