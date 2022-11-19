@@ -27,6 +27,8 @@ render_html_manual <- function(package, outdir = '.'){
   nodes <- lapply(ls(manfiles), function(page_id){
     render_one_page(page_id, rd = manfiles[[page_id]], package = package, links = links)
   })
+  mannames <- vapply(nodes, attr, character(1), 'name')
+  nodes <- nodes[order(mannames)]
   lapply(nodes, xml2::xml_add_child, .x = body)
   fix_links(doc, package)
   fix_images(doc, package)
@@ -57,6 +59,7 @@ render_one_page <- function(page_id, rd, package, links){
   out <- tempfile(fileext = '.html')
   #Sys.setenv('_R_HELP_LINKS_TO_TOPICS_' = FALSE)
   #Sys.setenv('_R_HELP_ENABLE_ENHANCED_HTML_' = FALSE)
+  page_name <- get_rd_name(rd)
   html <- tools::Rd2HTML(rd, package = package, out = out, stages=c("build", "install", "render"),
                          Links = links, stylesheet="", dynamic = FALSE)
   doc <- xml2::read_html(html)
@@ -72,7 +75,7 @@ render_one_page <- function(page_id, rd, package, links){
   xml2::xml_set_attr(titlelink, 'href', paste0("#", page_id))
   xml2::xml_set_attr(titlelink, 'class', 'help-page-title')
   xml2::xml_add_child(titlelink, titlenode)
-  structure(container, id = page_id, title = page_title)
+  structure(container, id = page_id, name = page_name, title = page_title)
 }
 
 fix_links <- function(doc, package){
@@ -142,6 +145,11 @@ make_index <- function(doc, nodes){
     xml2::xml_set_attr(a, 'href', paste0("#", id))
     xml2::xml_set_text(a, title)
   })
+}
+
+get_rd_name <- function(rd){
+  rdout <- tools:::prepare_Rd(rd)
+  trimws(as.character(rdout[[2L]][[1L]]))
 }
 
 image_base64 <- function(path){

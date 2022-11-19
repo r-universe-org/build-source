@@ -555,6 +555,8 @@ get_help_aliases <- function(package){
   # This assumes package was built with --html
   path <- system.file(package = package)
   rds <- file.path(path, "help", "aliases.rds")
+
+  # TODO: maybe add title, see tools:::.Rd_get_title()
   if(nchar(rds) && file.exists(rds)){
     out <- readRDS(rds)
     if(length(out)){
