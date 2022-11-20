@@ -10,6 +10,7 @@ render_html_manual <- function(package, outdir = '.'){
   message("Rendering HTML reference manual for package: ", package)
   dir.create(outdir, showWarnings = FALSE)
   installdir <- system.file(package = package, mustWork = TRUE)
+  Sys.setenv("_R_RD_MACROS_PACKAGE_DIR_" = installdir)
   manfiles <- load_rd_env(package)
   desc <- package_desc(installdir)
   links <- tools::findHTMLlinks(installdir)
