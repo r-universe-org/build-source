@@ -559,10 +559,13 @@ get_help_aliases <- function(package){
   # TODO: maybe add title, see tools:::.Rd_get_title()
   if(nchar(rds) && file.exists(rds)){
     out <- readRDS(rds)
+    db <- buildtools:::load_rd_env(package)
+    titles <- lapply(db, tools:::.Rd_get_title)
     if(length(out)){
       lst <- split(names(out), unname(out))
       df <- data.frame(page = paste0(names(lst), '.html'))
       df$topics <- unname(lst)
+      df$title <- as.character(titles[names(lst)])
       df
     }
   }
