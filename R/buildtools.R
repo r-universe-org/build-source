@@ -559,6 +559,7 @@ get_help_aliases <- function(package){
   if(nchar(rds) && file.exists(rds)){
     out <- readRDS(rds)
     db <- tools::Rd_db(package)
+    names(db) <- tools::file_path_sans_ext(names(db))
     titles <- lapply(db, tools:::.Rd_get_title)
     if(length(out)){
       lst <- split(names(out), unname(out))
