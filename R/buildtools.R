@@ -551,24 +551,16 @@ generate_citation_files <- function(path, outdir){
 
 #' @export
 #' @rdname buildtools
-get_help_aliases <- function(package){
-  # This assumes package was built with --html
+get_help_metadata <- function(package){
   path <- system.file(package = package)
-  rds <- file.path(path, "help", "aliases.rds")
-
-  if(nchar(rds) && file.exists(rds)){
-    out <- readRDS(rds)
-    db <- tools::Rd_db(package)
-    names(db) <- tools::file_path_sans_ext(names(db))
-    titles <- lapply(db, tools:::.Rd_get_title)
-    if(length(out)){
-      lst <- split(names(out), unname(out))
-      df <- data.frame(page = paste0(names(lst), '.html'))
-      df$topics <- unname(lst)
-      df$title <- as.character(titles[names(lst)])
-      df
-    }
-  }
+  out <- readRDS(file.path(path, "help", "aliases.rds"))
+  aliases <- split(names(out), unname(out))
+  db <- tools::Rd_db(package)
+  names(db) <- tools::file_path_sans_ext(names(db))
+  titles <- vapply(db, tools:::.Rd_get_title, character(1))
+  df <- data.frame(page = paste0(names(db), '.html'), title = titles)
+  df$topics <- unname(aliases[names(db)])
+  df
 }
 
 #' @export
@@ -600,7 +592,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     gitstats$contributions <- lapply(gitstats$contributions, jsonlite::unbox)
   }
   cranurl <- identical(tolower(git_url), try(tolower(get_official_url(package))))
-  helppages <- get_help_aliases(package)
+  helppages <- get_help_metadata(package)
   out <- list(
     assets = assets,
     cranurl = jsonlite::unbox(cranurl),

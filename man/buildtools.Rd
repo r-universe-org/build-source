@@ -16,7 +16,7 @@
 \alias{render_readme}
 \alias{render_news_files}
 \alias{generate_citation_files}
-\alias{get_help_aliases}
+\alias{get_help_metadata}
 \alias{get_package_datasets}
 \alias{generate_metadata_files}
 \alias{maintainer_info_base64}
@@ -53,7 +53,7 @@ render_news_files(package, outdir = ".", url = NULL)
 
 generate_citation_files(path, outdir)
 
-get_help_aliases(package)
+get_help_metadata(package)
 
 get_package_datasets(package)
 
