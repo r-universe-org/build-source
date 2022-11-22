@@ -556,10 +556,9 @@ get_help_aliases <- function(package){
   path <- system.file(package = package)
   rds <- file.path(path, "help", "aliases.rds")
 
-  # TODO: maybe add title, see tools:::.Rd_get_title()
   if(nchar(rds) && file.exists(rds)){
     out <- readRDS(rds)
-    db <- buildtools:::load_rd_env(package)
+    db <- tools::Rd_db(package)
     titles <- lapply(db, tools:::.Rd_get_title)
     if(length(out)){
       lst <- split(names(out), unname(out))
