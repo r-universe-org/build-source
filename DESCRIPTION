@@ -15,15 +15,13 @@ Imports:
     gert (>= 1.6.0),
     gh,
     jsonlite,
-    katex,
     knitr,
-    prismjs,
     lubridate,
     maketools,
-    memoise,
+    postdoc,
     remotes,
     rmarkdown,
     yaml,
     xml2
 RoxygenNote: 7.2.1
-Remotes: ropensci/prismjs
+Remotes: ropensci/postdoc

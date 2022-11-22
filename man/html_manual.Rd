@@ -2,12 +2,9 @@
 % Please edit documentation in R/htmlmanual.R
 \name{render_html_manual}
 \alias{render_html_manual}
-\alias{render_base_manuals}
 \title{Generate HTML reference manual}
 \usage{
 render_html_manual(package, outdir = ".")
-
-render_base_manuals(outdir = ".")
 }
 \arguments{
 \item{package}{name of the package}
