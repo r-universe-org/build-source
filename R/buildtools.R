@@ -559,7 +559,7 @@ get_help_metadata <- function(package){
   names(db) <- tools::file_path_sans_ext(names(db))
   titles <- vapply(db, tools:::.Rd_get_title, character(1), USE.NAMES = FALSE)
   df <- data.frame(page = paste0(names(db), '.html'), title = titles)
-  df$topics <- unname(aliases[names(db)])
+  df$topics <- lapply(unname(aliases[names(db)]), as.character)
   df
 }
 
