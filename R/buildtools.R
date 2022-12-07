@@ -555,12 +555,27 @@ get_help_metadata <- function(package){
   path <- system.file(package = package)
   out <- readRDS(file.path(path, "help", "aliases.rds"))
   aliases <- split(names(out), unname(out))
-  db <- tools::Rd_db(package)
-  names(db) <- tools::file_path_sans_ext(names(db))
+  db <- load_rd_data(package)
   titles <- vapply(db, tools:::.Rd_get_title, character(1), USE.NAMES = FALSE)
   df <- data.frame(page = names(db), title = titles)
   df$topics <- lapply(unname(aliases[names(db)]), as.character)
   df
+}
+
+load_rd_data <- function(package){
+  db <- tools::Rd_db(package)
+  names(db) <- tools::file_path_sans_ext(names(db))
+  mannames <- vapply(db, tools:::.Rd_get_name, character(1), USE.NAMES = FALSE)
+  sortnames <- sub("^(.*-package)$", '___\\1', mannames)
+  Filter(function(x){
+    is.na(match("internal", get_rd_keywords(x)))
+  }, db[order(sortnames)])
+}
+
+get_rd_keywords <- function(rd){
+  # Mimic: tools:::.Rd_get_metadata
+  keywords <- Filter(function(x){identical("\\keyword", attr(x, 'Rd_tag'))}, rd)
+  unique(trimws(vapply(keywords, paste, "", collapse = "\n")))
 }
 
 #' @export
