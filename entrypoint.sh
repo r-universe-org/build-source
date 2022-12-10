@@ -191,7 +191,7 @@ echo "::endgroup::"
 # if outputs has any files, add them to tarball
 echo "::group::Adding extra files to tarball"
 gunzip "$SOURCEPKG"
-tar --format=gnu rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
+tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 echo "::endgroup::"
 
