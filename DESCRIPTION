@@ -24,4 +24,6 @@ Imports:
     yaml,
     xml2
 RoxygenNote: 7.2.1
-Remotes: ropensci/postdoc
+Remotes: 
+    ropensci/postdoc,
+    jeroen/maketools
