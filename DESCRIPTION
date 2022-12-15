@@ -25,4 +25,5 @@ Imports:
     xml2
 RoxygenNote: 7.2.1
 Remotes: 
-    ropensci/postdoc
+    ropensci/postdoc,
+    jeroen/maketools
