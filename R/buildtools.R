@@ -431,9 +431,15 @@ get_gitstats <- function(repo, pkgdir, url){
 list_contributions <- function(repo){
   endpoint <- sprintf('/repos/%s/contributors', repo)
   contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
-  logins <- vapply(contributors, function(x){x$login}, character(1))
+  logins <- tolower(vapply(contributors, function(x){x$login}, character(1)))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
-  structure(as.list(counts), names = tolower(logins))
+  # Fix for bug in GitHub giving duplicate users
+  if(anyDuplicated(logins)){
+    dups <- duplicated(logins)
+    counts <- counts[!dups]
+    logins <- logins[!dups]
+  }
+  structure(as.list(counts), names = logins)
 }
 
 
