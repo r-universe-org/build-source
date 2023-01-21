@@ -18,11 +18,10 @@ Imports:
     knitr,
     lubridate,
     maketools,
-    postdoc,
+    postdoc (>= 1.2.0),
     remotes,
     rmarkdown,
     yaml,
     xml2
 RoxygenNote: 7.2.1
-Remotes: 
-    ropensci/postdoc
+
