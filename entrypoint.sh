@@ -154,15 +154,6 @@ echo "::endgroup::"
 echo "::group::Build readme and manuals"
 mkdir -p outputs/$PACKAGE
 
-# Copy installed HTML manuals into source package
-HTMLDIR=$(Rscript -e "cat(system.file('html',package='$PACKAGE'))")
-if [ "$HTMLDIR" ]; then
-Rscript -e "buildtools::tweak_help_files('$HTMLDIR')" || true
-cp -Rv $HTMLDIR outputs/$PACKAGE/htmldocs
-else
-echo "No HTML docs found??"
-fi
-
 # Generate PDF manual
 R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
