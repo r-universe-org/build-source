@@ -613,10 +613,12 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     gitstats$contributions <- lapply(gitstats$contributions, jsonlite::unbox)
   }
   cranurl <- identical(tolower(git_url), try(tolower(get_official_url(package))))
+  releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
   out <- list(
     assets = assets,
     cranurl = jsonlite::unbox(cranurl),
+    releases = releases, # generalize this for bioc, github?
     exports = exports,
     datasets = datasets,
     gitstats = gitstats,
@@ -678,4 +680,45 @@ bioc_releases <- function(package){
     }
     out
   }
+}
+
+get_cran_releases <- function(package){
+  tryCatch(get_cran_releases_fast(package), error = function(e){
+    message(e)
+    get_cran_releases_slow(package)
+  })
+}
+
+get_cran_releases_fast <- function(package){
+  req <- curl::curl_fetch_memory(paste0("https://crandb.r-pkg.org/", package, "/all"))
+  if(req$status_code == 404){
+    return(NULL) # probably not a cran package
+  } else if(req$status_code != 200){
+    stop("Error reaching crandb")
+  }
+  pkgdata <- jsonlite::fromJSON(rawToChar(req$content))
+  stopifnot(identical(package, pkgdata$name))
+  versions <- names(pkgdata$versions)
+  dates <- as.POSIXct(vapply(pkgdata$versions, function(x){x$crandb_file_date}, character(1), USE.NAMES = FALSE))
+  data.frame(
+    version = versions,
+    date = as.Date(dates)
+  )
+}
+
+get_cran_releases_slow <- function(package){
+  current <- tools:::CRAN_current_db()
+  matches <- which(grepl(sprintf('^%s_.*\\.tar\\.gz', package), row.names(current)))
+  filenames <- row.names(current)[matches]
+  mtimes <- current[matches, 'mtime']
+  archive <- tools:::CRAN_archive_db()
+  oldies <- archive[[package]]
+  if(length(oldies)){
+    filenames <- c(row.names(oldies), filenames)
+    mtimes <- c(oldies$mtime, mtimes)
+  }
+  data.frame(
+    version = sub("^.*_", "", sub('.tar.gz', '', filenames, fixed = TRUE)),
+    date = as.Date(mtimes)
+  )
 }
