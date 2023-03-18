@@ -1,4 +1,4 @@
-FROM runiverse/base
+FROM ghcr.io/r-universe-org/base-image
 
 COPY . /pkg
 COPY entrypoint.sh /entrypoint.sh
