@@ -311,7 +311,7 @@ install_dependencies <- function(path = '.'){
   if(isTRUE('rJava' %in% rundeps)){
     file.create('/NEED_RJAVA')
   }
-  if(isTRUE(any(c('rjags', 'runjags') %in% rundeps))){
+  if(isTRUE(any(c('rjags', 'runjags') %in% c(rundeps, desc$Package)))){
     if(!require('rjags'))
       install.packages('rjags')
     file.create('/NEED_JAGS')
