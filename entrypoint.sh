@@ -49,8 +49,10 @@ fi
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(grep '^Package:' "${PKGDIR}/DESCRIPTION" | sed 's/^Package://')
 VERSION=$(grep '^Version:' "${PKGDIR}/DESCRIPTION" | sed 's/^Version://')
+OSTYPE=$(grep '^OS_type:' "${PKGDIR}/DESCRIPTION" | sed 's/^OS_type://')
 PACKAGE=$(echo -n "${PACKAGE//[[:space:]]/}")
 VERSION=$(echo -n "${VERSION//[[:space:]]/}")
+OSTYPE=$(echo -n "${OSTYPE//[[:space:]]/}")
 PKG_VERSION="${PACKAGE}_${VERSION}"
 SOURCEPKG="${PKG_VERSION}.tar.gz"
 
@@ -58,6 +60,7 @@ SOURCEPKG="${PKG_VERSION}.tar.gz"
 echo "DISTRO=$DISTRO" >> $GITHUB_OUTPUT
 echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
 echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+echo "OSTYPE=$OSTYPE" >> $GITHUB_OUTPUT
 
 # Get maintainer details
 MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")
