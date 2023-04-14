@@ -590,18 +590,21 @@ get_package_datasets <- function(package){
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
   if(nrow(datasets) > 0){
     names(datasets) <- c('name', 'title')
-    datasets$class <- lapply(datasets$name, function(dataset){
+    datalist <- lapply(datasets$name, function(dataset){
       tryCatch({
         env <- new.env()
         objects <- data(list = dataset, package = package, envir = env)
         if(!identical(objects, dataset)){
           message(sprintf("Dataset name '%s' does not match object name '%s'", dataset, paste(objects, collapse = ",")))
         }
-        return(class(env[[dataset]]))
+        return(env[[dataset]])
       }, error = function(err){
         message(sprintf('Failure loading dataset "%s" (%s)', dataset, err))
       })
     })
+    datasets$class <- lapply(datalist, function(x){if(!is.null(x)) class(x)})
+    datasets$fields <- lapply(datalist, function(x){if(is.data.frame(x) || is.matrix(x)) colnames(x) else list()})
+    datasets$rows <- vapply(datalist, function(x){ifelse(is.data.frame(x) || is.matrix(x), nrow(x), NA_integer_)}, integer(1))
     return(datasets)
   }
 }
