@@ -590,6 +590,7 @@ get_package_datasets <- function(package){
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
   if(nrow(datasets) > 0){
     names(datasets) <- c('name', 'title')
+    datasets$name <- sub("\\W.*$", "", datasets$name) # strip weird names, see e.g. pkg 'hardhat'
     datalist <- lapply(datasets$name, function(dataset){
       tryCatch({
         env <- new.env()
