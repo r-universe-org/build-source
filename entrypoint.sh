@@ -106,6 +106,12 @@ if [ "${5}" == "false" ]; then
   rm -Rf ${PKGDIR}/vignettes
 fi
 
+# Preinstall a copy to support --resave-data
+if ls ${PKGDIR}/data/*.R; then
+echo "Found R files under data. Preinstalling..."
+R CMD INSTALL ${PKGDIR} --clean
+fi
+
 # Override rmarkdown engine
 #if ls ${PKGDIR}/vignettes/*; then
 #echo "Found vignettes..."
