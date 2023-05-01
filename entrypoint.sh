@@ -56,6 +56,14 @@ OSTYPE=$(echo -n "${OSTYPE//[[:space:]]/}")
 PKG_VERSION="${PACKAGE}_${VERSION}"
 SOURCEPKG="${PKG_VERSION}.tar.gz"
 
+# Default LazyData to true
+if [ -d "${PKGDIR}/data" ]; then
+if ! grep '^LazyData:' "${PKGDIR}/DESCRIPTION"; then
+echo "NOTE: setting LazyData: true in DESCRIPTION"
+echo "LazyData: true" >> "${PKGDIR}/DESCRIPTION"
+fi
+fi
+
 # Export some outputs (even upon failure)
 echo "DISTRO=$DISTRO" >> $GITHUB_OUTPUT
 echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
