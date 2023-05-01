@@ -587,6 +587,7 @@ get_rd_keywords <- function(rd){
 #' @export
 #' @rdname buildtools
 get_package_datasets <- function(package){
+  datafiles <- list.files(system.file('data', package = package))
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
   if(nrow(datasets) > 0){
     names(datasets) <- c('name', 'title')
@@ -603,6 +604,10 @@ get_package_datasets <- function(package){
         message(sprintf('Failure loading dataset "%s" (%s)', dataset, err))
       })
     })
+    datasets$file <- vapply(datasets$name, function(nm){
+      filename <- grep(sprintf('^%s\\.', nm), datafiles, value = TRUE)
+      ifelse(length(filename), filename[1], NA_character_)
+    }, character(1))
     datasets$class <- lapply(datalist, function(x){if(!is.null(x)) class(x)})
     datasets$fields <- lapply(datalist, function(x){if(is.data.frame(x) || is.matrix(x)) colnames(x) else list()})
     datasets$rows <- vapply(datalist, function(x){ifelse(is.data.frame(x) || is.matrix(x), nrow(x), NA_integer_)}, integer(1))
