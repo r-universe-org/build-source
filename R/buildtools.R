@@ -591,20 +591,20 @@ get_package_datasets <- function(package){
   datasets <- as.data.frame(utils::data(package=package)$results[,c("Item", "Title"), drop = FALSE])
   if(nrow(datasets) > 0){
     names(datasets) <- c('name', 'title')
-    datasets$name <- sub("\\W.*$", "", datasets$name) # strip weird names, see e.g. pkg 'hardhat'
-    datalist <- lapply(datasets$name, function(dataset){
+    datasets$object <- sub("^.* \\((.+)\\)$", "\\1", datasets$name) #see e.g. pkg 'hardhat'
+    datasets$name <- sub("\\W.*$", "", datasets$name)
+    datalist <- lapply(seq_len(nrow(datasets)), function(i){
       tryCatch({
+        dataset <- datasets$object[i]
+        dataname <- datasets$name[i]
         env <- new.env()
-        objects <- data(list = dataset, package = package, envir = env)
-        if(!identical(objects, dataset)){
-          message(sprintf("Dataset name '%s' does not match object name '%s'", dataset, paste(objects, collapse = ",")))
-        }
-        return(env[[dataset]])
+        data(list = dataset, package = package, envir = env)
+        return(env[[dataname]])
       }, error = function(err){
         message(sprintf('Failure loading dataset "%s" (%s)', dataset, err))
       })
     })
-    datasets$file <- vapply(datasets$name, function(nm){
+    datasets$file <- vapply(datasets$object, function(nm){
       filename <- grep(sprintf('^%s\\.', nm), datafiles, value = TRUE)
       ifelse(length(filename), filename[1], NA_character_)
     }, character(1))
