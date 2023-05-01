@@ -100,7 +100,7 @@ fi
 #rm -f ${PKGDIR}/vignettes/*.Rnw
 
 # Do not build articles (vignettes) for remotes
-BUILD_ARGS="--resave-data"
+#BUILD_ARGS="--resave-data"
 if [ "${5}" == "false" ]; then
   BUILD_ARGS="${BUILD_ARGS} --no-build-vignettes"
   rm -Rf ${PKGDIR}/vignettes
