@@ -38,10 +38,11 @@ echo "::endgroup::"
 if test -f "$PKGDIR/.prepare"; then
   echo "Trying to run $PKGDIR/.prepare"
   (cd $PKGDIR; sh .prepare) || true
-#elif [ "$REPO" = "arrow" ]; then
+elif [ "$REPO" = "arrow" ]; then
+  export ARROW_R_DEV=1=TRUE
 #  DATE=$(date -d yesterday +%Y%m%d)
 #  (cd $PKGDIR; sed -i "s/.9000$/.$DATE/" DESCRIPTION)
-#  (cd $PKGDIR; make sync-cpp; cp -f ../dev/tasks/homebrew-formulae/autobrew/apache-arrow.rb tools/apache-arrow.rb)
+  (cd $PKGDIR; make sync-cpp)
 elif [ "$REPO" = "duckdb" ]; then
   (cd $PKGDIR; ./configure)
 fi
