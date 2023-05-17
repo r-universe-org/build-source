@@ -12,6 +12,7 @@ Imports:
     cffr,
     commonmark,
     curl,
+    data.table,
     gert (>= 1.6.0),
     gh,
     jsonlite,
