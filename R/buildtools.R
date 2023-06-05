@@ -592,7 +592,7 @@ get_package_datasets <- function(package){
   if(nrow(datasets) > 0){
     names(datasets) <- c('name', 'title')
     datasets$object <- sub("^.* \\((.+)\\)$", "\\1", datasets$name) #see e.g. pkg 'hardhat'
-    datasets$name <- sub("\\W.*$", "", datasets$name)
+    datasets$name <- sub("\\s.*$", "", datasets$name)
     datalist <- lapply(seq_len(nrow(datasets)), function(i){
       tryCatch({
         dataset <- datasets$object[i]
