@@ -20,7 +20,7 @@ Imports:
     lubridate,
     maketools,
     postdoc (>= 1.2.0),
-    remotes,
+    remotes (>= 2.4.2.9000),
     rmarkdown,
     yaml,
     xml2
