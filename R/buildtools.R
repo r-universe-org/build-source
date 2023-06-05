@@ -677,7 +677,7 @@ get_help_titles_from_manual <- function(path){
 precache_rspm <- function(){
   url <- getOption('repos')['CRAN']
   for(i in 1:3){
-    unlink(list.files(tempdir(), pattern = 'packagemanager.rstudio.com', full.names = TRUE))
+    unlink(list.files(tempdir(), pattern = 'packagemanager.posit.co', full.names = TRUE))
     pkgs <- available.packages(repos = url)
     message("Found ", nrow(pkgs), " packages on rspm")
     if(nrow(pkgs) > 17000){
