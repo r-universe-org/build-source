@@ -101,10 +101,11 @@ fi
 
 # Default LazyData to true
 if [ -d "${PKGDIR}/data" ]; then
-  if ! grep '^LazyData:' "${PKGDIR}/DESCRIPTION"; then
-  echo "NOTE: setting LazyData: true in DESCRIPTION"
-  echo "LazyData: true" >> "${PKGDIR}/DESCRIPTION"
-  fi
+  #TODO: maybe also check for BuildResaveData=no (e.g. diptest/VLMC)
+  #if ! grep '^LazyData:' "${PKGDIR}/DESCRIPTION"; then
+  #echo "NOTE: setting LazyData: true in DESCRIPTION"
+  #echo "LazyData: true" >> "${PKGDIR}/DESCRIPTION"
+  #fi
   # Preinstall a copy to support --resave-data
   if ls ${PKGDIR}/data/*.R; then
   echo "Found R files under data. Preinstalling..."
