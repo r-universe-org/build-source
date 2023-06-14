@@ -15,6 +15,7 @@ Imports:
     data.table,
     gert (>= 1.6.0),
     gh,
+    htmlwidgets,
     jsonlite,
     knitr,
     lubridate,
