@@ -282,7 +282,7 @@ install_dependencies <- function(path = '.'){
   deps <- remotes::local_package_deps(dependencies=TRUE)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
-  deps <- setdiff(unique(c(deps, desc$VignetteBuilder)), basepkgs)
+  deps <- setdiff(unique(c(deps, split_by_comma(desc$VignetteBuilder))), basepkgs)
 
   message("Running: utils::install.packages(deps)")
   utils::install.packages(deps)
@@ -292,7 +292,7 @@ install_dependencies <- function(path = '.'){
   remotes <- desc$Remotes
   if(length(remotes)){
     try({
-      remotes_repos <- trimws(strsplit(remotes, ',')[[1]])
+      remotes_repos <- split_by_comma(remotes)
       lapply(remotes_repos, function(x){remotes::install_github(x, upgrade = FALSE)})
     })
   }
@@ -744,4 +744,10 @@ get_cran_releases_slow <- function(package){
     version = sub("^.*_", "", sub('.tar.gz', '', filenames, fixed = TRUE)),
     date = as.Date(mtimes)
   )
+}
+
+split_by_comma <- function(x){
+  if(!length(x) || !is.character(x))
+    return(x)
+  trimws(strsplit(x, ',')[[1]])
 }
