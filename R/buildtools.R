@@ -382,9 +382,27 @@ filter_topics <- function(x){
   setdiff(x, c("r", "rstats", "cran", "r-cran", "cran-r", "r-package", "rpackage", "package", "r-stats", "rstats-package"))
 }
 
-get_official_url <- function(pkg){
+get_home_url <- function(pkg){
   df <- read.csv('https://r-universe-org.github.io/cran-to-git/crantogit.csv')
-  df[df$package == pkg, 'url']
+  url <- df[df$package == pkg, 'url']
+  if(length(url))
+    return(url)
+}
+
+get_real_owner <- function(pkg){
+  df <- read.csv('https://r-universe-org.github.io/cran-to-git/crantogit.csv')
+  url <- df[df$package == pkg, 'url']
+  if(length(url))
+    return(basename(dirname(url)))
+  unknown <- read.csv('https://r-universe-org.github.io/cran-to-git/unknown.csv')
+  if(pkg %in% unknown$package){
+    pkginfo <- unknown[unknown$package == pkg, ]
+    if(nchar(pkginfo$owner)){
+      return(pkginfo$owner)
+    } else {
+      return(pkginfo$registry)
+    }
+  }
 }
 
 #' @rdname buildtools
@@ -404,7 +422,6 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(keywords)){
     out$topics <- unique(keywords)
   }
-  #out$cranurl <- identical(tolower(url), try(tolower(get_official_url(pkgname))))
   if(!grepl('^https?://github.com', url)){
     return(out)
   }
@@ -635,11 +652,15 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(length(gitstats$contributions)){
     gitstats$contributions <- lapply(gitstats$contributions, jsonlite::unbox)
   }
-  cranurl <- identical(tolower(git_url), try(tolower(get_official_url(package))))
+  homeurl <- get_home_url(package)
+  realowner <- get_real_owner(package)
+  cranurl <- identical(tolower(git_url), homeurl)
   releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
   out <- list(
     assets = assets,
+    homeurl = jsonlite::unbox(homeurl),
+    realowner = jsonlite::unbox(realowner),
     cranurl = jsonlite::unbox(cranurl),
     releases = releases, # generalize this for bioc, github?
     exports = exports,
