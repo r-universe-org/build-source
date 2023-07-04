@@ -390,19 +390,10 @@ get_home_url <- function(pkg){
 }
 
 get_real_owner <- function(pkg){
-  df <- read.csv('https://r-universe-org.github.io/cran-to-git/crantogit.csv')
-  url <- df[df$package == pkg, 'url']
-  if(length(url))
-    return(basename(dirname(url)))
-  unknown <- read.csv('https://r-universe-org.github.io/cran-to-git/unknown.csv')
-  if(pkg %in% unknown$package){
-    pkginfo <- unknown[unknown$package == pkg, ]
-    if(nchar(pkginfo$owner)){
-      return(pkginfo$owner)
-    } else {
-      return(pkginfo$registry)
-    }
-  }
+  df <- read.csv('https://r-universe-org.github.io/cran-to-git/universes.csv')
+  owner <- df[df$package == pkg, 'owner']
+  if(length(owner))
+    return(owner)
 }
 
 #' @rdname buildtools
