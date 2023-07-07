@@ -255,7 +255,7 @@ install_sysdeps <- function(path = '.'){
   tryCatch({
     aptline <- remotes::system_requirements(ubuntu)
     system("apt-get update")
-    if(length(aptline) && !grepl('(libcurl|pandoc)', aptline[1])){
+    if(length(aptline) && !grepl('(libcurl|pandoc|cargo|rustc)', aptline[1])){
       system(aptline[1])
     }
     # Special case extra libs that we don't have in the base image

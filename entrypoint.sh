@@ -6,6 +6,11 @@ echo "Subdir: ${3}"
 echo "Branch: ${4}"
 echo "Articles: ${5}"
 
+# Set Rust path
+if test -f "$HOME/.cargo/env"; then
+source "$HOME/.cargo/env"
+fi
+
 # Setup build environment
 if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
 
