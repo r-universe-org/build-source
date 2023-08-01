@@ -42,9 +42,9 @@ elif [ "$REPO" = "arrow" ]; then
   export ARROW_R_DEV=1=TRUE
 #  DATE=$(date -d yesterday +%Y%m%d)
 #  (cd $PKGDIR; sed -i "s/.9000$/.$DATE/" DESCRIPTION)
-  (cd $PKGDIR; make sync-cpp)
+  (cd $PKGDIR; make sync-cpp || true)
 elif [ "$REPO" = "duckdb" ]; then
-  (cd $PKGDIR; ./configure)
+  (cd $PKGDIR; ./configure || true)
 fi
 
 DISTRO="$(lsb_release -sc)"
