@@ -1,0 +1,2 @@
+Password is 'dummy'
+Key is passworded only to prevent github automatically invalidating this key.
