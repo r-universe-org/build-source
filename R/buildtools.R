@@ -640,31 +640,31 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   readme <- if(nchar(readme_url) > 0) readme_url
   logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
   gitstats <- get_gitstats(repo, pkgdir, git_url)
-  if(length(gitstats$contributions)){
-    gitstats$contributions <- lapply(gitstats$contributions, jsonlite::unbox)
-  }
   homeurl <- get_home_url(package)
   realowner <- get_real_owner(package)
   cranurl <- identical(tolower(git_url), homeurl)
   releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
-  out <- list(
-    assets = assets,
-    homeurl = jsonlite::unbox(homeurl),
-    realowner = jsonlite::unbox(realowner),
-    cranurl = jsonlite::unbox(cranurl),
-    releases = releases, # generalize this for bioc, github?
-    exports = exports,
-    datasets = datasets,
-    gitstats = gitstats,
-    help = helppages,
-    pkglogo = jsonlite::unbox(logo),
-    readme = jsonlite::unbox(readme),
-    rundeps = rundeps,
-    sysdeps = sysdeps,
-    vignettes = vignettes
-  )
-  jsonlite::write_json(Filter(function(x){!is.null(x)}, out), path = file.path(extra_dir, 'contents.json'))
+
+  # Generate contents.json
+  contents <- gitstats
+  if(length(contents$contributions)){
+    contents$contributions <- lapply(contents$contributions, jsonlite::unbox)
+  }
+  contents$assets <- assets
+  contents$homeurl <- jsonlite::unbox(homeurl)
+  contents$realowner <- jsonlite::unbox(realowner)
+  contents$cranurl <- jsonlite::unbox(cranurl)
+  contents$releases <- releases
+  contents$exports <- exports
+  contents$datasets <- datasets
+  contents$help <- helppages
+  contents$pkglogo <- jsonlite::unbox(logo)
+  contents$readme <- jsonlite::unbox(readme)
+  contents$rundeps <- rundeps
+  contents$sysdeps <- sysdeps
+  contents$vignettes <- vignettes
+  jsonlite::write_json(Filter(function(x){!is.null(x)}, contents), path = file.path(extra_dir, 'contents.json'))
 }
 
 #' @export
