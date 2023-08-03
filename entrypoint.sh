@@ -100,17 +100,18 @@ if [ "${5}" == "false" ]; then
 fi
 
 # Default LazyData to true
-if [ -d "${PKGDIR}/data" ]; then
+#if [ -d "${PKGDIR}/data" ]; then
   #TODO: maybe also check for BuildResaveData=no (e.g. diptest/VLMC)
   #if ! grep '^LazyData:' "${PKGDIR}/DESCRIPTION"; then
   #echo "NOTE: setting LazyData: true in DESCRIPTION"
   #echo "LazyData: true" >> "${PKGDIR}/DESCRIPTION"
   #fi
   # Preinstall a copy to support --resave-data
-  if ls ${PKGDIR}/data/*.R; then
+#fi
+
+if ls ${PKGDIR}/data/*.R 2>/dev/null; then
   echo "Found R files under data. Preinstalling..."
   R CMD INSTALL ${PKGDIR} --clean
-  fi
 fi
 
 # Override rmarkdown engine
