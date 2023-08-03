@@ -114,6 +114,11 @@ if ls ${PKGDIR}/data/*.R 2>/dev/null; then
   R CMD INSTALL ${PKGDIR} --clean
 fi
 
+# Hack for NEWS.md parser in base R
+if [ -f "${PKGDIR}/NEWS.md" ]; then
+sed -i "1,50s/(development version)/${VERSION}/" "${PKGDIR}/NEWS.md" || true
+fi
+
 # Override rmarkdown engine
 #if ls ${PKGDIR}/vignettes/*; then
 #echo "Found vignettes..."
