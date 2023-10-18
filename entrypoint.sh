@@ -72,9 +72,13 @@ COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo "COMMITINFO=$COMMITINFO" >> $GITHUB_OUTPUT
 
 # DEBUGGING
+if [ "${MY_UNIVERSE}" ]; then
 echo "::group::Show contents of $MY_UNIVERSE"
 R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,'Version',drop=FALSE])"
 echo "::endgroup::"
+else
+echo "MY_UNIVERSE is not set"
+fi
 
 # Get dependencies
 echo "::group::Installing R dependencies"
