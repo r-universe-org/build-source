@@ -20,7 +20,7 @@ Imports:
     knitr,
     lubridate,
     maketools,
-    postdoc (>= 1.2.0),
+    postdoc (>= 1.2.2),
     remotes (>= 2.4.2.9000),
     rmarkdown,
     yaml,
