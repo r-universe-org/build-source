@@ -639,7 +639,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   readme_url <- Sys.getenv('README_URL')
   readme <- if(nchar(readme_url) > 0) readme_url
   logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
-  gitstats <- get_gitstats(repo, pkgdir, git_url)
+  contents <- get_gitstats(repo, pkgdir, git_url)
   homeurl <- get_home_url(package)
   realowner <- get_real_owner(package)
   cranurl <- identical(tolower(git_url), homeurl)
@@ -647,7 +647,6 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   helppages <- get_help_metadata(package)
 
   # Generate contents.json
-  contents <- gitstats
   if(length(contents$contributions)){
     contents$contributions <- lapply(contents$contributions, jsonlite::unbox)
   }
