@@ -9,7 +9,7 @@
 #' @param git_url of the git repository
 #' @param subdir if the package lives in a subdir in the repo
 find_logo <- function (path, git_url, subdir = "") {
-  # Match logic from pkgdown but return path relative package root.
+  # Match logic from pkgdown but return path relative packagfe root.
   rel_path <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
   cardimage <- find_opengraph_image(path = path)
   if(length(cardimage)){
@@ -407,7 +407,7 @@ get_gitstats <- function(repo, pkgdir, url){
   keywords <- filter_topics(get_schema_keywords(pkgdir))
   biocinfo <- tryCatch(bioc_releases(pkgname), error = message)
   if(length(biocinfo)){
-    out$bioconductor <- biocinfo
+    out$bioc <- biocinfo
     keywords <- c('bioconductor-package', keywords)
   }
   if(length(keywords)){
@@ -706,13 +706,17 @@ bioc_releases <- function(package){
   bioc_devel <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', yml$devel_version))
   pkg_devel <- bioc_devel[[package]]
   if(length(pkg_devel)){
-    out <- list(devel = list(version = pkg_devel$Version, bioc = yml$devel_version))
+    bioc_branch <- 'devel'
+    bioc_version <- yml$devel_version
+    bioc_pkgver <- pkg_devel$Version
     bioc_release <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', yml$release_version))
     pkg_release <- bioc_release[[package]]
     if(length(pkg_release)){
-      out <- c(out, list(release = list(version = pkg_release$Version, bioc = yml$release_version)))
+      bioc_branch <- c(bioc_branch, 'release')
+      bioc_version <- c(bioc_version, yml$release_version)
+      bioc_pkgver <- c(bioc_pkgver,  pkg_release$Version)
     }
-    out
+    data.frame(branch = bioc_branch, version = bioc_pkgver, bioc = bioc_version)
   }
 }
 
