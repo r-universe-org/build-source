@@ -92,6 +92,9 @@ fi
 if [ -f "/NEED_JAGS" ]; then
   echo "NEED_JAGS=true" >> $GITHUB_OUTPUT
 fi
+if [ -f "/NEED_CMDSTAN" ]; then
+  echo "NEED_CMDSTAN=true" >> $GITHUB_OUTPUT
+fi
 
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw

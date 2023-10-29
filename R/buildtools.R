@@ -316,6 +316,21 @@ install_dependencies <- function(path = '.'){
       install.packages('rjags')
     file.create('/NEED_JAGS')
   }
+  if(isTRUE('cmdstanr' %in% c(deps, desc$Package))){
+    file.create('/NEED_CMDSTAN')
+    install_cmdstan_quick()
+  }
+}
+
+# From: https://mc-stan.org/users/documentation/case-studies/jupyter_colab_notebooks_2020.html#challenge-fast-spin-up
+# The typical cmdstanr::install_cmdstan() takes like 10 minutes, but it is too large to preinstall on the images.
+install_cmdstan_quick <- function(){
+  standir <- normalizePath('~/.cmdstan', mustWork = FALSE)
+  dir.create(standir)
+  on.exit(unlink('cmdstan.tgz'))
+  download.file('https://github.com/stan-dev/cmdstan/releases/download/v2.33.1/collab-cmdstan-2.33.1.tgz', 'cmdstan.tgz')
+  system(sprintf("tar zxf cmdstan.tgz -C %s", standir), intern = TRUE)
+  message("Done installing cmdstan!")
 }
 
 recurse_deps <- function(pkgs){
