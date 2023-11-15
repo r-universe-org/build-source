@@ -3,6 +3,7 @@ FROM ghcr.io/r-universe-org/base-image
 COPY . /pkg
 COPY entrypoint.sh /entrypoint.sh
 COPY pdftinytex /root/bin/pdftinytex
+COPY fortranwrapper.sh /fortranwrapper.sh
 
 COPY dummykey/key.zip /key.zip
 

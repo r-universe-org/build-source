@@ -178,6 +178,7 @@ fi
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 echo "::group::install package and generate html docs"
 #export _R_HELP_LINKS_TO_TOPICS_=FALSE
+cp /fortranwrapper.sh /usr/local/bin/gfortran
 R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
 echo "::endgroup::"
 
@@ -225,6 +226,11 @@ if [ "$LINUXBINARY" ] && [ -f "$LINUXBINARY" ]; then
 BINARYPKG="${PKG_VERSION}-${DISTRO}.tar.gz"
 mv "$LINUXBINARY" "$BINARYPKG"
 echo "BINARYPKG=$BINARYPKG" >> $GITHUB_OUTPUT
+fi
+
+# Check for some traps at install time
+if [ -f "/NEED_FORTRAN" ]; then
+  echo "NEED_FORTRAN=true" >> $GITHUB_OUTPUT
 fi
 
 # TODO: can we explicitly set action status/outcome in GHA?
