@@ -47,13 +47,14 @@ elif [ "$REPO" = "duckdb" ]; then
   (cd $PKGDIR; ./configure || true)
 fi
 
+# Normalize DESCRIPTION file
+DESCRIPTION="${PKGDIR}/DESCRIPTION"
+R -e "x<-read.dcf('${DESCRIPTION}');write.dcf(x,'${DESCRIPTION}')"
+
 DISTRO="$(lsb_release -sc)"
-PACKAGE=$(grep '^Package:' "${PKGDIR}/DESCRIPTION" | sed 's/^Package://')
-VERSION=$(grep '^Version:' "${PKGDIR}/DESCRIPTION" | sed 's/^Version://')
-OSTYPE=$(grep '^OS_type:' "${PKGDIR}/DESCRIPTION" | sed 's/^OS_type://')
-PACKAGE=$(echo -n "${PACKAGE//[[:space:]]/}")
-VERSION=$(echo -n "${VERSION//[[:space:]]/}")
-OSTYPE=$(echo -n "${OSTYPE//[[:space:]]/}")
+PACKAGE=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Package)")
+VERSION=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Version)")
+OSTYPE=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$OS_type)")
 PKG_VERSION="${PACKAGE}_${VERSION}"
 SOURCEPKG="${PKG_VERSION}.tar.gz"
 
