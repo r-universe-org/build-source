@@ -665,6 +665,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(length(contents$contributions)){
     contents$contributions <- lapply(contents$contributions, jsonlite::unbox)
   }
+  if(file.exists('/NEED_FORTRAN')){
+    contents$fortran <- jsonlite::unbox(TRUE)
+  }
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
   contents$realowner <- jsonlite::unbox(realowner)
