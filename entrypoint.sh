@@ -6,8 +6,9 @@ echo "Subdir: ${3}"
 echo "Branch: ${4}"
 echo "Articles: ${5}"
 
-# Setup build environment
-if [ "${R_LIBS_USER}" ]; then mkdir -p $R_LIBS_USER; fi
+# Setup build environment (expand ~ to $HOME)
+if [ "${R_LIBS_USER}" ]; then mkdir -vp "${R_LIBS_USER/#\~/$HOME}"; fi
+R -e ".libPaths()"
 
 # Get the package dir
 URL="$1"
