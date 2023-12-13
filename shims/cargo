@@ -1,0 +1,3 @@
+#!/bin/sh
+touch /NEED_CARGO
+exec /opt/.cargo/bin/cargo "$@"
