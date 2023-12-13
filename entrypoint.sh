@@ -179,8 +179,7 @@ fi
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 echo "::group::install package and generate html docs"
 #export _R_HELP_LINKS_TO_TOPICS_=FALSE
-cp /fortranwrapper.sh /usr/local/bin/gfortran
-R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
+PATH="/shims:$PATH" R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
 echo "::endgroup::"
 
 # Build and insert pdf manual into the tar.gz
