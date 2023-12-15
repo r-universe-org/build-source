@@ -7,7 +7,8 @@ echo "Branch: ${4}"
 echo "Articles: ${5}"
 
 # Setup build environment (expand ~ to $HOME)
-if [ "${R_LIBS_USER}" ]; then mkdir -vp "${R_LIBS_USER/#\~/$HOME}"; fi
+export R_LIBS_USER="${PWD}/pkglib"
+mkdir -p $R_LIBS_USER
 R -e ".libPaths()"
 
 # Get the package dir
