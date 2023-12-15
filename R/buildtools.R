@@ -282,10 +282,14 @@ install_dependencies <- function(path = '.'){
   deps <- remotes::local_package_deps(dependencies=TRUE)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
-  deps <- setdiff(unique(c(deps, split_by_comma(desc$VignetteBuilder))), basepkgs)
+  deps <- c(deps, split_by_comma(desc$VignetteBuilder))
 
-  message("Running: utils::install.packages(deps)")
-  utils::install.packages(deps)
+  # Try to download and cache *all* dependencies (also those preinstalled on this image)
+  alldeps <- setdiff(unique(c(deps,unlist(unname(tools::package_dependencies(deps, recursive = TRUE))))), basepkgs)
+
+  # Actually install
+  message("Running: utils::install.packages(alldeps)")
+  utils::install.packages(alldeps)
 
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
