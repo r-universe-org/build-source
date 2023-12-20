@@ -51,7 +51,7 @@ fi
 
 # Normalize DESCRIPTION file
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
-R -e "x<-read.dcf('${DESCRIPTION}');write.dcf(x,'${DESCRIPTION}')"
+R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Package)")

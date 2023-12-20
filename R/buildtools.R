@@ -799,3 +799,10 @@ split_by_comma <- function(x){
     return(x)
   trimws(strsplit(x, ',')[[1]])
 }
+
+# Keep whitespace within R blocks to account for comment lines
+# For example: https://github.com/cran/blogdown/blob/1.18/DESCRIPTION
+normalize_description <- function(path){
+  x <-read.dcf(path, keep.white='Authors@R')
+  write.dcf(x, path, keep.white='Authors@R')
+}
