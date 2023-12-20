@@ -282,10 +282,18 @@ install_dependencies <- function(path = '.'){
   deps <- remotes::local_package_deps(dependencies=TRUE)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
-  deps <- c(deps, split_by_comma(desc$VignetteBuilder))
+  deps <- as.character(c(deps, split_by_comma(desc$VignetteBuilder)))
 
   # Try to download and cache *all* dependencies (also those preinstalled on this image)
-  alldeps <- setdiff(unique(c(deps,unlist(unname(tools::package_dependencies(deps, recursive = TRUE))))), basepkgs)
+  # Note that if deps is NULL, tools::package_dependencies() returns all packages!
+  alldeps <- if(length(deps)){
+    setdiff(unique(c(deps,unlist(unname(tools::package_dependencies(deps, recursive = TRUE))))), basepkgs)
+  }
+
+  # Some sanity check
+  if(length(alldeps) > 1000){
+    stop("This package has ", length(alldeps), " dependencies. This does not seem right.")
+  }
 
   # Actually install
   message("Running: utils::install.packages(alldeps)")
