@@ -45,8 +45,8 @@ elif [ "$REPO" = "arrow" ]; then
 #  DATE=$(date -d yesterday +%Y%m%d)
 #  (cd $PKGDIR; sed -i "s/.9000$/.$DATE/" DESCRIPTION)
   (cd $PKGDIR; make sync-cpp || true)
-elif [ "$REPO" = "duckdb" ]; then
-  (cd $PKGDIR; ./configure || true)
+#elif [ "$REPO" = "duckdb" ]; then
+#  (cd $PKGDIR; ./configure || true)
 fi
 
 # Normalize DESCRIPTION file
