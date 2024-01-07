@@ -25,7 +25,7 @@ Imports:
     rmarkdown,
     yaml,
     xml2
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Remotes: 
     ropensci/postdoc,
     r-lib/remotes

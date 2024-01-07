@@ -37,6 +37,9 @@ outputs:
     description: 'Base64 encoded JSON list with commit data'
   GITSTATS:
     description: 'Base64 encoded JSON list with git stats'
+  NEEDS_COMPILATION:
+    description: 'If the source package has a src dir'
+
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/r-universe-org/build-source'

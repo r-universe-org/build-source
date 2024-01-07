@@ -701,6 +701,13 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
 
 #' @export
 #' @rdname buildtools
+needs_compilation <- function(package){
+  desc <- as.data.frame(read.dcf(system.file('DESCRIPTION', package = package)))
+  desc$NeedsCompilation
+}
+
+#' @export
+#' @rdname buildtools
 maintainer_info_base64 <- function(path = '.'){
   info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)

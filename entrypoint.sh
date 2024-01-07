@@ -194,6 +194,12 @@ if [ "$MANUAL_FAILURE" ]; then
 cat stderr_manual.txt
 fi
 
+# Test if package needs compilation (R simply checks if there is a 'src' dir)
+NEEDS_COMPILATION=$(Rscript -e "cat(buildtools::needs_compilation('${PACKAGE}'))")
+if [ "$NEEDS_COMPILATION" == "yes" ]; then
+echo "NEEDS_COMPILATION=yes" >> $GITHUB_OUTPUT
+fi
+
 # Find readme URL
 export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
 if [ "$README_URL" ]; then

@@ -19,6 +19,7 @@
 \alias{get_help_metadata}
 \alias{get_package_datasets}
 \alias{generate_metadata_files}
+\alias{needs_compilation}
 \alias{maintainer_info_base64}
 \alias{tweak_help_files}
 \title{Build tools}
@@ -58,6 +59,8 @@ get_help_metadata(package)
 get_package_datasets(package)
 
 generate_metadata_files(package, repo, subdir, outdir, pkgdir, git_url)
+
+needs_compilation(package)
 
 maintainer_info_base64(path = ".")
 
