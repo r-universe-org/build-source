@@ -240,6 +240,9 @@ fi
 if [ -f "/NEED_FORTRAN" ]; then
   echo "NEED_FORTRAN=true" >> $GITHUB_OUTPUT
 fi
+if [ -f "/NEED_CARGO" ]; then
+  echo "NEED_CARGO=true" >> $GITHUB_OUTPUT
+fi
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo "Build complete!"
