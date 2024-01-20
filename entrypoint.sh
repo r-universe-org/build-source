@@ -15,6 +15,11 @@ R -e ".libPaths()"
 URL="$1"
 REPO=$(basename $URL)
 
+# start fake X server (for e.g. gWidgets2tcltk)
+nohup Xvfb :6 -screen 0 1280x1024x24 > ~/X.log 2>&1 &
+export DISPLAY=:6
+echo "Running fake X server on $DISPLAY"
+
 # Clone, and checkout the revision if any
 # Removed --depth 1 because we want to read vignette c/m times
 echo "::group::Cloning R package repository"
