@@ -58,6 +58,9 @@ fi
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
+# Resolve \Sexpr[] during CMD build by default (because these break cross compiles)
+sed -i 's|Sexpr\[results=rd\]|Sexpr[results=rd,stage=build]|g' ${PKGDIR}/man/*.Rd || true
+
 DISTRO="$(lsb_release -sc)"
 PACKAGE=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Package)")
 VERSION=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Version)")
