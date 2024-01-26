@@ -84,6 +84,12 @@ echo "MAINTAINERINFO=$MAINTAINERINFO" >> $GITHUB_OUTPUT
 COMMITINFO=$(Rscript -e "cat(buildtools::commit_info_base64('$REPO'))")
 echo "COMMITINFO=$COMMITINFO" >> $GITHUB_OUTPUT
 
+# Validate version (see e.g. rJava)
+if ! Rscript -e "package_version('$VERSION')"; then
+echo "VERSION=invalid" >> $GITHUB_OUTPUT
+exit 1
+fi
+
 # DEBUGGING
 if [ "${MY_UNIVERSE}" ]; then
 echo "::group::Show contents of $MY_UNIVERSE"
