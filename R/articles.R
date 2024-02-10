@@ -34,8 +34,9 @@ replace_rmarkdown_engine <- function(){
   message("Replacing default rmarkdown theme...")
   rmd_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
   tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = rmd_engine$tangle,
-    pattern = rmd_engine$pattern, weave = function(..., output_format = NULL){
-      rmd_engine$weave(..., output_format = r_universe_format())
+    pattern = rmd_engine$pattern, weave = function(file,..., output_format = NULL){
+      load_custom_output_package(file)
+      rmd_engine$weave(file,..., output_format = r_universe_format())
     }
   )
 
@@ -82,4 +83,15 @@ replace_rmarkdown_engine <- function(){
       file.copy(htmlfile, '.', overwrite = TRUE)
     }, tangle = old_engine$tangle, pattern = old_engine$pattern)
   })
+}
+
+# If a package uses a custom 'output' it may also assume functions from this package
+load_custom_output_package <- function(rmd_file){
+  try({
+    name <- rmarkdown:::output_format_from_yaml_front_matter(readLines(rmd_file, n = 100))$name
+    if(length(name) && grepl("::", name, fixed = TRUE)){
+      pkg <- strsplit(name, '::', fixed = TRUE)[[1]][1]
+      require(pkg, character.only = TRUE)
+    }
+  }, silent = TRUE)
 }
