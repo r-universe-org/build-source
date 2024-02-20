@@ -299,6 +299,11 @@ install_dependencies <- function(path = '.'){
   message("Running: utils::install.packages(alldeps)")
   utils::install.packages(alldeps)
 
+  # Temp solution, remove when quarto 1.4 is on cran
+  if('quarto' %in% split_by_comma(desc$VignetteBuilder)){
+    install.packages('quarto', repos = 'https://quarto-dev.r-universe.dev')
+  }
+
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
   remotes <- desc$Remotes
