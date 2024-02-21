@@ -8,11 +8,28 @@ render_article <- function(input, ...){
   rmarkdown::render(input, output_format = r_universe_format(), ...)
 }
 
+#' @export
+#' @rdname articles
+render_quarto <- function(input, ...){
+  quarto::quarto_render(input, metadata = quarto_html_meta())
+}
+
+template_file <- function(path){
+  system.file('rmd-template', path, package = 'buildtools', mustWork = TRUE)
+}
+
+# quarto html format parameters: https://quarto.org/docs/reference/formats/html.html
+quarto_html_meta <- function(){
+  list(
+    template = template_file('template.html'),
+    theme = 'none',
+    minimal = TRUE,
+    toc = TRUE,
+    'toc-depth' = 2
+  )
+}
+
 r_universe_format <- function(){
-  template_file <- function(path){
-    normalizePath(system.file(paste0('rmd-template/', path),
-                              package = 'buildtools'), mustWork = TRUE)
-  }
   rmarkdown::html_document(
     toc = TRUE,
     toc_depth = 2,
@@ -82,6 +99,13 @@ replace_rmarkdown_engine <- function(){
       htmlfile <- render_article(mdfile)
       file.copy(htmlfile, '.', overwrite = TRUE)
     }, tangle = old_engine$tangle, pattern = old_engine$pattern)
+  })
+
+  # Experimental quarto override
+  setHook(packageEvent("quarto", "onLoad"), function(...) {
+    message("Found quarto! Replacing html engine...")
+    quarto_engine <- tools::vignetteEngine('html', package='quarto')
+    environment(quarto_engine$weave)$meta$format$html <- quarto_html_meta()
   })
 }
 

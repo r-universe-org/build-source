@@ -2,10 +2,13 @@
 % Please edit documentation in R/articles.R
 \name{render_article}
 \alias{render_article}
+\alias{render_quarto}
 \alias{replace_rmarkdown_engine}
 \title{Render rmarkdown article}
 \usage{
 render_article(input, ...)
+
+render_quarto(input, ...)
 
 replace_rmarkdown_engine()
 }
