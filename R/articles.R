@@ -27,7 +27,8 @@ quarto_html_meta <- function(){
     minimal = TRUE,
     toc = TRUE,
     'toc-depth' = 2,
-    'embed-resources' = TRUE
+    'embed-resources' = TRUE,
+    'highlight-style' = 'pygments'
   )
 }
 
