@@ -98,7 +98,7 @@ weekly_commits <- function(repo = '.'){
   counts <- table(factor(commit_week, levels = levels))
   #list(counts = as.integer(counts), range = range(levels))
   df <- data.frame(week=levels, n=as.integer(counts))
-  subset(df, n > 0)
+  df[df$n > 0,]
 }
 
 latest_tags <- function(repo = '.'){
@@ -301,7 +301,7 @@ install_dependencies <- function(path = '.'){
 
   # Temp solution, remove when quarto 1.4 is on cran
   if('quarto' %in% split_by_comma(desc$VignetteBuilder)){
-    install.packages('quarto', repos = 'https://quarto-dev.r-universe.dev')
+    utils::install.packages('quarto', repos = 'https://quarto-dev.r-universe.dev')
   }
 
   # The following should not be needed if the remote is part of the universe
@@ -330,7 +330,7 @@ install_dependencies <- function(path = '.'){
   }
   if(isTRUE(any(c('rjags', 'runjags') %in% c(rundeps, desc$Package)))){
     if(!require('rjags'))
-      install.packages('rjags')
+      utils::install.packages('rjags')
     file.create('/NEED_JAGS')
   }
   if(isTRUE('cmdstanr' %in% c(deps, desc$Package))){
@@ -345,7 +345,7 @@ install_cmdstan_quick <- function(){
   standir <- normalizePath('~/.cmdstan', mustWork = FALSE)
   dir.create(standir)
   on.exit(unlink('cmdstan.tgz'))
-  download.file('https://github.com/stan-dev/cmdstan/releases/download/v2.33.1/collab-cmdstan-2.33.1.tgz', 'cmdstan.tgz')
+  utils::download.file('https://github.com/stan-dev/cmdstan/releases/download/v2.33.1/collab-cmdstan-2.33.1.tgz', 'cmdstan.tgz')
   system(sprintf("tar zxf cmdstan.tgz -C %s", standir), intern = TRUE)
   message("Done installing cmdstan!")
 }
@@ -415,14 +415,14 @@ filter_topics <- function(x){
 }
 
 get_home_url <- function(pkg){
-  df <- read.csv('https://r-universe-org.github.io/cran-to-git/crantogit.csv')
+  df <- utils::read.csv('https://r-universe-org.github.io/cran-to-git/crantogit.csv')
   url <- df[df$package == pkg, 'url']
   if(length(url))
     return(url)
 }
 
 get_real_owner <- function(pkg){
-  df <- read.csv('https://r-universe-org.github.io/cran-to-git/universes.csv')
+  df <- utils::read.csv('https://r-universe-org.github.io/cran-to-git/universes.csv')
   owner <- df[df$package == pkg, 'owner']
   if(length(owner))
     return(owner)
@@ -588,9 +588,9 @@ generate_citation_files <- function(path, outdir){
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   if(file.exists('inst/CITATION')){
-    ct <- citation(basename(outdir))
+    ct <- utils::citation(basename(outdir))
     jsonlite::write_json(ct, citation_json, force=TRUE, auto_unbox = TRUE, pretty = TRUE)
-    writeLines(capture.output(print(ct, bibtex = TRUE)), citation_txt)
+    writeLines(utils::capture.output(print(ct, bibtex = TRUE)), citation_txt)
     writeLines(tools::toHTML(ct), citation_html)
   }
 }
@@ -638,7 +638,7 @@ get_package_datasets <- function(package){
         dataset <- datasets$object[i]
         dataname <- datasets$name[i]
         env <- new.env()
-        data(list = dataset, package = package, envir = env)
+        utils::data(list = dataset, package = package, envir = env)
         return(env[[dataname]])
       }, error = function(err){
         message(sprintf('Failure loading dataset "%s" (%s)', dataset, err))
@@ -734,7 +734,7 @@ precache_rspm <- function(){
   url <- getOption('repos')['CRAN']
   for(i in 1:3){
     unlink(list.files(tempdir(), pattern = 'packagemanager.posit.co', full.names = TRUE))
-    pkgs <- available.packages(repos = url)
+    pkgs <- utils::available.packages(repos = url)
     message("Found ", nrow(pkgs), " packages on rspm")
     if(nrow(pkgs) > 17000){
       message("OK")
