@@ -11,7 +11,7 @@ render_article <- function(input, ...){
 #' @export
 #' @rdname articles
 render_quarto <- function(input, ...){
-  quarto::quarto_render(input, metadata = quarto_html_meta())
+  quarto::quarto_render(input, metadata = quarto_html_meta(), ...)
 }
 
 template_file <- function(path){
@@ -27,8 +27,7 @@ quarto_html_meta <- function(){
     minimal = TRUE,
     toc = TRUE,
     'toc-depth' = 2,
-    'embed-resources' = TRUE,
-    'highlight-style' = 'pygments'
+    'embed-resources' = TRUE
   )
 }
 
@@ -107,8 +106,12 @@ replace_rmarkdown_engine <- function(){
   # Experimental quarto override
   setHook(packageEvent("quarto", "onLoad"), function(...) {
     message("Found quarto! Replacing html engine...")
-    quarto_engine <- tools::vignetteEngine('html', package='quarto')
-    environment(quarto_engine$weave)$meta$format$html <- quarto_html_meta()
+    quarto_engine <- tools::vignetteEngine('html', package = 'quarto')
+    tools::vignetteEngine('html', package = 'quarto', tangle = quarto_engine$tangle,
+      pattern = quarto_engine$pattern, weave = function(file, driver, syntax, encoding, metadata, quiet = FALSE, ...){
+        render_quarto(file, ...)
+      }
+    )
   })
 }
 
