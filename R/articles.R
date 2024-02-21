@@ -18,14 +18,16 @@ template_file <- function(path){
   system.file('rmd-template', path, package = 'buildtools', mustWork = TRUE)
 }
 
-# quarto html format parameters: https://quarto.org/docs/reference/formats/html.html
+# this replaces: quarto:::get_meta_for_html()
+# See html format parameters: https://quarto.org/docs/reference/formats/html.html
 quarto_html_meta <- function(){
   list(
     template = template_file('template.html'),
     theme = 'none',
     minimal = TRUE,
     toc = TRUE,
-    'toc-depth' = 2
+    'toc-depth' = 2,
+    'embed-resources' = TRUE
   )
 }
 
