@@ -274,8 +274,8 @@ basepkgs <- names(which(installed.packages()[ ,"Priority"] == "base", ))
 install_dependencies <- function(path = '.'){
   setwd(path)
 
-  # Try to work around intermittend RSPM fails
-  precache_rspm()
+  # Sanity check for P3m
+  precache_pppm()
 
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
   message("Running: remotes::local_package_deps(dependencies=TRUE)")
@@ -730,17 +730,17 @@ get_help_titles_from_manual <- function(path){
   structure(as.list(titles), names = pages)
 }
 
-precache_rspm <- function(){
+precache_pppm <- function(){
   url <- getOption('repos')['CRAN']
   for(i in 1:3){
-    unlink(list.files(tempdir(), pattern = 'packagemanager.posit.co', full.names = TRUE))
+    unlink(list.files(tempdir(), pattern = 'p3m.dev', full.names = TRUE))
     pkgs <- utils::available.packages(repos = url)
-    message("Found ", nrow(pkgs), " packages on rspm")
-    if(nrow(pkgs) > 17000){
+    message("Found ", nrow(pkgs), " packages on p3m.dev")
+    if(nrow(pkgs) > 20000){
       message("OK")
       break
     } else {
-      if(i == 3) stop("Failed to access RSPM repository")
+      if(i == 3) stop("Failed to access p3m. Maybe see: https://status.posit.co/#past-incidents")
       message("Retrying...")
     }
   }
