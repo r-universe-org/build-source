@@ -280,9 +280,10 @@ install_dependencies <- function(path = '.'){
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
   message("Running: remotes::local_package_deps(dependencies=TRUE)")
   deps <- remotes::local_package_deps(dependencies=TRUE)
+  vignette_builders <- split_by_comma(desc$VignetteBuilder)
 
   # Workaround for https://bugs.r-project.org/show_bug.cgi?id=18191
-  deps <- as.character(c(deps, split_by_comma(desc$VignetteBuilder)))
+  deps <- as.character(c(deps, vignette_builders))
 
   # Try to download and cache *all* dependencies (also those preinstalled on this image)
   # Note that if deps is NULL, tools::package_dependencies() returns all packages!
@@ -300,7 +301,7 @@ install_dependencies <- function(path = '.'){
   utils::install.packages(alldeps)
 
   # Temp solution, remove when quarto 1.4 is on cran
-  if('quarto' %in% split_by_comma(desc$VignetteBuilder)){
+  if('quarto' %in% vignette_builders && packageVersion('quarto') < '1.4'){
     utils::install.packages('quarto', repos = 'https://quarto-dev.r-universe.dev')
   }
 
