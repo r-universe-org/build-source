@@ -42,7 +42,10 @@ Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
 echo "::endgroup::"
 
 # Experimental: support pkgs like rJava
-if test -f "$PKGDIR/.prepare"; then
+if test -f "$PKGDIR/bootstrap.R"; then
+  echo "Trying to run $PKGDIRbootstrap.R"
+  (cd $PKGDIR; Rscript bootstrap.R) || true
+elif test -f "$PKGDIR/.prepare"; then
   echo "Trying to run $PKGDIR/.prepare"
   (cd $PKGDIR; sh .prepare) || true
 elif [ "$REPO" = "arrow" ]; then
