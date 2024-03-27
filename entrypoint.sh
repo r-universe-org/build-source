@@ -61,6 +61,12 @@ fi
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
+# Temp workaround for BioC
+if [ "${MY_UNIVERSE}" == "https://bioc.r-universe.dev" ]; then
+sed -i 's/R (>= 4.4/R (>= 4.3/' ${DESCRIPTION}
+fi
+
+
 # Resolve \Sexpr[] during CMD build for compiled packages (because these break cross compiles)
 if [ -d "${PKGDIR}/src" ]; then
 sed -i 's|Sexpr\[results=rd\]|Sexpr[results=rd,stage=build]|g' ${PKGDIR}/man/*.Rd || true
