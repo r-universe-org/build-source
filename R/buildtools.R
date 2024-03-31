@@ -675,7 +675,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   helppages <- get_help_metadata(package)
   dev_url <- guess_development_url(package, tolower(git_url))
   if(length(dev_url))
-    contents$devurl <- dev_url
+    contents$devurl <- jsonlite::unbox(dev_url)
 
   # Generate contents.json
   if(length(contents$contributions)){
