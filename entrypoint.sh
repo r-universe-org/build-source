@@ -63,7 +63,7 @@ R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
 # Temp workaround for BioC
 if [ "${MY_UNIVERSE}" == "https://bioc.r-universe.dev" ]; then
-sed -i 's/R (>= 4.4/R (>= 4.3/' ${DESCRIPTION}
+sed -i 's/R\s*(>= 4.4/R (>= 4.3/' ${DESCRIPTION} || true
 fi
 
 
