@@ -228,7 +228,7 @@ fi
 # Find readme URL
 export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
 if [ "$README_URL" ]; then
-Rscript -e "cat(buildtools::render_readme('$README_URL', 'outputs/$PACKAGE/inst/doc'))" 2> stderr_readme.txt || README_FAILURE=1
+Rscript -e "cat(buildtools::render_readme('$README_URL', 'outputs/$PACKAGE/extra'))" 2> stderr_readme.txt || README_FAILURE=1
 else
 echo "No readme file found"
 fi
