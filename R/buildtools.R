@@ -575,7 +575,7 @@ render_news_files <- function(package, outdir = '.', url = NULL){
 
 #' @export
 #' @rdname buildtools
-generate_citation_files <- function(path, outdir){
+generate_citation_files <- function(path, outdir, git_url){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   citation_cff <- file.path(extra_dir, 'citation.cff')
@@ -584,12 +584,27 @@ generate_citation_files <- function(path, outdir){
   citation_html <- file.path(extra_dir, 'citation.html')
   setwd(path)
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
-  if(file.exists('inst/CITATION')){
-    ct <- utils::citation(basename(outdir))
-    jsonlite::write_json(ct, citation_json, force=TRUE, auto_unbox = TRUE, pretty = TRUE)
-    writeLines(utils::capture.output(print(ct, bibtex = TRUE)), citation_txt)
-    writeLines(tools::toHTML(ct), citation_html)
+  ct <- utils::citation(basename(outdir))
+  if(!file.exists('inst/CITATION')){
+    ct <- fixup_citation(ct, git_url)
   }
+  jsonlite::write_json(ct, citation_json, force=TRUE, auto_unbox = TRUE, pretty = TRUE)
+  writeLines(utils::capture.output(print(ct, bibtex = TRUE)), citation_txt)
+  writeLines(tools::toHTML(ct), citation_html)
+}
+
+fixup_citation <- function(ct, git_url){
+  git_url <- sub("https://github.com/bioc/", "https://bioconductor.org/packages/", git_url, fixed = TRUE)
+  git_url <- sub("https://github.com/cran/", "https://CRAN.R-project.org/package=", git_url, fixed = TRUE)
+  pkg <- attr(ct, 'package')
+  pkghome <- guess_development_url(pkg, git_url)
+  if(!length(pkghome)){
+    pkghome <- git_url
+  }
+  out <- unclass(ct)
+  out[[1]]$note <- sub("http.*", "", out[[1]]$note)
+  out[[1]]$url <- pkghome
+  structure(out, class = class(ct))
 }
 
 #' @export
