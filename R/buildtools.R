@@ -586,20 +586,24 @@ generate_citation_files <- function(path, outdir, git_url){
   cffr::cff_write(outfile = citation_cff, dependencies = FALSE, gh_keywords = FALSE)
   ct <- utils::citation(basename(outdir))
   if(!file.exists('inst/CITATION')){
-    ct <- fixup_citation(ct, git_url)
+    ct <- fixup_citation_url(ct, git_url)
   }
   jsonlite::write_json(ct, citation_json, force=TRUE, auto_unbox = TRUE, pretty = TRUE)
   writeLines(utils::capture.output(print(ct, bibtex = TRUE)), citation_txt)
   writeLines(tools::toHTML(ct), citation_html)
 }
 
-fixup_citation <- function(ct, git_url){
-  git_url <- sub("https://github.com/bioc/", "https://bioconductor.org/packages/", git_url, fixed = TRUE)
-  git_url <- sub("https://github.com/cran/", "https://CRAN.R-project.org/package=", git_url, fixed = TRUE)
-  pkg <- attr(ct, 'package')
-  pkghome <- guess_development_url(pkg, git_url)
-  if(!length(pkghome)){
-    pkghome <- git_url
+fixup_citation_url <- function(ct, git_url){
+  if(grepl("https://github.com/bioc/", git_url)){
+    pkghome <- sub("https://github.com/bioc/", "https://bioconductor.org/packages/", git_url, fixed = TRUE)
+  } else if(grepl("https://github.com/cran/", git_url)){
+    pkghome <- sub("https://github.com/cran/", "https://CRAN.R-project.org/package=", git_url, fixed = TRUE)
+  } else {
+    pkg <- attr(ct, 'package')
+    pkghome <- guess_development_url(pkg, git_url)
+    if(!length(pkghome)){
+      pkghome <- git_url
+    }
   }
   out <- unclass(ct)
   out[[1]]$note <- sub("http.*", "", out[[1]]$note)
