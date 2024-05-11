@@ -598,6 +598,8 @@ fixup_citation_url <- function(ct, git_url){
     pkghome <- sub("https://github.com/bioc/", "https://bioconductor.org/packages/", git_url, fixed = TRUE)
   } else if(grepl("https://github.com/cran/", git_url)){
     pkghome <- sub("https://github.com/cran/", "https://CRAN.R-project.org/package=", git_url, fixed = TRUE)
+  } else if(grepl("https://github.com/r-forge/", git_url)){
+    pkghome <- sub("https://github.com/r-forge/", "https://r-forge.r-project.org/projects/", git_url, fixed = TRUE)
   } else {
     pkg <- attr(ct, 'package')
     pkghome <- guess_development_url(pkg, git_url)
