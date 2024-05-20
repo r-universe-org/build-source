@@ -407,7 +407,7 @@ get_maintainer_info <- function(path = '.'){
 }
 
 filter_topics <- function(x){
-  setdiff(x, c("r", "rstats", "cran", "r-cran", "cran-r", "r-package", "rpackage", "package", "r-stats", "rstats-package"))
+  setdiff(x, c("r", "rstats", "cran", "r-cran", "cran-r", "r-package", "r-packages", "rpackage", "package", "r-stats", "rstats-package"))
 }
 
 get_home_url <- function(pkg){
