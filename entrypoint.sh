@@ -25,7 +25,7 @@ echo "Running fake X server on $DISPLAY"
 echo "::group::Cloning R package repository"
 git clone --recurse-submodules "$URL" "${REPO}"
 if [ "${2}" ]; then
-( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
+( cd ${REPO}; git checkout --recurse-submodules "$2"; git reset --hard "$2" )
 fi
 echo "::endgroup::"
 
