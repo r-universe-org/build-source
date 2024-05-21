@@ -27,5 +27,4 @@ Imports:
     xml2
 RoxygenNote: 7.3.1
 Remotes: 
-    ropensci/postdoc,
-    r-lib/remotes
+    ropensci/postdoc
