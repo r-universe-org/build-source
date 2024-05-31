@@ -703,7 +703,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   dev_url <- guess_development_url(package, tolower(git_url))
   crandownloads <- cranlogs_monthly_downloads(package)
   if(length(crandownloads))
-    contents$crandownloads <- crandownloads
+    contents$crandownloads <- jsonlite::unbox(crandownloads)
   if(length(dev_url))
     contents$devurl <- jsonlite::unbox(dev_url)
 
