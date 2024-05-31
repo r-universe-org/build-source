@@ -675,6 +675,11 @@ get_package_datasets <- function(package){
   }
 }
 
+cranlogs_monthly_downloads <- function(pkg){
+  cranlogs <- sprintf('https://cranlogs.r-pkg.org/downloads/total/last-month/%s', pkg)
+  tryCatch(jsonlite::fromJSON(cranlogs)$downloads, error = message)
+}
+
 #' @export
 #' @rdname buildtools
 generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url){
@@ -696,6 +701,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
   dev_url <- guess_development_url(package, tolower(git_url))
+  crandownloads <- cranlogs_monthly_downloads(package)
+  if(length(crandownloads))
+    contents$crandownloads <- crandownloads
   if(length(dev_url))
     contents$devurl <- jsonlite::unbox(dev_url)
 
