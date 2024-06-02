@@ -127,6 +127,7 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     df$author = vignettes_authors(srcfiles)
     df$engine = vignettes_engines(srcfiles)
     df$headers = vignettes_headers(srcfiles)
+    df$title = vapply(df$title, remove_html, character(1))
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
