@@ -127,7 +127,7 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     df$author = vignettes_authors(srcfiles)
     df$engine = vignettes_engines(srcfiles)
     df$headers = vignettes_headers(srcfiles)
-    df$title = vapply(df$title, remove_html, character(1))
+    df$title = vapply(df$title, remove_markup, character(1))
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
@@ -140,7 +140,7 @@ vignettes_info <- function(repo, pkg, subdir = ""){
 # phonfieldwork: markdown
 # MODIStsp: linebreak
 # DataPackageR: email address (invalid html)
-remove_html <- function(str){
+remove_markup <- function(str){
   tryCatch({
     gsub('\\s+', ' ', xml2::xml_text(xml2::read_xml(commonmark::markdown_html(str))))
   }, error = function(e){
@@ -165,7 +165,7 @@ normalize_author <- function(x){
 vignettes_authors <- function(files){
   vapply(files, function(x){
     tryCatch({
-      remove_html(normalize_author(rmarkdown::yaml_front_matter(x)$author))
+      remove_markup(normalize_author(rmarkdown::yaml_front_matter(x)$author))
     }, error = function(e){
       NA_character_
     })
