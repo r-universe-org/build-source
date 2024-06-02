@@ -132,6 +132,19 @@ vignettes_info <- function(repo, pkg, subdir = ""){
   }
 }
 
+## Packages with weird stuff in author:
+# baRulho: literal html
+# phonfieldwork: markdown
+# MODIStsp: linebreak
+# DataPackageR: email address (invalid html)
+remove_html <- function(str){
+  tryCatch({
+    gsub('\\s+', ' ', xml2::xml_text(xml2::read_xml(commonmark::markdown_html(str))))
+  }, error = function(e){
+    str
+  })
+}
+
 normalize_author <- function(x){
   if(!length(x)){
     return(NA_character_)
@@ -151,7 +164,7 @@ vignette_author <- function(inputs, repo = repo){
   files <- file.path(path, inputs)
   vapply(files, function(x){
     tryCatch({
-      normalize_author(rmarkdown::yaml_front_matter(x)$author)
+      remove_html(normalize_author(rmarkdown::yaml_front_matter(x)$author))
     }, error = function(e){
       NA_character_
     })
