@@ -123,8 +123,10 @@ vignettes_info <- function(repo, pkg, subdir = ""){
       inputs <- file.path(subdir, inputs)
     }
     stats <- gert::git_stat_files(inputs, repo = repo)
-    df$author = vignette_author(inputs, repo = repo)
-    df$engine = vignette_engines(inputs, repo = repo)
+    srcfiles <- file.path(gert::git_info(repo)$path, inputs)
+    df$author = vignettes_authors(srcfiles)
+    df$engine = vignettes_engines(srcfiles)
+    df$headers = vignettes_headers(srcfiles)
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
@@ -159,9 +161,7 @@ normalize_author <- function(x){
   paste(as.character(x), collapse = ', ')
 }
 
-vignette_author <- function(inputs, repo = repo){
-  path <- gert::git_info(repo)$path
-  files <- file.path(path, inputs)
+vignettes_authors <- function(files){
   vapply(files, function(x){
     tryCatch({
       remove_html(normalize_author(rmarkdown::yaml_front_matter(x)$author))
@@ -171,9 +171,7 @@ vignette_author <- function(inputs, repo = repo){
   }, character(1), USE.NAMES = FALSE)
 }
 
-vignette_engines <- function(inputs, repo = repo){
-  path <- gert::git_info(repo)$path
-  files <- file.path(path, inputs)
+vignettes_engines <- function(files){
   vapply(files, function(x){
     tryCatch({
       tools:::getVignetteEngine(x)
@@ -181,6 +179,23 @@ vignette_engines <- function(inputs, repo = repo){
       NA_character_
     })
   }, character(1), USE.NAMES = FALSE)
+}
+
+vignettes_headers <- function(files){
+  lapply(files, function(x){
+    if(grepl("\\.r?md$", x, ignore.case = TRUE)){
+      tryCatch(markdown_headers(x), error = message)
+    }
+  })
+}
+
+markdown_headers <- function(file){
+  body <- rmarkdown:::partition_yaml_front_matter(readLines(file))$body
+  if(length(body)){
+    xml <- commonmark::markdown_xml(body)
+    doc <- xml2::xml_ns_strip(xml2::read_xml(xml))
+    unique(xml2::xml_text(xml2::xml_find_all(doc, xpath = '//heading')))
+  }
 }
 
 base64_gzip <- function(bin){
