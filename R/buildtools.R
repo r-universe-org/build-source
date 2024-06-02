@@ -197,7 +197,9 @@ markdown_headings <- function(file){
   if(length(body)){
     xml <- commonmark::markdown_xml(body)
     doc <- xml2::xml_ns_strip(xml2::read_xml(xml))
-    unique(xml2::xml_text(xml2::xml_find_all(doc, xpath = '//heading')))
+    headings <- unique(xml2::xml_text(xml2::xml_find_all(doc, xpath = '//heading')))
+    # Also remove pandoc-style class/id annotation
+    trimws(sub("\\{.*\\}$", "", headings))
   }
 }
 
