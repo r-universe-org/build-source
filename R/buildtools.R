@@ -126,7 +126,7 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     srcfiles <- file.path(gert::git_info(repo)$path, inputs)
     df$author = vignettes_authors(srcfiles)
     df$engine = vignettes_engines(srcfiles)
-    df$headers = vignettes_headers(srcfiles)
+    df$headings = vignettes_headings(srcfiles)
     df$title = vapply(df$title, remove_markup, character(1))
     df$created = stats$created
     df$modified = stats$modified
@@ -182,15 +182,15 @@ vignettes_engines <- function(files){
   }, character(1), USE.NAMES = FALSE)
 }
 
-vignettes_headers <- function(files){
+vignettes_headings <- function(files){
   lapply(files, function(x){
     if(grepl("\\.r?md$", x, ignore.case = TRUE)){
-      tryCatch(markdown_headers(x), error = message)
+      tryCatch(markdown_headings(x), error = message)
     }
   })
 }
 
-markdown_headers <- function(file){
+markdown_headings <- function(file){
   body <- rmarkdown:::partition_yaml_front_matter(readLines(file))$body
   if(length(body)){
     xml <- commonmark::markdown_xml(body)
