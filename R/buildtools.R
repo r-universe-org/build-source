@@ -141,6 +141,8 @@ vignettes_info <- function(repo, pkg, subdir = ""){
 # MODIStsp: linebreak
 # DataPackageR: email address (invalid html)
 remove_markup <- function(str){
+  if(is.na(str))
+    return(str)
   tryCatch({
     gsub('\\s+', ' ', xml2::xml_text(xml2::read_xml(commonmark::markdown_html(str))))
   }, error = function(e){
