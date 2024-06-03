@@ -496,6 +496,7 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
   if(tolower(ghinfo$owner$login) == tolower(dirname(repo))){
+    #NB this is the repo OWNER not the universe!
     out$organization <- jsonlite::unbox(identical(tolower(ghinfo$owner$type), 'organization'))
   } else {
     message(sprintf('% seems transferred to %s!', repo, ghinfo$owner$login))
@@ -507,6 +508,12 @@ get_gitstats <- function(repo, pkgdir, url){
     NULL
   })
   return(out)
+}
+
+universe_info <- function(){
+  tryCatch({
+    gh::gh(sprintf('/users/%s', Sys.getenv('UNIVERSE_NAME')))
+  }, error = message)
 }
 
 list_contributions <- function(repo){
@@ -762,6 +769,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(file.exists('/NEED_CARGO')){
     contents$cargo <- jsonlite::unbox(TRUE)
   }
+  contents$usertype <- jsonlite::unbox(tolower(universe_info()$type)) # universe (not owner)
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
   contents$realowner <- jsonlite::unbox(realowner)
