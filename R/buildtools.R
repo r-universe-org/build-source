@@ -422,8 +422,10 @@ get_maintainer_info <- function(path = '.'){
     email =  tolower(trimws(sub("^.*<(.*)>.*$", '\\1', maintainerline)))
   )
   login <- Sys.getenv('MAINTAINERLOGIN', "")
-  if(nchar(login))
+  if(nchar(login)){
     info$login <- tolower(login)
+    info$mastodon <- scrape_github_mastodon(login)
+  }
   aar <- x["Authors@R"]
   if(is.na(aar)) return(info)
   authors <- utils:::.read_authors_at_R_field(aar)
@@ -437,6 +439,16 @@ get_maintainer_info <- function(path = '.'){
     info$orcid <- result
   }
   return(info)
+}
+
+scrape_github_mastodon <- function(login){
+  tryCatch({
+    doc <- xml2::read_html(paste0("http://github.com/", login))
+    link <- xml2::xml_find_all(doc, '//li[svg/title = "Mastodon"]/a')
+    if(length(link)){
+      xml2::xml_attr(link, 'href')
+    }
+  }, error = message)
 }
 
 filter_topics <- function(x){
