@@ -12,4 +12,6 @@ RUN unzip -P dummy /key.zip -d /root/.ssh/ &&\
   ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN R -e 'install.packages("remotes");remotes::install_local("/pkg");library(buildtools)'
 
+RUN echo "options(error = rlang::entrace)" >> /etc/R/Rprofile.site
+
 ENTRYPOINT ["/entrypoint.sh"]
