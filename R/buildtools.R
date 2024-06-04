@@ -515,9 +515,13 @@ get_gitstats <- function(repo, pkgdir, url){
   return(out)
 }
 
+universe_name_fallback <- function(){
+  sub("https://(.+)\\.r-universe\\.dev", "\\1", Sys.getenv('MY_UNIVERSE'))
+}
+
 universe_info <- function(){
   tryCatch({
-    gh::gh(sprintf('/users/%s', Sys.getenv('UNIVERSE_NAME')))
+    gh::gh(sprintf('/users/%s', Sys.getenv('UNIVERSE_NAME', universe_name_fallback())))
   }, error = message)
 }
 
