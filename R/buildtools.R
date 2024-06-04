@@ -198,7 +198,7 @@ vignettes_headings <- function(files){
 }
 
 markdown_headings <- function(file){
-  body <- rmarkdown:::partition_yaml_front_matter(readLines(file))$body
+  body <- rmarkdown:::partition_yaml_front_matter(rmarkdown:::read_utf8(file))$body
   if(length(body)){
     xml <- commonmark::markdown_xml(body)
     doc <- xml2::xml_ns_strip(xml2::read_xml(xml))
