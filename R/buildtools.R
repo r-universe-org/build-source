@@ -124,10 +124,17 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     }
     stats <- gert::git_stat_files(inputs, repo = repo)
     srcfiles <- file.path(gert::git_info(repo)$path, inputs)
-    df$author = vignettes_authors(srcfiles)
+    rmddata <- vignettes_metadata(srcfiles)
+    df$title <- vapply(seq_along(df$title), function(i){
+      if(length(rmddata[[i]]$title)){
+        remove_markup(rmddata[[i]]$title)
+      } else {
+        remove_markup(df$title[i])
+      }
+    }, character(1))
+    df$author = vapply(rmddata, function(x){remove_markup(normalize_author(x$author))}, character(1))
     df$engine = vignettes_engines(srcfiles)
     df$headings = vignettes_headings(srcfiles)
-    df$title = vapply(df$title, remove_markup, character(1))
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
@@ -164,14 +171,16 @@ normalize_author <- function(x){
   paste(as.character(x), collapse = ', ')
 }
 
-vignettes_authors <- function(files){
-  vapply(files, function(x){
+vignettes_metadata <- function(files){
+  lapply(files, function(x){
     tryCatch({
-      remove_markup(normalize_author(rmarkdown::yaml_front_matter(x)$author))
+      if(grepl("\\.r?md$", x, ignore.case = TRUE)){
+        rmarkdown::yaml_front_matter(x)
+      }
     }, error = function(e){
-      NA_character_
+      NULL
     })
-  }, character(1), USE.NAMES = FALSE)
+  })
 }
 
 vignettes_engines <- function(files){
