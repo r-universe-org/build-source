@@ -3,6 +3,7 @@ FROM ghcr.io/r-universe-org/base-image
 COPY . /pkg
 COPY entrypoint.sh /entrypoint.sh
 COPY pdftinytex /root/bin/pdftinytex
+COPY tinyxelatex /root/bin/tinyxelatex
 COPY shims /shims
 
 COPY dummykey/key.zip /key.zip

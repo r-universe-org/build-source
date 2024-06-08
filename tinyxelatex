@@ -1,0 +1,3 @@
+#!/bin/sh
+Rscript -e "cat(tinytex::xelatex('$2',clean = FALSE))"
+
