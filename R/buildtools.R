@@ -772,6 +772,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   helppages <- get_help_metadata(package)
   dev_url <- guess_development_url(package, tolower(git_url))
   crandownloads <- cranlogs_monthly_downloads(package)
+  userinfo <- universe_info()
+  if(length(userinfo$type))
+    contents$usertype <- jsonlite::unbox(tolower(userinfo$type)) # universe (not owner)
   if(length(crandownloads))
     contents$crandownloads <- jsonlite::unbox(crandownloads)
   if(length(dev_url))
@@ -787,7 +790,6 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(file.exists('/NEED_CARGO')){
     contents$cargo <- jsonlite::unbox(TRUE)
   }
-  contents$usertype <- jsonlite::unbox(tolower(universe_info()$type)) # universe (not owner)
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
   contents$realowner <- jsonlite::unbox(realowner)
