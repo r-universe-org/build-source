@@ -755,6 +755,15 @@ cranlogs_monthly_downloads <- function(pkg){
   tryCatch(jsonlite::fromJSON(cranlogs)$downloads, error = message)
 }
 
+cran_mentions_count <- function(pkg, project = 'cran'){
+  tryCatch({
+    req <- curl::curl_fetch_memory(sprintf('https://papers.ecosyste.ms/api/v1/projects/%s/%s', project, pkg))
+    if(req$status == 200){
+      jsonlite::fromJSON(rawToChar(req$content))$mentions_count
+    }
+  }, error = message)
+}
+
 #' @export
 #' @rdname buildtools
 generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url){
@@ -777,11 +786,18 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   helppages <- get_help_metadata(package)
   dev_url <- guess_development_url(package, tolower(git_url))
   crandownloads <- cranlogs_monthly_downloads(package)
+  mentions <- if(grepl("github.com/bioc/", tolower(git_url), fixed = TRUE)){
+    cran_mentions_count(package, 'bioconductor')
+  } else if(cranurl) {
+    cran_mentions_count(package, 'cran')
+  }
   userinfo <- universe_info()
   if(length(userinfo$type))
     contents$usertype <- jsonlite::unbox(tolower(userinfo$type)) # universe (not owner)
   if(length(crandownloads))
     contents$crandownloads <- jsonlite::unbox(crandownloads)
+  if(length(mentions))
+    contents$mentions <- jsonlite::unbox(mentions)
   if(length(dev_url))
     contents$devurl <- jsonlite::unbox(dev_url)
 
