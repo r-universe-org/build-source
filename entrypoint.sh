@@ -277,6 +277,7 @@ echo -e "Build complete.\n"
 if [ "$VIGNETTE_FAILURE" ]; then
 echo "Installation OK but failed to build vignettes:"
 cat stderr_build.log
+echo "If this is expected, consider precomputing your vignettes: https://ropensci.org/blog/2019/12/08/precompute-vignettes/"
 exit 1
 elif [ "$MANUAL_FAILURE" ]; then
 echo "Installation OK but failed to build PDF manual:"
