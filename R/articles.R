@@ -51,7 +51,7 @@ r_universe_format <- function(){
 #' @export
 #' @rdname articles
 replace_rmarkdown_engine <- function(){
-  message("Replacing default rmarkdown theme...")
+  message("Setting r-universe rmarkdown theme...")
   rmd_engine <- tools::vignetteEngine('rmarkdown', package = 'knitr')
   tools::vignetteEngine('rmarkdown', package = 'knitr', tangle = rmd_engine$tangle,
     pattern = rmd_engine$pattern, weave = function(file,..., output_format = NULL){
