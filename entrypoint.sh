@@ -174,11 +174,7 @@ fi
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
 if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" timeout 3000 R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} 1> >(tee stderr_build.log); then
-VIGNETTE_FAILURE=$?
-if [ "$VIGNETTE_FAILURE" = "124" ]; then
-echo "TIMEOUT reached building source package" >> stderr_build.log
-echo "Perhaps consider precomputing your vignettes: https://ropensci.org/blog/2019/12/08/precompute-vignettes/"  >> stderr_build.log
-fi
+VIGNETTE_FAILURE=1
 echo "::endgroup::"
 echo "::group::R CMD build (trying without vignettes)"
 echo "---- ERROR: failed to run: R CMD build -----"
