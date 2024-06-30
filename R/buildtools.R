@@ -126,8 +126,13 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     srcfiles <- file.path(gert::git_info(repo)$path, inputs)
     rmddata <- vignettes_metadata(srcfiles)
     df$title <- vapply(seq_along(df$title), function(i){
-      if(length(rmddata[[i]]$title)){
-        remove_markup(rmddata[[i]]$title)
+      rmdtitle <- rmddata[[i]]$title
+      if(length(rmdtitle)){
+        if(is.list(rmdtitle) && length(rmdtitle$plain)){
+          remove_markup(rmdtitle$plain) # see pkg 'forecast' vignettte
+        } else {
+          remove_markup(rmdtitle[[1]])
+        }
       } else {
         remove_markup(df$title[i])
       }
