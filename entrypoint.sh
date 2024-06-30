@@ -273,7 +273,7 @@ if [ -f "/NEED_CARGO" ]; then
 fi
 
 # TODO: can we explicitly set action status/outcome in GHA?
-echo "Build complete!"
+echo -e "Build complete.\n"
 if [ "$VIGNETTE_FAILURE" ]; then
 echo "Installation OK but failed to build vignettes:"
 cat stderr_build.log
