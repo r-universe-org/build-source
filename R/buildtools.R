@@ -115,6 +115,7 @@ latest_tags <- function(repo = '.'){
 vignettes_info <- function(repo, pkg, subdir = ""){
   repo <- gert::git_open(repo = repo)
   vignettes <- as.data.frame(tools::getVignetteInfo(pkg))
+  vignettes <- vignettes[nchar(vignettes$PDF) > 0,] #workaround Sweave bug
   if(nrow(vignettes) > 0){
     df <- vignettes[c('File', 'PDF', 'Title')]
     names(df) <- c("source", "filename", "title")
