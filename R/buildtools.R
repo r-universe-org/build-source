@@ -545,15 +545,13 @@ list_contributions <- function(repo){
   contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
   logins <- tolower(vapply(contributors, function(x){x$login}, character(1)))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
-  # Fix for bug in GitHub giving duplicate users
-  if(anyDuplicated(logins)){
-    dups <- duplicated(logins)
-    counts <- counts[!dups]
-    logins <- logins[!dups]
-  }
+
+  # Filter bots and duplicate users (github bug)
+  skip <- duplicated(logins) | grepl('[bot]', logins, fixed = TRUE)
+  counts <- counts[!skip]
+  logins <- logins[!skip]
   structure(as.list(counts), names = logins)
 }
-
 
 #' @export
 #' @rdname buildtools
