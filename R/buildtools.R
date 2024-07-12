@@ -542,7 +542,7 @@ universe_info <- function(){
 
 list_contributions <- function(repo){
   endpoint <- sprintf('/repos/%s/contributors', repo)
-  contributors <- gh::gh(endpoint, .limit = 500, .progress = FALSE)
+  contributors <- gh::gh(endpoint, .limit = 100, .progress = FALSE)
   logins <- tolower(vapply(contributors, function(x){x$login}, character(1)))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
 
