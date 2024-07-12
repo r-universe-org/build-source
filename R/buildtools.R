@@ -8,7 +8,7 @@
 #' @param path root directory of package
 #' @param git_url of the git repository
 #' @param subdir if the package lives in a subdir in the repo
-find_logo <- function (path, git_url, subdir = "") {
+find_logo <- function (path, git_url, branch, subdir = "") {
   # Match logic from pkgdown but return path relative packagfe root.
   rel_path <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
   cardimage <- find_opengraph_image(path = path)
@@ -25,12 +25,12 @@ find_logo <- function (path, git_url, subdir = "") {
   # pkg 'ragg' has huge svg logo
   smallest <- which.min(file.info(abs_path)$size)
   logo_path <- rel_path[smallest]
-  file_to_url(logo_path, git_url, subdir)
+  file_to_url(logo_path, git_url, branch, subdir)
 }
 
-file_to_url <- function(logo, git_url, subdir){
+file_to_url <- function(logo, git_url, branch, subdir){
   git_url <- sub("\\.git$", "", git_url)
-  upstream <- paste0(git_url, '/raw/HEAD')
+  upstream <- paste0(git_url, '/raw/', branch)
   if(length(subdir) && nchar(subdir)){
     upstream <- paste0(upstream, '/', subdir)
   }
@@ -569,12 +569,12 @@ get_gitstats_base64 <- function(repo, pkgdir, url){
 
 #' @export
 #' @rdname buildtools
-find_readme_url <- function(url, subdir = NULL){
+find_readme_url <- function(url, branch = 'HEAD', subdir = NULL){
   # Same rules as pkgdown
   candidates <- c("README.md", 'readme.md', 'index.md', '.github/README.md', 'docs/README.md')
-  rawurls <- sprintf("%s/raw/HEAD/%s", url, candidates)
+  rawurls <- sprintf("%s/raw/%s/%s", url, branch, candidates)
   if(length(subdir) && nchar(subdir)){
-    rawurls <- c(sprintf("%s/raw/HEAD/%s", url, file.path(subdir, candidates)), rawurls)
+    rawurls <- c(sprintf("%s/raw/%s/%s", url, branch, file.path(subdir, candidates)), rawurls)
   }
   for(x in rawurls){
     if(url_exists(x)){
@@ -767,7 +767,7 @@ cran_mentions_count <- function(pkg, project = 'cran'){
 
 #' @export
 #' @rdname buildtools
-generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url){
+generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url, branch){
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
@@ -778,7 +778,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   rundeps <- readRDS('/tmp/rundeps.rds') # never NULL
   readme_url <- Sys.getenv('README_URL')
   readme <- if(nchar(readme_url) > 0) readme_url
-  logo <- find_logo(path = pkgdir, git_url = git_url, subdir = subdir)
+  logo <- find_logo(path = pkgdir, git_url = git_url, branch = branch, subdir = subdir)
   contents <- get_gitstats(repo, pkgdir, git_url)
   homeurl <- get_home_url(package)
   realowner <- get_real_owner(package)

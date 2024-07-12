@@ -31,6 +31,7 @@ echo "::endgroup::"
 
 # Subdirectory containing the R package
 PKGDIR="${REPO}"
+BRANCH=${4:-HEAD}
 if [ "${3}" ]; then
 SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
@@ -165,7 +166,7 @@ if [ "${MY_UNIVERSE}" ]; then
 sed '/^[[:space:]]*$/d' -i "${PKGDIR}/DESCRIPTION" # deletes empty lines at end of DESCRIPTION
 sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${PKGDIR}/DESCRIPTION"
 echo "RemoteUrl: ${1}" >> "${PKGDIR}/DESCRIPTION"
-echo "RemoteRef: ${4:-HEAD}" >> "${PKGDIR}/DESCRIPTION"
+echo "RemoteRef: ${BRANCH}" >> "${PKGDIR}/DESCRIPTION"
 echo "RemoteSha: ${2}" >> "${PKGDIR}/DESCRIPTION"
 fi
 
@@ -229,7 +230,7 @@ echo "NEEDS_COMPILATION=yes" >> $GITHUB_OUTPUT
 fi
 
 # Find readme URL
-export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$SUBDIR'))")
+export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$BRANCH', '$SUBDIR'))")
 if [ "$README_URL" ]; then
 Rscript -e "cat(buildtools::render_readme('$README_URL', 'outputs/$PACKAGE/extra'))" 2> stderr_readme.txt || README_FAILURE=1
 else
@@ -244,7 +245,7 @@ echo "::group::Render NEWS, citation files, html-manual, metadata"
 Rscript -e "buildtools::generate_citation_files('$PKGDIR', 'outputs/$PACKAGE', '$URL')" || CITATION_FAILURE=1
 Rscript -e "buildtools::render_news_files('$PACKAGE', 'outputs/$PACKAGE', '$URL')" || NEWS_FAILURE=1
 Rscript -e "buildtools::render_html_manual('$PACKAGE', 'outputs/$PACKAGE/extra')"
-Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL')"
+Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL', '$BRANCH')"
 echo "::endgroup::"
 
 # if outputs has any files, add them to tarball
