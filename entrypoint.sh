@@ -44,7 +44,7 @@ echo "::endgroup::"
 
 # Experimental: support pkgs like rJava
 if test -f "$PKGDIR/bootstrap.R"; then
-  echo "Trying to run $PKGDIRbootstrap.R"
+  echo "Trying to run $PKGDIR/bootstrap.R"
   (cd $PKGDIR; Rscript bootstrap.R) || true
 elif test -f "$PKGDIR/.prepare"; then
   echo "Trying to run $PKGDIR/.prepare"
