@@ -810,6 +810,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(file.exists('/NEED_CARGO')){
     contents$cargo <- jsonlite::unbox(TRUE)
   }
+  if(file.exists('/NEED_GOLANG')){
+    contents$golang <- jsonlite::unbox(TRUE)
+  }
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
   contents$realowner <- jsonlite::unbox(realowner)

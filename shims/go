@@ -1,0 +1,3 @@
+#!/bin/sh
+touch /NEED_GOLANG
+exec /usr/bin/go "$@"

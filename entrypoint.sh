@@ -265,6 +265,9 @@ fi
 if [ -f "/NEED_CARGO" ]; then
   echo "NEED_CARGO=true" >> $GITHUB_OUTPUT
 fi
+if [ -f "/NEED_GOLANG" ]; then
+  echo "NEED_GOLANG=true" >> $GITHUB_OUTPUT
+fi
 
 # TODO: can we explicitly set action status/outcome in GHA?
 echo -e "Build complete.\n"
