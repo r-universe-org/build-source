@@ -153,11 +153,12 @@ vignettes_info <- function(repo, pkg, subdir = ""){
 # phonfieldwork: markdown
 # MODIStsp: linebreak
 # DataPackageR: email address (invalid html)
+# deltareportr: unclosed html (non-xml)
 remove_markup <- function(str){
   if(is.na(str))
     return(str)
   tryCatch({
-    gsub('\\s+', ' ', xml2::xml_text(xml2::read_xml(commonmark::markdown_html(str))))
+    gsub('\\s+', ' ', xml2::xml_text(xml2::read_html(commonmark::markdown_html(str))))
   }, error = function(e){
     str
   })
