@@ -791,6 +791,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   } else if(cranurl) {
     cran_mentions_count(package, 'cran')
   }
+  searchresults <- get_blackbird_count(package)
   userinfo <- universe_info()
   if(length(userinfo$type))
     contents$usertype <- jsonlite::unbox(tolower(userinfo$type)) # universe (not owner)
@@ -800,6 +801,8 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$mentions <- jsonlite::unbox(mentions)
   if(length(dev_url))
     contents$devurl <- jsonlite::unbox(dev_url)
+  if(length(searchresults))
+    contents$searchresults <- jsonlite::unbox(searchresults)
 
   # Generate contents.json
   if(length(contents$contributions)){
