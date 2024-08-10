@@ -2,7 +2,8 @@
 # webui user_session cookie, not a token. So we hack it.
 get_blackbird_count <- function(package){
   tryCatch({
-    url <- paste0('https://github.com/search/blackbird_count?saved_searches=&q=%22library%28', package, '%29%22+path%3A*.R')
+    # Todo: we could also include (path:*.R OR path:*.*md) to get only R results
+    url <- paste0('https://github.com/search/blackbird_count?saved_searches=&q=%22library%28', package, '%29%22')
     handle <- make_session_handle()
     warmup <- curl::curl_fetch_memory('https://github.com/', handle = curl::handle_setheaders(handle, accept = 'text/html'))
     req <- curl::curl_fetch_memory(url, handle = curl::handle_setheaders(handle, accept = 'application/json'))
