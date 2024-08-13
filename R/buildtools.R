@@ -537,7 +537,13 @@ universe_name_fallback <- function(){
 
 universe_info <- function(){
   tryCatch({
-    gh::gh(sprintf('/users/%s', Sys.getenv('UNIVERSE_NAME', universe_name_fallback())))
+    name <- Sys.getenv('UNIVERSE_NAME', universe_name_fallback())
+    universe <- switch(name,
+      'bioc' = 'bioconductor',
+      'r-multiverse-staging' = 'r-multiverse',
+      name
+    )
+    gh::gh(sprintf('/users/%s', universe))
   }, error = message)
 }
 
@@ -793,8 +799,13 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   }
   searchresults <- get_blackbird_count(package)
   userinfo <- universe_info()
-  if(length(userinfo$type))
-    contents$usertype <- jsonlite::unbox(tolower(userinfo$type)) # universe (not owner)
+  if(length(userinfo$type)){
+    contents$userbio <- list(type = jsonlite::unbox(tolower(userinfo$type)))
+    contents$userbio$name <- jsonlite::unbox(ifelse(length(userinfo$name), userinfo$name, userinfo$login))
+    if(length(userinfo$bio)){
+      contents$userbio$description <- jsonlite::unbox(userinfo$bio)
+    }
+  }
   if(length(crandownloads))
     contents$crandownloads <- jsonlite::unbox(crandownloads)
   if(length(mentions))
