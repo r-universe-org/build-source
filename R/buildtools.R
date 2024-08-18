@@ -758,14 +758,21 @@ get_package_datasets <- function(package){
 
 cranlogs_monthly_downloads <- function(pkg){
   cranlogs <- sprintf('https://cranlogs.r-pkg.org/downloads/total/last-month/%s', pkg)
-  tryCatch(jsonlite::fromJSON(cranlogs)$downloads, error = message)
+  tryCatch(list(
+    count = jsonlite::fromJSON(cranlogs)$downloads,
+    source = cranlogs
+  ), error = message)
 }
 
 bioc_monthly_downloads <- function(pkg){
+  url <- sprintf('https://www.bioconductor.org/packages/stats/bioc/%s/%s_stats.tab', pkg, pkg)
   tryCatch({
-    df <- read.table(sprintf('https://www.bioconductor.org/packages/stats/bioc/%s/%s_stats.tab', pkg, pkg), header = TRUE)
+    df <- read.table(url, header = TRUE)
     df <- df[df$Month != 'all' & df$Nb_of_downloads > 0,]
-    round(median(head(df$Nb_of_downloads, 12)))
+    list(
+      count = round(median(head(df$Nb_of_downloads, 12))),
+      source = dirname(url)
+    )
   }, error = message)
 }
 
@@ -816,7 +823,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     }
   }
   if(length(downloads))
-    contents$crandownloads <- jsonlite::unbox(downloads)
+    contents$downloads <- lapply(downloads, jsonlite::unbox)
   if(length(mentions))
     contents$mentions <- jsonlite::unbox(mentions)
   if(length(dev_url))
