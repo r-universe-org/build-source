@@ -507,7 +507,7 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(keywords)){
     out$topics <- unique(keywords)
   }
-  if(!grepl('^https?://github.com', url)){
+  if(!length(url) || !grepl('^https?://github.com', url)){
     return(out)
   }
   repo <- sub("^https?://github.com/", "", url)
@@ -799,7 +799,6 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   readme_url <- Sys.getenv('README_URL')
   readme <- if(nchar(readme_url) > 0) readme_url
   logo <- find_logo(path = pkgdir, git_url = git_url, branch = branch, subdir = subdir)
-  contents <- get_gitstats(repo, pkgdir, git_url)
   homeurl <- get_home_url(package)
   realowner <- get_real_owner(package)
   cranurl <- identical(tolower(git_url), homeurl)
@@ -809,9 +808,12 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(grepl("github.com/bioc/", tolower(git_url), fixed = TRUE)){
     downloads <- bioc_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'bioconductor')
-  } else if(cranurl) {
+    contents <- get_gitstats(repo, pkgdir, dev_url)
+    contents$organization <- jsonlite::unbox(TRUE) # TODO: remove after migrate to _userbio
+  } else {
     downloads <- cranlogs_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'cran')
+    contents <- get_gitstats(repo, pkgdir, git_url)
   }
   searchresults <- get_blackbird_count(package)
   userinfo <- universe_info()
