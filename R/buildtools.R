@@ -816,6 +816,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   searchresults <- get_blackbird_count(package)
   userinfo <- universe_info()
   if(length(userinfo$type)){
+    contents$id <- list(type = jsonlite::unbox(tolower(userinfo$id)))
     contents$userbio <- list(type = jsonlite::unbox(tolower(userinfo$type)))
     contents$userbio$name <- jsonlite::unbox(ifelse(length(userinfo$name), userinfo$name, userinfo$login))
     if(length(userinfo$bio)){
