@@ -761,6 +761,14 @@ cranlogs_monthly_downloads <- function(pkg){
   tryCatch(jsonlite::fromJSON(cranlogs)$downloads, error = message)
 }
 
+bioc_monthly_downloads <- function(pkg){
+  tryCatch({
+    df <- read.table(sprintf('https://www.bioconductor.org/packages/stats/bioc/%s/%s_stats.tab', pkg, pkg), header = TRUE)
+    df <- df[df$Month != 'all' & df$Nb_of_downloads > 0,]
+    round(median(head(df$Nb_of_downloads, 12)))
+  }, error = message)
+}
+
 cran_mentions_count <- function(pkg, project = 'cran'){
   tryCatch({
     req <- curl::curl_fetch_memory(sprintf('https://papers.ecosyste.ms/api/v1/projects/%s/%s', project, pkg))
@@ -791,11 +799,12 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
   dev_url <- guess_development_url(package, tolower(git_url))
-  crandownloads <- cranlogs_monthly_downloads(package)
-  mentions <- if(grepl("github.com/bioc/", tolower(git_url), fixed = TRUE)){
-    cran_mentions_count(package, 'bioconductor')
+  if(grepl("github.com/bioc/", tolower(git_url), fixed = TRUE)){
+    downloads <- bioc_monthly_downloads(package)
+    mentions <- cran_mentions_count(package, 'bioconductor')
   } else if(cranurl) {
-    cran_mentions_count(package, 'cran')
+    downloads <- cranlogs_monthly_downloads(package)
+    mentions <- cran_mentions_count(package, 'cran')
   }
   searchresults <- get_blackbird_count(package)
   userinfo <- universe_info()
@@ -806,8 +815,8 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
       contents$userbio$description <- jsonlite::unbox(userinfo$bio)
     }
   }
-  if(length(crandownloads))
-    contents$crandownloads <- jsonlite::unbox(crandownloads)
+  if(length(downloads))
+    contents$crandownloads <- jsonlite::unbox(downloads)
   if(length(mentions))
     contents$mentions <- jsonlite::unbox(mentions)
   if(length(dev_url))
