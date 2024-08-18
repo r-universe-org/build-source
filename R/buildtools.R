@@ -516,10 +516,7 @@ get_gitstats <- function(repo, pkgdir, url){
   ghtopics <- filter_topics(unlist(ghinfo$topics))
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
-  if(tolower(ghinfo$owner$login) == tolower(dirname(repo))){
-    #NB this is the repo OWNER not the universe!
-    out$organization <- jsonlite::unbox(identical(tolower(ghinfo$owner$type), 'organization'))
-  } else {
+  if(tolower(ghinfo$owner$login) != tolower(dirname(repo))){
     message(sprintf('% seems transferred to %s!', repo, ghinfo$owner$login))
   }
   if(length(ghinfo$stargazers_count))
@@ -809,7 +806,6 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     downloads <- bioc_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'bioconductor')
     contents <- get_gitstats(repo, pkgdir, dev_url)
-    contents$organization <- jsonlite::unbox(TRUE) # TODO: remove after migrate to _userbio
   } else {
     downloads <- cranlogs_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'cran')
