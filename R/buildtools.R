@@ -332,7 +332,6 @@ install_dependencies <- function(path = '.'){
   precache_pppm()
 
   desc <- as.data.frame(read.dcf('DESCRIPTION'))
-  message("Running: remotes::local_package_deps(dependencies=TRUE)")
   deps <- remotes::local_package_deps(dependencies=TRUE)
   vignette_builders <- split_by_comma(desc$VignetteBuilder)
 
@@ -344,7 +343,7 @@ install_dependencies <- function(path = '.'){
     addrepos <- trimws(strsplit(desc$Additional_repositories, ",", fixed=TRUE)[[1]])
     addrepos <- grep('^https?://\\S+$', addrepos, value = TRUE)
     addrepos <- grep(Sys.getenv("MY_UNIVERSE"), fixed = TRUE, addrepos, value = TRUE, invert = TRUE)
-    message("Additional_repositories: ", paste(addrepos, collapse = ', '))
+    message("Using additional_repositories: ", paste(addrepos, collapse = ', '))
     options(repos = c(getOption('repos'), addrepos))
   }
 
