@@ -541,15 +541,13 @@ universe_name_fallback <- function(){
 }
 
 universe_info <- function(){
-  tryCatch({
-    name <- Sys.getenv('UNIVERSE_NAME', universe_name_fallback())
-    universe <- switch(name,
-      'bioc' = 'bioconductor',
-      'r-multiverse-staging' = 'r-multiverse',
-      name
-    )
-    gh::gh(sprintf('/users/%s', universe))
-  }, error = message)
+  name <- Sys.getenv('UNIVERSE_NAME', universe_name_fallback())
+  universe <- switch(name,
+    'bioc' = 'bioconductor',
+    'r-multiverse-staging' = 'r-multiverse',
+    name
+  )
+  gh::gh(sprintf('/users/%s', universe))
 }
 
 list_contributions <- function(repo){
@@ -821,17 +819,15 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   }
   searchresults <- get_blackbird_count(package)
   userinfo <- universe_info()
-  if(length(userinfo$type)){
-    userbio <- list(
-      uuid = userinfo$id,
-      type = tolower(userinfo$type),
-      name = ifelse(length(userinfo$name), userinfo$name, userinfo$login)
-    )
-    if(length(userinfo$bio)){
-      userbio$description <- userinfo$bio
-    }
-    contents$userbio <- lapply(userbio, jsonlite::unbox)
+  userbio <- list(
+    uuid = userinfo$id,
+    type = tolower(userinfo$type),
+    name = ifelse(length(userinfo$name), userinfo$name, userinfo$login)
+  )
+  if(length(userinfo$bio)){
+    userbio$description <- userinfo$bio
   }
+  contents$userbio <- lapply(userbio, jsonlite::unbox)
   if(length(downloads))
     contents$downloads <- lapply(downloads, jsonlite::unbox)
   if(length(mentions))
