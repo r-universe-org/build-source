@@ -550,6 +550,14 @@ universe_info <- function(){
   gh::gh(sprintf('/users/%s', universe))
 }
 
+current_info <- function(package){
+  tryCatch({
+    url <- paste0(Sys.getenv('MY_UNIVERSE', 'https://cran.r-universe.dev'), '/', package, '/json')
+    message("Looking up current package info: ", url)
+    jsonlite::fromJSON(url)
+  }, error = message)
+}
+
 list_contributions <- function(repo){
   endpoint <- sprintf('/repos/%s/contributors', repo)
   contributors <- gh::gh(endpoint, .limit = 100, .progress = FALSE)
@@ -817,7 +825,11 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     mentions <- cran_mentions_count(package, 'cran')
     contents <- get_gitstats(repo, pkgdir, git_url)
   }
+  current <- current_info(package)
   searchresults <- get_blackbird_count(package)
+  if(!length(searchresults)){
+    searchresults <- current[['_searchresults']]
+  }
   userinfo <- universe_info()
   userbio <- list(
     uuid = userinfo$id,
