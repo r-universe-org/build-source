@@ -35,6 +35,7 @@ update_search_results <- function(){
     info <- as.list(df[i,])
     tryCatch({
       count <- get_blackbird_count(info$package)
+      if(!is.numeric(count) || length(count) != 1) stop("Unexpected blackbird count for: ", info$package)
       json <- jsonlite::toJSON(list('$set' = list('_searchresults' = count)), auto_unbox = TRUE, verbose = TRUE)
       h <- curl::new_handle(userpwd = userpwd, copypostfields = json, httpheader = "Content-Type: application/json")
       url <- sprintf("https://%s.r-universe.dev/packages/%s/%s/update", info$user, info$package, info$version)
