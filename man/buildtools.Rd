@@ -24,7 +24,7 @@
 \alias{tweak_help_files}
 \title{Build tools}
 \usage{
-find_logo(path, git_url, subdir = "")
+find_logo(path, git_url, branch, subdir = "")
 
 vignettes_base64(repo, pkg = basename(repo), subdir = "")
 
@@ -46,19 +46,19 @@ get_gitstats(repo, pkgdir, url)
 
 get_gitstats_base64(repo, pkgdir, url)
 
-find_readme_url(url, subdir = NULL)
+find_readme_url(url, branch = "HEAD", subdir = NULL)
 
 render_readme(url, outdir = ".")
 
 render_news_files(package, outdir = ".", url = NULL)
 
-generate_citation_files(path, outdir)
+generate_citation_files(path, outdir, git_url)
 
 get_help_metadata(package)
 
 get_package_datasets(package)
 
-generate_metadata_files(package, repo, subdir, outdir, pkgdir, git_url)
+generate_metadata_files(package, repo, subdir, outdir, pkgdir, git_url, branch)
 
 needs_compilation(package)
 
