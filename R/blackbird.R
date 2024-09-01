@@ -28,7 +28,7 @@ make_session_handle <- function(){
 update_search_results <- function(){
   userpwd <- Sys.getenv("CRANLIKEPWD", NA)
   if(is.na(userpwd)) stop("No CRANLIKEPWD set, cannot deploy")
-  df <- jsonlite::stream_in(url('https://r-universe.dev/stats/files?type=src&fields=_searchresults,_score'))
+  df <- jsonlite::stream_in(url(paste0('https://r-universe.dev/stats/files?type=src&fields=_searchresults,_score&nocache=', rnorm(1))))
   df <- df[is.na(df[['_searchresults']]),]
   df <- df[order(df[['_score']], decreasing = TRUE),]
   for(i in seq_len(nrow(df))){
