@@ -455,6 +455,10 @@ get_maintainer_info <- function(path = '.'){
     info$login <- tolower(login)
     info$mastodon <- scrape_github_mastodon(login)
   }
+  uuid <- Sys.getenv('MAINTAINERUUID', "")
+  if(nchar(uuid)){
+    info$uuid <- as.numeric(uuid)
+  }
   aar <- x["Authors@R"]
   if(is.na(aar)) return(info)
   authors <- utils:::.read_authors_at_R_field(aar)
