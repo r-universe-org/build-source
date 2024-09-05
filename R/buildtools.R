@@ -418,10 +418,12 @@ recurse_deps <- function(pkgs){
 #' @rdname buildtools
 #' @param field which field from the description to show
 #' @export
-read_description_field <- function(field, path = '.'){
+read_description_field <- function(fields, path = '.'){
   desc <- tools:::.read_description(file.path(path, 'DESCRIPTION'))
   extra <- tools:::.expand_package_description_db_R_fields(desc)
-  as.list(gsub("'", "", trimws(c(desc, extra)), fixed = TRUE))[[field]]
+  unlist(lapply(fields, function(x){
+    as.list(gsub("'", "", trimws(c(desc, extra)), fixed = TRUE))[[x]]
+  }))
 }
 
 
@@ -433,7 +435,7 @@ get_ostype <- function(path = '.'){
 }
 
 get_schema_keywords <- function(path = '.'){
-  keywords <- read_description_field('X-schema.org-keywords', path)
+  keywords <- read_description_field(c('X-schema.org-keywords', 'biocViews'), path)
   if(length(keywords)){
     tolower(trimws(strsplit(keywords, ',', fixed = TRUE)[[1]]))
   }
@@ -514,7 +516,6 @@ get_gitstats <- function(repo, pkgdir, url){
   biocinfo <- tryCatch(bioc_releases(pkgname), error = message)
   if(length(biocinfo)){
     out$bioc <- biocinfo
-    keywords <- c('bioconductor-package', keywords)
   }
   if(length(keywords)){
     out$topics <- unique(keywords)
