@@ -54,4 +54,34 @@ backfill_bioc_downloads <- function(){
   }
 }
 
+#' @export
+backfill_indexurls <- function(){
+  userpwd <- Sys.getenv("CRANLIKEPWD", NA)
+  if(is.na(userpwd)) stop("No CRANLIKEPWD set, cannot deploy")
+  df <- jsonlite::stream_in(url('https://r-universe.dev/stats/files?type=src&fields=_indexed,_indexurl&nocache=123'))
+  indexed <- df[df[['_indexed']],]
+  noindex <- df[!df[['_indexed']] & is.na(df[['_indexurl']]),]
+  noindex$indexowner <- indexed[match(noindex$package, indexed$package), 'user']
+  for(i in seq_len(nrow(noindex))){
+    info <- as.list(noindex[i,])
+    if(!length(info$indexowner) || is.na(info$indexowner)){
+      next;
+    }
+    tryCatch({
+      info$newurl <- sprintf('https://%s.r-universe.dev/%s', info$indexowner, info$package)
+      stopifnot(is.character(info$newurl) && length(info$newurl))
+      json <- jsonlite::toJSON(list('$set' = list('_indexurl' = info$newurl)), auto_unbox = TRUE, verbose = TRUE)
+      h <- curl::new_handle(userpwd = userpwd, copypostfields = json, httpheader = "Content-Type: application/json")
+      url <- sprintf("https://%s.r-universe.dev/packages/%s/%s/update", info$user, info$package, info$version)
+      req <- curl::curl_fetch_memory(url, handle = h)
+      if(req$status > 300){
+        stop(sprintf("Failure at %s:\n%s", url, rawToChar(req$content)))
+      }
+      message("OK: ", url)
+    }, error = function(e){
+      message(e)
+    })
+  }
+}
+
 
