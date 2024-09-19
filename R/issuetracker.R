@@ -1,4 +1,4 @@
-guess_development_url <- function(package, git_url){
+guess_development_url <- function(package, git_url, validate = FALSE){
   desc <- as.data.frame(read.dcf(system.file('DESCRIPTION', package = package)))
   input <- paste(desc$BugReports, desc$DevelopmentURL, desc$URL, git_url)
   input <- normalize_github_urls(input)
@@ -7,7 +7,12 @@ guess_development_url <- function(package, git_url){
   pattern <- 'https?://(github.com|gitlab.com|bitbucket.org)/[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+'
   m <- regexpr(pattern, input, ignore.case = TRUE)
   urls <- regmatches(input, m)
-  sub("\\.git$", "", sub("^http://", "https://", tolower(urls)))
+  dev_url <- sub("\\.git$", "", sub("^http://", "https://", tolower(urls)))
+  if(length(dev_url) && isTRUE(validate) && curl::curl_fetch_memory(dev_url)$status == 404){
+    warning("URL does not exist: ", dev_url)
+    return(character())
+  }
+  return(dev_url)
 }
 
 replace_rforge_urls <- function(input){

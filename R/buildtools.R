@@ -820,14 +820,15 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   cranurl <- identical(tolower(git_url), homeurl)
   releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
-  dev_url <- guess_development_url(package, tolower(git_url))
   if(grepl("github.com/bioc/", tolower(git_url), fixed = TRUE)){
     downloads <- bioc_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'bioconductor')
+    dev_url <- guess_development_url(package, tolower(git_url), validate = TRUE)
     contents <- get_gitstats(repo, pkgdir, dev_url)
   } else {
     downloads <- cranlogs_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'cran')
+    dev_url <- guess_development_url(package, tolower(git_url))
     contents <- get_gitstats(repo, pkgdir, git_url)
   }
   current <- current_info(package)
