@@ -13,6 +13,7 @@ Imports:
     commonmark,
     curl,
     data.table,
+    downlit,
     gert (>= 1.6.0),
     gh,
     htmlwidgets,

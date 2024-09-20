@@ -820,6 +820,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   cranurl <- identical(tolower(git_url), homeurl)
   releases <- get_cran_releases(package)
   helppages <- get_help_metadata(package)
+  pkgdown_url <- find_pkgdown_url(package)
   if(grepl("github.com/bioc/", tolower(git_url), fixed = TRUE)){
     downloads <- bioc_monthly_downloads(package)
     mentions <- cran_mentions_count(package, 'bioconductor')
@@ -852,6 +853,8 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$mentions <- jsonlite::unbox(mentions)
   if(length(dev_url))
     contents$devurl <- jsonlite::unbox(dev_url)
+  if(length(pkgdown_url))
+    contents$pkgdown <- jsonlite::unbox(pkgdown_url)
   if(length(searchresults))
     contents$searchresults <- jsonlite::unbox(searchresults)
 
@@ -997,4 +1000,8 @@ split_by_comma <- function(x){
 normalize_description <- function(path){
   x <-read.dcf(path, keep.white='Authors@R')
   write.dcf(x, path, keep.white='Authors@R')
+}
+
+find_pkgdown_url <- function(package){
+  tryCatch(dirname(as.character(downlit:::remote_metadata(package)$urls$reference)), error = function(...){})
 }
