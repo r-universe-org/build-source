@@ -550,6 +550,7 @@ universe_info <- function(){
   universe <- switch(name,
     'bioc' = 'bioconductor',
     'r-multiverse-staging' = 'r-multiverse',
+    'ropensci-champions' = 'ropensci',
     name
   )
   gh::gh(sprintf('/users/%s', universe))
