@@ -437,7 +437,7 @@ get_ostype <- function(path = '.'){
 get_schema_keywords <- function(path = '.'){
   keywords <- read_description_field(c('X-schema.org-keywords', 'biocViews'), path)
   if(length(keywords)){
-    tolower(trimws(strsplit(keywords, ',', fixed = TRUE)[[1]]))
+    trimws(strsplit(keywords, ',', fixed = TRUE)[[1]])
   }
 }
 
@@ -486,7 +486,8 @@ scrape_github_mastodon <- function(login){
   }, error = message)
 }
 
-filter_topics <- function(x){
+normalize_tags <- function(x){
+  x <- unique(tolower(x))
   setdiff(x, c("r", "rstats", "cran", "r-cran", "cran-r", "r-package", "r-packages", "rpackage", "package", "r-stats", "rstats-package"))
 }
 
@@ -512,13 +513,13 @@ get_gitstats <- function(repo, pkgdir, url){
     tags = latest_tags(repo = repo)
   )
   pkgname <- read_description_field('Package', pkgdir)
-  keywords <- filter_topics(get_schema_keywords(pkgdir))
+  keywords <- normalize_tags(get_schema_keywords(pkgdir))
   biocinfo <- tryCatch(bioc_releases(pkgname), error = message)
   if(length(biocinfo)){
     out$bioc <- biocinfo
   }
   if(length(keywords)){
-    out$topics <- unique(keywords)
+    out$topics <- keywords
   }
   if(!length(url) || !grepl('^https?://github.com', url)){
     return(out)
@@ -526,7 +527,7 @@ get_gitstats <- function(repo, pkgdir, url){
   repo <- sub("^https?://github.com/", "", url)
   repo <- sub("/$", "", repo)
   ghinfo <- gh::gh(sprintf('/repos/%s', repo))
-  ghtopics <- filter_topics(unlist(ghinfo$topics))
+  ghtopics <- normalize_tags(unlist(ghinfo$topics))
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
   if(tolower(ghinfo$owner$login) != tolower(dirname(repo))){
