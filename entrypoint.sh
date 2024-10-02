@@ -55,9 +55,9 @@ fi
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
-# Temp workaround for BioC
+# Temp workaround for BioC because we need to build source packges on r-release
 if [ "${MY_UNIVERSE}" == "https://bioc.r-universe.dev" ]; then
-sed -i 's/R\s*(>= 4.4/R (>= 4.3/' ${DESCRIPTION} || true
+sed -i 's/R\s*(>= 4.5/R (>= 4.4/' ${DESCRIPTION} || true
 fi
 
 
