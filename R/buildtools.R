@@ -236,9 +236,16 @@ base64_gunzip <- function(b64){
   rawToChar(memDecompress(bin, 'gzip'))
 }
 
+# Account for some random GHA network failures
 url_exists <- function(url){
-  req <- curl::curl_fetch_memory(url)
-  return(req$status < 400)
+  for(i in 1:3){
+    try({
+      req <- curl::curl_fetch_memory(url)
+      return(req$status < 400)
+    })
+    Sys.sleep(3)
+  }
+  stop("Failed to connect to: ", url)
 }
 
 sysdep_shortname <- function(x){
