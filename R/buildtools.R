@@ -307,21 +307,21 @@ install_sysdeps <- function(path = '.'){
   }
 
   # Try to install missing sysdeps.
-  # This only installs the first match; system_requirements may return many recursive sysdeps.
-  # But most sysdeps are preinstalled for us anyway
-
-  # Temp workaround for: https://github.com/r-lib/remotes/pull/705
-  #ubuntu <- gsub(" ", "-", tolower(substring(utils::osVersion,1,12)))
-  ubuntu <- 'ubuntu-20.04'
   tryCatch({
-    aptline <- remotes::system_requirements(ubuntu)
-    system("apt-get update")
-    if(length(aptline) && !grepl('(libcurl|pandoc|cargo|rustc)', aptline[1])){
-      system(aptline[1])
+    skiplist <- '(libcurl|pandoc|cargo|rustc)'
+    sysreqs <- pak::pkg_sysreqs('.', upgrade = FALSE)$packages$system_packages
+    syspkgs <- grep(skiplist, unlist(sysreqs), value = TRUE, invert = TRUE)
+    if(length(syspkgs)){
+      syspkgs <- paste(syspkgs, collapse = ' ')
+      message("Installing sysreqs: ", syspkgs)
+      system("apt-get update -y")
+      system(paste("apt-get install -y", syspkgs))
+      con <- file("DESCRIPTION", open = 'a')
+      writeLines(paste("Config/pak/sysreqs:", syspkgs), con)
+      close(con)
+    } else {
+      message("No sysreqs needed")
     }
-    # Special case extra libs that we don't have in the base image
-    extras <- grep('qgis|librdf0-dev|default-jdk', aptline, value = TRUE)
-    lapply(extras, system)
   }, error = function(e){
     message("Problem looking for system requirements: ", e$message)
   })
