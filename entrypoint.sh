@@ -37,6 +37,10 @@ SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
+# Prepare DESCRIPTION
+DESCRIPTION="${PKGDIR}/DESCRIPTION"
+sed '/^[[:space:]]*$/d' -i "${DESCRIPTION}" # deletes empty lines at end of DESCRIPTION
+
 # Get system dependencies
 echo "::group::Installing system dependencies"
 Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
@@ -52,7 +56,6 @@ elif test -f "$PKGDIR/.prepare"; then
 fi
 
 # Normalize DESCRIPTION file
-DESCRIPTION="${PKGDIR}/DESCRIPTION"
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
 # Temp workaround for BioC because we need to build source packges on r-release
@@ -131,9 +134,9 @@ fi
 # Default LazyData to true
 #if [ -d "${PKGDIR}/data" ]; then
   #TODO: maybe also check for BuildResaveData=no (e.g. diptest/VLMC)
-  #if ! grep '^LazyData:' "${PKGDIR}/DESCRIPTION"; then
+  #if ! grep '^LazyData:' "${DESCRIPTION}"; then
   #echo "NOTE: setting LazyData: true in DESCRIPTION"
-  #echo "LazyData: true" >> "${PKGDIR}/DESCRIPTION"
+  #echo "LazyData: true" >> "${DESCRIPTION}"
   #fi
   # Preinstall a copy to support --resave-data
 #fi
@@ -156,11 +159,10 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 
 # Replace or add "Repository:" in DESCRIPTION
 if [ "${MY_UNIVERSE}" ]; then
-sed '/^[[:space:]]*$/d' -i "${PKGDIR}/DESCRIPTION" # deletes empty lines at end of DESCRIPTION
-sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${PKGDIR}/DESCRIPTION"
-echo "RemoteUrl: ${1}" >> "${PKGDIR}/DESCRIPTION"
-echo "RemoteRef: ${BRANCH}" >> "${PKGDIR}/DESCRIPTION"
-echo "RemoteSha: ${2}" >> "${PKGDIR}/DESCRIPTION"
+sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${DESCRIPTION}"
+echo "RemoteUrl: ${1}" >> "${DESCRIPTION}"
+echo "RemoteRef: ${BRANCH}" >> "${DESCRIPTION}"
+echo "RemoteSha: ${2}" >> "${DESCRIPTION}"
 fi
 
 # Build source package. Try vignettes, but build without otherwise.
