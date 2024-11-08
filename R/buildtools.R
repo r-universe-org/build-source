@@ -307,7 +307,7 @@ install_sysdeps <- function(path = '.'){
   }
 
   # Temp workaround for pak hanging in resolver
-  options(repos = c(universe = Sys.getenv("MY_UNIVERSE"), CRAN = 'https://cloud.r-project.org'))
+  # options(repos = c(universe = Sys.getenv("MY_UNIVERSE"), CRAN = 'https://cloud.r-project.org'))
 
   # Try to install missing sysdeps.
   tryCatch({
