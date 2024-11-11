@@ -39,7 +39,8 @@ fi
 
 # Prepare DESCRIPTION
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
-sed '/^[[:space:]]*$/d' -i "${DESCRIPTION}" # deletes empty lines at end of DESCRIPTION
+echo "" >> ${DESCRIPTION} #ensure line ending
+sed '/^[[:space:]]*$/d' -i "${DESCRIPTION}" # delete empty lines at end of DESCRIPTION
 
 # Get system dependencies
 echo "::group::Installing system dependencies"
