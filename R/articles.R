@@ -110,17 +110,6 @@ replace_rmarkdown_engine <- function(){
     quarto_engine <- tools::vignetteEngine('html', package='quarto')
     environment(quarto_engine$weave)$meta$format$html <- quarto_html_meta()
   })
-
-  # Use knitr for of litedown (not sure if they use compatible Rmarkdown?)
-  setHook(packageEvent("litedown", "onLoad"), function(...) {
-    message("Found litedown! Replacing html engine...")
-    tools::vignetteEngine('vignette', package = 'litedown', tangle = rmd_engine$tangle,
-      pattern = rmd_engine$pattern, weave = function(file,..., output_format = NULL){
-        load_custom_output_package(file)
-        rmd_engine$weave(file,..., output_format = r_universe_format())
-      }
-    )
-  })
 }
 
 # If a package uses a custom 'output' it may also assume functions from this package
