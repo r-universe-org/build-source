@@ -466,6 +466,7 @@ get_maintainer_info <- function(path = '.'){
   if(nchar(login)){
     info$login <- tolower(login)
     info$mastodon <- scrape_github_mastodon(login)
+    info$bluesky <- scrape_github_bluesky(login)
   }
   uuid <- Sys.getenv('MAINTAINERUUID', "")
   if(nchar(uuid)){
@@ -490,6 +491,16 @@ scrape_github_mastodon <- function(login){
   tryCatch({
     doc <- xml2::read_html(paste0("http://github.com/", login))
     link <- xml2::xml_find_all(doc, '//li[svg/title = "Mastodon"]/a')
+    if(length(link)){
+      xml2::xml_attr(link, 'href')
+    }
+  }, error = message)
+}
+
+scrape_github_bluesky <- function(login){
+  tryCatch({
+    doc <- xml2::read_html(paste0("http://github.com/", login))
+    link <- xml2::xml_find_all(doc, '//li[svg/title = "Bluesky"]/a')
     if(length(link)){
       xml2::xml_attr(link, 'href')
     }
