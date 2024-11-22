@@ -465,9 +465,10 @@ get_maintainer_info <- function(path = '.'){
   login <- Sys.getenv('MAINTAINERLOGIN', "")
   if(nchar(login)){
     info$login <- tolower(login)
-    info$mastodon <- scrape_github_social(login, "Mastodon")
-    info$bluesky <- scrape_github_social(login, "Bluesky")
-    info$linkedin <- scrape_github_social(login, "LinkedIn")
+    socials <- scrape_github_socials(login)
+    info$mastodon <- socials$mastodon
+    info$bluesky <- socials$bluesky
+    info$linkedin <- socials$linkedin
   }
   uuid <- Sys.getenv('MAINTAINERUUID', "")
   if(nchar(uuid)){
@@ -488,13 +489,17 @@ get_maintainer_info <- function(path = '.'){
   return(info)
 }
 
-scrape_github_social <- function(login, network = c('Bluesky', 'Mastodon', 'LinkedIn')){
+scrape_github_socials <- function(login){
+  networks <- c('Bluesky', 'Mastodon', 'LinkedIn')
   tryCatch({
     doc <- xml2::read_html(paste0("http://github.com/", login))
-    link <- xml2::xml_find_all(doc, sprintf('//li[svg/title = "%s"]/a', network))
-    if(length(link)){
-      xml2::xml_attr(link, 'href')
-    }
+    out <- lapply(networks, function(network){
+      link <- xml2::xml_find_all(doc, sprintf('//li[svg/title = "%s"]/a', network))
+      if(length(link)){
+        xml2::xml_attr(link, 'href')
+      }
+    })
+    structure(out, names = tolower(networks))
   }, error = message)
 }
 
