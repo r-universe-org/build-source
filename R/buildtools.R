@@ -469,6 +469,8 @@ get_maintainer_info <- function(path = '.'){
     info$mastodon <- socials$mastodon
     info$bluesky <- socials$bluesky
     info$linkedin <- socials$linkedin
+    info$orcid <- socials$orcid #might be overridden below
+    info$twitter <- socials$x #todo: drop this
   }
   uuid <- Sys.getenv('MAINTAINERUUID', "")
   if(nchar(uuid)){
@@ -479,27 +481,31 @@ get_maintainer_info <- function(path = '.'){
   authors <- utils:::.read_authors_at_R_field(aar)
   maintainer <- Filter(function(x){"cre" %in% x$role}, authors)
   if(!length(maintainer)) return(info)
-  orcid <- as.list(maintainer[[1]]$comment)$ORCID
-  pattern <- '0000-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]'
-  m <- regexpr(pattern, orcid)
-  result <- regmatches(orcid, m)
-  if(length(result)){
-    info$orcid <- result
-  }
+  info$orcid <- parse_orcid_id(as.list(maintainer[[1]]$comment)$ORCID)
   return(info)
 }
 
+parse_orcid_id <- function(str){
+  pattern <- '0000-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]'
+  m <- regexpr(pattern, str)
+  result <- regmatches(str, m)
+  if(length(result)){
+    result
+  }
+}
+
 scrape_github_socials <- function(login){
-  networks <- c('Bluesky', 'Mastodon', 'LinkedIn')
   tryCatch({
     doc <- xml2::read_html(paste0("http://github.com/", login))
-    out <- lapply(networks, function(network){
-      link <- xml2::xml_find_all(doc, sprintf('//li[svg/title = "%s"]/a', network))
-      if(length(link)){
-        xml2::xml_attr(link, 'href')
-      }
-    })
-    structure(out, names = tolower(networks))
+    vcards <- xml2::xml_find_all(doc, "//li[contains(@class, 'vcard-detail')]")
+    titles <- xml2::xml_text(xml2::xml_find_first(vcards, 'svg/title'))
+    links <- xml2::xml_text(xml2::xml_find_first(vcards, 'a'))
+    is_orcid <- grepl("orcid", links, fixed = TRUE)
+    links[is_orcid] <- parse_orcid_id(links[is_orcid])
+    titles[is_orcid] <- 'orcid'
+    links <- as.list(links[!is.na(titles)])
+    names(links) <- tolower(titles[!is.na(titles)])
+    links
   }, error = message)
 }
 
