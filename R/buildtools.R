@@ -793,7 +793,10 @@ get_package_datasets <- function(package){
     datasets$rows <- vapply(datalist, function(x){ifelse(is.data.frame(x) || is.matrix(x), nrow(x), NA_integer_)}, integer(1))
     datasets$table <- vapply(datalist, function(x){tryCatch({data.table::fwrite(x, tempfile()); TRUE}, error = function(e){FALSE})}, logical(1))
     datasets$tojson <- vapply(datalist, function(x){tryCatch({jsonlite::toJSON(x); TRUE}, error = function(e){FALSE})}, logical(1))
-    return(datasets)
+    datasets <- datasets[!vapply(datalist, is.null, logical(1)),] # Remove broken/missing objects
+    if(nrow(datasets) > 0){
+      return(datasets)
+    }
   }
 }
 
