@@ -889,12 +889,15 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   }
   if(file.exists('/NEED_FORTRAN')){
     contents$fortran <- jsonlite::unbox(TRUE)
+    contents$topics <- unique(c(contents$topics, 'fortran'))
   }
   if(file.exists('/NEED_CARGO')){
     contents$cargo <- jsonlite::unbox(TRUE)
+    contents$topics <- unique(c(contents$topics, c("rust", "cargo")))
   }
   if(file.exists('/NEED_GOLANG')){
     contents$golang <- jsonlite::unbox(TRUE)
+    contents$topics <- unique(c(contents$topics, c("golang")))
   }
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
