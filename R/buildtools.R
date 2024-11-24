@@ -899,6 +899,10 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$golang <- jsonlite::unbox(TRUE)
     contents$topics <- unique(c(contents$topics, c("golang")))
   }
+  if(length(sysdeps)){
+    contents$topics <- unique(c(contents$topics, sysdeps$name))
+    contents$topics <- sub('c++', 'cpp', contents$topics, fixed = TRUE)
+  }
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
   contents$realowner <- jsonlite::unbox(realowner)
