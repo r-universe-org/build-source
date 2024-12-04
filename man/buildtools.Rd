@@ -36,7 +36,7 @@ install_sysdeps(path = ".")
 
 install_dependencies(path = ".")
 
-read_description_field(field, path = ".")
+read_description_field(fields, path = ".")
 
 get_ostype(path = ".")
 

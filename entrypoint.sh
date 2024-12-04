@@ -272,21 +272,13 @@ if [ -f "/NEED_GOLANG" ]; then
   echo "NEED_GOLANG=true" >> $GITHUB_OUTPUT
 fi
 
-# TODO: can we explicitly set action status/outcome in GHA?
 echo -e "Build complete.\n"
 if [ "$VIGNETTE_FAILURE" ]; then
-echo "Installation OK but failed to build vignettes:"
-cat stderr_build.log
-echo "If this is expected, consider precomputing your vignettes: https://ropensci.org/blog/2019/12/08/precompute-vignettes/"
-exit 1
+Rscript -e "buildtools::annotated_error('$PACKAGE', 'vignettes')"
 elif [ "$MANUAL_FAILURE" ]; then
-echo "Installation OK but failed to build PDF manual:"
-cat stderr_manual.txt
-exit 1
+Rscript -e "buildtools::annotated_error('$PACKAGE', 'pdfmanual')"
 elif [ "$README_FAILURE" ]; then
-echo "Installation OK but failed to render README:"
-cat stderr_readme.txt
-exit 1
+Rscript -e "buildtools::annotated_error('$PACKAGE', 'readme')"
 elif [ "$CITATION_FAILURE" ]; then
 echo "Package OK but problem generating citation files (see above)"
 exit 1
