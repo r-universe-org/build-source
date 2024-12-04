@@ -1,5 +1,5 @@
 #!/bin/bash -l
-set -e
+set -eo pipefail
 echo "Building ${1} in ${PWD}"
 echo "CommitRef: ${2}"
 echo "Subdir: ${3}"
@@ -203,7 +203,9 @@ fi
 # For now we don't do a full check to speed up building of subsequent Win/Mac binaries
 echo "::group::install package and generate html docs"
 #export _R_HELP_LINKS_TO_TOPICS_=FALSE
-PATH="/shims:$PATH" R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS
+if ! PATH="/shims:$PATH" R CMD INSTALL "$SOURCEPKG" --html $INSTALLARGS 2>&1 | tee install.log; then
+Rscript -e "buildtools::annotated_error('$PACKAGE', 'install')"
+fi
 echo "::endgroup::"
 
 # Build and insert pdf manual into the tar.gz
