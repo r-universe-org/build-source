@@ -27,6 +27,7 @@ git clone --recurse-submodules "$URL" "${REPO}"
 DEFAULT_BRANCH=$(git -C "${REPO}" branch --show-current)
 
 if [ "${2}" ]; then
+echo "Resetting to $2"
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
 echo "::endgroup::"
