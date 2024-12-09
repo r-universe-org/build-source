@@ -24,6 +24,8 @@ export DISPLAY=:6
 # Removed --depth 1 because we want to read vignette c/m times
 echo "::group::Cloning R package repository"
 git clone --recurse-submodules "$URL" "${REPO}"
+DEFAULT_BRANCH=$(git -C "${REPO}" branch --show-current)
+
 if [ "${2}" ]; then
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
