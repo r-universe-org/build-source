@@ -167,6 +167,9 @@ sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${DESCRIPTIO
 echo "RemoteUrl: ${1}" >> "${DESCRIPTION}"
 echo "RemoteRef: ${BRANCH}" >> "${DESCRIPTION}"
 echo "RemoteSha: ${2}" >> "${DESCRIPTION}"
+if [ "$SUBDIR" ]; then
+echo "RemoteSubdir: $SUBDIR" >> "${DESCRIPTION}"
+fi
 fi
 
 # Build source package. Try vignettes, but build without otherwise.
