@@ -279,6 +279,9 @@ fi
 if [ -f "/NEED_GOLANG" ]; then
   echo "NEED_GOLANG=true" >> $GITHUB_OUTPUT
 fi
+if [ -f "/NEED_QUARTO" ]; then
+  echo "NEED_QUARTO=true" >> $GITHUB_OUTPUT
+fi
 
 echo -e "Build complete.\n"
 if [ "$VIGNETTE_FAILURE" ]; then

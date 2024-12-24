@@ -1,0 +1,3 @@
+#!/bin/sh
+touch /NEED_QUARTO
+exec /usr/local/bin/quarto "$@"

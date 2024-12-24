@@ -902,6 +902,10 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$golang <- jsonlite::unbox(TRUE)
     contents$topics <- unique(c(contents$topics, c("golang")))
   }
+  if(file.exists('/NEED_QUARTO')){
+    contents$quarto <- jsonlite::unbox(TRUE)
+    contents$topics <- unique(c(contents$topics, c("quarto")))
+  }
   if(length(sysdeps)){
     contents$topics <- unique(c(contents$topics, sysdeps$name))
     contents$topics <- sub('c++', 'cpp', contents$topics, fixed = TRUE)
