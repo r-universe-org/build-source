@@ -104,6 +104,19 @@ replace_rmarkdown_engine <- function(){
     }, tangle = old_engine$tangle, pattern = old_engine$pattern)
   })
 
+  # Litedown (TODO: do not override slides)
+  setHook(packageEvent("litedown", "onLoad"), function(...) {
+    message("Found litedown! Replacing vignette theme...")
+    old_engine <- tools::vignetteEngine('vignette', package='litedown')
+    tools::vignetteEngine('vignette', package = 'litedown', weave = function(file, encoding, ...){
+      mdfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.md'))
+      load_custom_output_package(file)
+      litedown::fuse(file, mdfile, ...)
+      htmlfile <- render_article(mdfile)
+      file.copy(htmlfile, '.', overwrite = TRUE)
+    }, tangle = old_engine$tangle, pattern = old_engine$pattern)
+  })
+
   # Experimental quarto override
   setHook(packageEvent("quarto", "onLoad"), function(...) {
     message("Found quarto! Replacing html engine...")
