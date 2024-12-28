@@ -106,13 +106,23 @@ replace_rmarkdown_engine <- function(){
 
   # Litedown (TODO: do not override slides)
   setHook(packageEvent("litedown", "onLoad"), function(...) {
-    message("Found litedown! Replacing vignette theme...")
+    message("Found litedown! Enabling r-universe template")
     old_engine <- tools::vignetteEngine('vignette', package='litedown')
     tools::vignetteEngine('vignette', package = 'litedown', weave = function(file, encoding, ...){
+      meta <- buildtools:::read_yaml_font_matter(file)$options$meta
+      has_plugins <- setdiff(c(meta$css ,meta$js), c('@default'))
+      template <- if(length(has_plugins)){
+        template_file('litedown-default.html')
+      } else {
+        template_file('litedown-custom.html')
+      }
       mdfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.md'))
+      htmlfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.html'))
       load_custom_output_package(file)
       litedown::fuse(file, mdfile, ...)
-      htmlfile <- render_article(mdfile)
+      options(litedown.html.template = template)
+      on.exit(options(litedown.html.template = NULL))
+      litedown::mark(mdfile, htmlfile)
       file.copy(htmlfile, '.', overwrite = TRUE)
     }, tangle = old_engine$tangle, pattern = old_engine$pattern)
   })
@@ -125,10 +135,14 @@ replace_rmarkdown_engine <- function(){
   })
 }
 
+read_yaml_font_matter <- function(rmd_file){
+  rmarkdown:::output_format_from_yaml_front_matter(readLines(rmd_file, n = 100))
+}
+
 # If a package uses a custom 'output' it may also assume functions from this package
 load_custom_output_package <- function(rmd_file){
   try({
-    name <- rmarkdown:::output_format_from_yaml_front_matter(readLines(rmd_file, n = 100))$name
+    name <- read_yaml_font_matter(rmd_file)$name
     if(length(name) && grepl("::", name, fixed = TRUE)){
       pkg <- strsplit(name, '::', fixed = TRUE)[[1]][1]
       require(pkg, character.only = TRUE)

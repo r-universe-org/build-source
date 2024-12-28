@@ -9,12 +9,16 @@
       $if(pagetitle)$<title>$pagetitle$</title>$endif$
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" data-external="1">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" data-external="1">
-      <link rel="stylesheet" href="https://r-universe.dev/static/article-styles.css" data-external="1">
+      <link rel="stylesheet" href="https://r-universe.dev/static/article-styles.css?nocache=1" data-external="1">
    </head>
    <body>
       <div class="container" id="topcontainer">
          <script>if (window.self != window.top) try {document.getElementById('topcontainer').className = "container-fluid article-in-iframe"; } catch(e) {}</script>
+
+         <div class="frontmatter">
          $if(title)$<h1 class="title">$title$</h1>$endif$
+         </div>
+
          $if(toc)$
          <div class="row">
             <div class="col-xl-10">$body$</div>
