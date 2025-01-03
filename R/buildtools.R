@@ -1042,5 +1042,10 @@ normalize_description <- function(path){
 }
 
 find_pkgdown_url <- function(package){
-  tryCatch(dirname(as.character(downlit:::remote_metadata(package)$urls$reference)), error = function(...){})
+  tryCatch({
+    yaml <- downlit:::remote_metadata(package)
+    if(length(yaml$pkgdown) && length(yaml$pandoc)){
+      dirname(as.character(yaml$urls$reference))
+    }
+  }, error = function(...){})
 }
