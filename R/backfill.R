@@ -16,7 +16,7 @@ backfill_search_results <- function(){
       if(!is.numeric(count) || length(count) != 1) stop("Unexpected blackbird count for: ", info$package)
       json <- jsonlite::toJSON(list('$set' = list('_searchresults' = count)), auto_unbox = TRUE, verbose = TRUE)
       h <- curl::new_handle(userpwd = userpwd, copypostfields = json, httpheader = "Content-Type: application/json")
-      url <- sprintf("https://%s.r-universe.dev/packages/%s/%s/update", info$user, info$package, info$version)
+      url <- sprintf("https://%s.r-universe.dev/api/packages/%s/%s/update", info$user, info$package, info$version)
       req <- curl::curl_fetch_memory(url, handle = h)
       if(req$status > 300){
         stop(sprintf("Failure at %s:\n%s", url, rawToChar(req$content)))
@@ -42,7 +42,7 @@ backfill_bioc_downloads <- function(){
       if(!is.numeric(downloads$count) || length(downloads$count) != 1) stop("Unexpected download count for: ", info$package)
       json <- jsonlite::toJSON(list('$set' = list('_downloads' = downloads)), auto_unbox = TRUE, verbose = TRUE)
       h <- curl::new_handle(userpwd = userpwd, copypostfields = json, httpheader = "Content-Type: application/json")
-      url <- sprintf("https://%s.r-universe.dev/packages/%s/%s/update", info$user, info$package, info$version)
+      url <- sprintf("https://%s.r-universe.dev/api/packages/%s/%s/update", info$user, info$package, info$version)
       req <- curl::curl_fetch_memory(url, handle = h)
       if(req$status > 300){
         stop(sprintf("Failure at %s:\n%s", url, rawToChar(req$content)))
@@ -72,7 +72,7 @@ backfill_indexurls <- function(){
       stopifnot(is.character(info$newurl) && length(info$newurl))
       json <- jsonlite::toJSON(list('$set' = list('_indexurl' = info$newurl)), auto_unbox = TRUE, verbose = TRUE)
       h <- curl::new_handle(userpwd = userpwd, copypostfields = json, httpheader = "Content-Type: application/json")
-      url <- sprintf("https://%s.r-universe.dev/packages/%s/%s/update", info$user, info$package, info$version)
+      url <- sprintf("https://%s.r-universe.dev/api/packages/%s/%s/update", info$user, info$package, info$version)
       req <- curl::curl_fetch_memory(url, handle = h)
       if(req$status > 300){
         stop(sprintf("Failure at %s:\n%s", url, rawToChar(req$content)))
