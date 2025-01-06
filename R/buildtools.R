@@ -1041,11 +1041,19 @@ normalize_description <- function(path){
   write.dcf(x, path, keep.white='Authors@R')
 }
 
+# Mimic downlit:::remote_metadata_slow but skip r-universe urls
 find_pkgdown_url <- function(package){
-  tryCatch({
-    yaml <- downlit:::remote_metadata(package)
-    if(length(yaml$pkgdown) && length(yaml$pandoc)){
-      dirname(as.character(yaml$urls$reference))
-    }
-  }, error = function(...){})
+  urls <- downlit:::package_urls(package)
+  urls <- grep('r-universe.dev', urls, value = TRUE, invert = TRUE)
+  for(x in urls){
+    try({
+      req <- curl::curl_fetch_memory(paste0(x, '/pkgdown.yml'))
+      if(req$status == 200){
+        yaml <- yaml:::yaml.load(rawToChar(req$content))
+        if(length(yaml$pkgdown)){
+          return(x)
+        }
+      }
+    }, silent = TRUE)
+  }
 }
