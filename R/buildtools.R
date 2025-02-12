@@ -910,6 +910,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$topics <- unique(c(contents$topics, sysdeps$name))
     contents$topics <- sub('c++', 'cpp', contents$topics, fixed = TRUE)
   }
+  contents$metadata <- get_registry_metadata()
   contents$rbuild <- jsonlite::unbox(as.character(getRversion()))
   contents$assets <- assets
   contents$homeurl <- jsonlite::unbox(homeurl)
@@ -924,7 +925,8 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   contents$rundeps <- rundeps
   contents$sysdeps <- sysdeps
   contents$vignettes <- vignettes
-  jsonlite::write_json(Filter(function(x){!is.null(x)}, contents), path = file.path(extra_dir, 'contents.json'))
+  contents <- Filter(function(x){!is.null(x)}, contents)
+  jsonlite::write_json(contents, path = file.path(extra_dir, 'contents.json'), json_verbatim = TRUE)
 }
 
 #' @export
@@ -940,6 +942,14 @@ maintainer_info_base64 <- function(path = '.'){
   info <- get_maintainer_info(path = path)
   json <- jsonlite::toJSON(info, auto_unbox = TRUE)
   base64_gzip(json)
+}
+
+get_registry_metadata <- function(){
+  json <- Sys.getenv('REGISTRY_METADATA')
+  if(nchar(json)){
+    stopifnot(jsonlite::validate(json))
+    structure(json, class = 'json')
+  }
 }
 
 # This is a hack, it relies on the 'manual-page' and <a><h2></a> structure that we generate earlier
