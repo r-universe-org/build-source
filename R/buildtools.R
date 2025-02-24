@@ -558,10 +558,14 @@ get_gitstats <- function(repo, pkgdir, url){
   }
   if(length(ghinfo$stargazers_count))
     out$stars <- jsonlite::unbox(ghinfo$stargazers_count)
-  out$contributions = tryCatch(list_contributions(repo), error = function(e){
+  out$contributors = tryCatch(list_contributors(repo), error = function(e){
     message(e)
     NULL
   })
+  # Old format, remove later
+  if(is.data.frame(out$contributors)){
+    out$contributions <- structure(as.list(out$contributors$count), names = out$contributors$user)
+  }
   return(out)
 }
 
@@ -588,7 +592,7 @@ current_info <- function(package){
   }, error = message)
 }
 
-list_contributions <- function(repo){
+list_contributors <- function(repo){
   endpoint <- sprintf('/repos/%s/contributors', repo)
   contributors <- gh::gh(endpoint, .limit = 100, .progress = FALSE)
   logins <- tolower(vapply(contributors, function(x){x$login}, character(1)))
@@ -598,7 +602,9 @@ list_contributions <- function(repo){
   skip <- duplicated(logins) | grepl('[bot]', logins, fixed = TRUE)
   counts <- counts[!skip]
   logins <- logins[!skip]
-  structure(as.list(counts), names = logins)
+  if(length(logins) > 0){
+    data.frame(user = logins, count = counts)
+  }
 }
 
 #' @export
