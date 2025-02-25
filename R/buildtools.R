@@ -592,14 +592,16 @@ list_contributors <- function(repo){
   endpoint <- sprintf('/repos/%s/contributors', repo)
   contributors <- gh::gh(endpoint, .limit = 100, .progress = FALSE)
   logins <- tolower(vapply(contributors, function(x){x$login}, character(1)))
+  uuids <- vapply(contributors, function(x){x$id}, integer(1))
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
 
   # Filter bots and duplicate users (github bug)
   skip <- duplicated(logins) | grepl('[bot]', logins, fixed = TRUE)
   counts <- counts[!skip]
   logins <- logins[!skip]
+  uuids <- uuids[!skip]
   if(length(logins) > 0){
-    data.frame(user = logins, count = counts)
+    data.frame(user = logins, count = counts, uuid = uuids)
   }
 }
 
