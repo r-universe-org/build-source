@@ -562,10 +562,6 @@ get_gitstats <- function(repo, pkgdir, url){
     message(e)
     NULL
   })
-  # Old format, remove later
-  if(is.data.frame(out$contributors)){
-    out$contributions <- structure(as.list(out$contributors$count), names = out$contributors$user)
-  }
   return(out)
 }
 
@@ -893,9 +889,6 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$searchresults <- jsonlite::unbox(searchresults)
 
   # Generate contents.json
-  if(length(contents$contributions)){
-    contents$contributions <- lapply(contents$contributions, jsonlite::unbox)
-  }
   if(file.exists('/NEED_FORTRAN')){
     contents$fortran <- jsonlite::unbox(TRUE)
     contents$topics <- unique(c(contents$topics, 'fortran'))
