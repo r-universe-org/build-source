@@ -50,8 +50,10 @@ echo "::group::Installing system dependencies"
 Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
 echo "::endgroup::"
 
-# Experimental: support pkgs like rJava
-if test -f "$PKGDIR/bootstrap.R"; then
+# Workaround for rstanarm: ignore cleanup if package is already built
+if [ -f "$PKGDIR/MD5" ]; then
+  rm -f $PKGDIR/cleanup $PKGDIR/MD5
+elif test -f "$PKGDIR/bootstrap.R"; then
   echo "Trying to run $PKGDIR/bootstrap.R"
   (cd $PKGDIR; Rscript bootstrap.R) || true
 elif test -f "$PKGDIR/.prepare"; then
