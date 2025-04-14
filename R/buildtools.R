@@ -327,7 +327,6 @@ install_sysdeps <- function(path = '.'){
     }
   }, error = function(e){
     message("Problem looking for system requirements: ", e$message)
-    print(e)
   })
 }
 

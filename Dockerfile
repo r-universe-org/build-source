@@ -21,6 +21,6 @@ RUN unzip -P dummy /key.zip -d /root/.ssh/ &&\
 RUN R -e 'install.packages("pak")'
 RUN R -e 'install.packages("remotes");remotes::install_local("/pkg");library(buildtools)'
 
-RUN echo "rlang::global_entrace();options(rlang_backtrace_on_error='full')" >> /etc/R/Rprofile.site
+RUN echo "options(error = rlang::entrace)" >> /etc/R/Rprofile.site
 
 ENTRYPOINT ["/entrypoint.sh"]
