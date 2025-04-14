@@ -312,6 +312,7 @@ install_sysdeps <- function(path = '.'){
   # Try to install missing sysdeps.
   tryCatch({
     skiplist <- '(libcurl|pandoc|cargo|rustc)'
+    message("This is pak ", packageVersion('pak'))
     sysreqs <- pak::pkg_sysreqs('.', upgrade = FALSE)$packages$system_packages
     syspkgs <- grep(skiplist, unlist(sysreqs), value = TRUE, invert = TRUE)
     if(length(syspkgs)){
@@ -326,6 +327,7 @@ install_sysdeps <- function(path = '.'){
       message("No sysreqs needed")
     }
   }, error = function(e){
+    print(e)
     message("Problem looking for system requirements: ", e$message)
   })
 }
