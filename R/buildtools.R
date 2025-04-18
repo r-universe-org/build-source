@@ -313,8 +313,8 @@ install_sysdeps <- function(path = '.'){
   tryCatch({
     skiplist <- '(libcurl|pandoc|cargo|rustc)'
     message("This is pak ", packageVersion('pak'))
-    sysreqs <- pak::pkg_sysreqs('.', upgrade = FALSE)$packages$system_packages
-    syspkgs <- grep(skiplist, unlist(sysreqs), value = TRUE, invert = TRUE)
+    pakinfo <- unix::eval_fork(pak::pkg_sysreqs('.', upgrade = FALSE), timeout = 180)
+    syspkgs <- grep(skiplist, unlist(pakinfo$packages$system_packages), value = TRUE, invert = TRUE)
     if(length(syspkgs)){
       syspkgs <- paste(syspkgs, collapse = ' ')
       message("Installing sysreqs: ", syspkgs)

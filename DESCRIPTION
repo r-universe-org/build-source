@@ -25,6 +25,7 @@ Imports:
     postdoc (>= 1.4.1),
     remotes,
     rmarkdown,
+    unix,
     yaml,
     xml2
 RoxygenNote: 7.3.2.9000
