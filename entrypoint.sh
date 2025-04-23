@@ -79,6 +79,7 @@ DISTRO="$(lsb_release -sc)"
 PACKAGE=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Package)")
 VERSION=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$Version)")
 OSTYPE=$(Rscript -e "cat(as.data.frame(read.dcf('${DESCRIPTION}'))\$OS_type)")
+RVERSION=$(Rscript -e "cat(as.character(getRversion()))")
 PKG_VERSION="${PACKAGE}_${VERSION}"
 SOURCEPKG="${PKG_VERSION}.tar.gz"
 
@@ -87,6 +88,7 @@ echo "DISTRO=$DISTRO" >> $GITHUB_OUTPUT
 echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT
 echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 echo "OSTYPE=$OSTYPE" >> $GITHUB_OUTPUT
+echo "RVERSION=$RVERSION" >> $GITHUB_OUTPUT
 
 # Get maintainer details
 MAINTAINERINFO=$(Rscript -e "cat(buildtools::maintainer_info_base64('${PKGDIR}'))")

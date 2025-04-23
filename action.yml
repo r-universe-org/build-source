@@ -39,6 +39,8 @@ outputs:
     description: 'Base64 encoded JSON list with git stats'
   NEEDS_COMPILATION:
     description: 'If the source package has a src dir'
+  RVERSION:
+    description: 'Version of R used'
 
 runs:
   using: 'docker'
