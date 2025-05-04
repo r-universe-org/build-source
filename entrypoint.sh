@@ -159,6 +159,13 @@ if [ -f "${PKGDIR}/NEWS.md" ]; then
 sed -i "1,50s/(development version)/${VERSION}/" "${PKGDIR}/NEWS.md" || true
 fi
 
+# Workaround for igraph/RSQlite/Matrix/haven leaving .o files in source pkg
+if [ ! -f "${PKGDIR}/.Rbuildignore" ]; then
+echo "^src/.*\.o$" >> ${PKGDIR}/.Rbuildignore
+echo "^src/.*\.a$" >> ${PKGDIR}/.Rbuildignore
+echo "^src/.*\.so$" >> ${PKGDIR}/.Rbuildignore
+fi
+
 # Override rmarkdown engine
 #if ls ${PKGDIR}/vignettes/*; then
 #echo "Found vignettes..."
