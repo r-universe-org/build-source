@@ -52,7 +52,8 @@ echo "::endgroup::"
 
 # Workaround for rstanarm: ignore cleanup if package is already built
 if [ -f "$PKGDIR/MD5" ]; then
-  rm -f $PKGDIR/cleanup $PKGDIR/MD5
+  rm -f $PKGDIR/MD5
+  test -f $PKGDIR/cleanup && echo "" > $PKGDIR/cleanup
 elif test -f "$PKGDIR/bootstrap.R"; then
   echo "Trying to run $PKGDIR/bootstrap.R"
   (cd $PKGDIR; Rscript bootstrap.R) || true
