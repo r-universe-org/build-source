@@ -160,6 +160,15 @@ if [ -f "${PKGDIR}/NEWS.md" ]; then
 sed -i "1,50s/(development version)/${VERSION}/" "${PKGDIR}/NEWS.md" || true
 fi
 
+# Workaround for e.g. Rigraphlib:
+# R wants a 'src' dir to add a 'Built.Platform' field in binary description.
+if grep 'NeedsCompilation:.*yes' "${DESCRIPTION}" && test -f "${PKGDIR}/configure" && ! test -d "${PKGDIR}/src"; then
+echo "Found hardcoded NeedsCompilation. Adding dummy src dir."
+mkdir "${PKGDIR}/src"
+echo "" > "${PKGDIR}/src/Makevars"
+echo "" > "${PKGDIR}/src/install.libs.R"
+fi
+
 # Workaround for igraph/RSQlite/Matrix/haven leaving .o files in source pkg
 if [ ! -f "${PKGDIR}/.Rbuildignore" ]; then
 echo "^src/.*\.o$" >> ${PKGDIR}/.Rbuildignore
