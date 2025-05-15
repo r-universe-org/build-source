@@ -193,6 +193,11 @@ echo "RemoteSubdir: $SUBDIR" >> "${DESCRIPTION}"
 fi
 fi
 
+# Workaround for package that seems to kill the GitHub job
+if [ "$PACKAGE" = "BayesDLMfMRI" ]; then
+BUILD_ARGS="--no-build-vignettes"
+fi
+
 # Build source package. Try vignettes, but build without otherwise.
 # We set a timeout such that the workflow can post a 'failure' instead of timing out in CI (test pkg Mcomp)
 #mv ${REPO}/.git tmpgit
