@@ -213,13 +213,8 @@ fi
 echo "::endgroup::"
 #mv tmpgit ${REPO}/.git
 
-# Test for filesize enforced by pkg server
+# Confirm source package exists
 test -f "$SOURCEPKG"
-FILESIZE=$(stat -c%s "$SOURCEPKG")
-if (( FILESIZE >  104857600 )); then
-echo "File $SOURCEPKG is more than 100MB. This is currently not allowed."
-exit 1
-fi
 
 # Support Windows-only packages (but not articles which require installation)
 OSTYPE=$(Rscript -e "cat(buildtools::get_ostype('$PKGDIR'))")
@@ -285,7 +280,11 @@ tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 echo "::endgroup::"
 
-# Upon successful install, set output value
+# Check final size of source package before exporting
+if [ -n "$(find $SOURCEPKG -prune -size +100M)" ]; then
+  echo "File $SOURCEPKG is larger than 100 MB. This is not allowed"
+  exit 1
+fi
 echo "SOURCEPKG=$SOURCEPKG" >> $GITHUB_OUTPUT
 
 # If a binary package was created rename and output
