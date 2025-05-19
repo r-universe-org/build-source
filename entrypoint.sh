@@ -248,12 +248,6 @@ unset MANUAL_FAILURE
 PDFLATEX=tinyxelatex R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 fi
 
-# Test if package needs compilation (R simply checks if there is a 'src' dir)
-NEEDS_COMPILATION=$(Rscript -e "cat(buildtools::needs_compilation('${PACKAGE}'))")
-if [ "$NEEDS_COMPILATION" == "yes" ]; then
-echo "NEEDS_COMPILATION=yes" >> $GITHUB_OUTPUT
-fi
-
 # Find readme URL
 export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$BRANCH', '$SUBDIR'))")
 if [ "$README_URL" ]; then
@@ -292,6 +286,13 @@ if [ "$LINUXBINARY" ] && [ -f "$LINUXBINARY" ]; then
 BINARYPKG="${PKG_VERSION}-${DISTRO}.tar.gz"
 mv "$LINUXBINARY" "$BINARYPKG"
 echo "BINARYPKG=$BINARYPKG" >> $GITHUB_OUTPUT
+
+# Test if package needs compilation
+# Actuall R simply checks if there is a 'src' dir, maybe we should do that too...
+if tar -xOf "${BINARYPKG}" "${PACKAGE}/DESCRIPTION" | grep -q '^Built.*64'; then
+  echo "NEEDS_COMPILATION=yes" >> $GITHUB_OUTPUT
+fi
+
 fi
 
 # Check for some traps at install time
