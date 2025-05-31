@@ -241,7 +241,7 @@ url_exists <- function(url){
   for(i in 1:3){
     try({
       req <- curl::curl_fetch_memory(url)
-      return(req$status < 400)
+      return(req$status < 400 && !length(grepRaw('ERR FATAL', req$content, fixed = TRUE)))
     })
     Sys.sleep(3)
   }
@@ -626,6 +626,7 @@ get_gitstats_base64 <- function(repo, pkgdir, url){
 #' @rdname buildtools
 find_readme_url <- function(url, branch = 'HEAD', subdir = NULL){
   # Same rules as pkgdown
+  url <- sub('https://git.bioconductor.org/packages/', 'https://github.com/bioc/', url, fixed = TRUE)
   candidates <- c("README.md", 'readme.md', 'index.md', '.github/README.md', 'docs/README.md')
   rawurls <- sprintf("%s/raw/%s/%s", url, branch, candidates)
   if(length(subdir) && nchar(subdir)){
@@ -841,6 +842,8 @@ cran_mentions_count <- function(pkg, project = 'cran'){
 #' @export
 #' @rdname buildtools
 generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url, branch){
+  # Get bioc metadata from the GitHub mirror
+  git_url <- sub('https://git.bioconductor.org/packages/', 'https://github.com/bioc/', git_url, fixed = TRUE)
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
