@@ -841,6 +841,8 @@ cran_mentions_count <- function(pkg, project = 'cran'){
 #' @export
 #' @rdname buildtools
 generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url, branch){
+  # Get bioc metadata from the GitHub mirror
+  git_url <- sub('https://git.bioconductor.org/packages/', 'https://github.com/bioc/', git_url, fixed = TRUE)
   extra_dir <- file.path(normalizePath(outdir, mustWork = TRUE), 'extra')
   dir.create(extra_dir, showWarnings = FALSE)
   exports <- sort(grep('^\\.__', getNamespaceExports(package), invert = TRUE, value = TRUE))
