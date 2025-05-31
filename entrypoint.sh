@@ -66,7 +66,7 @@ fi
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
 # Temp workaround for BioC because we need to build source packges on r-release
-if [ "${UNIVERSE_NAME}" == "bioc" ] || [ "${UNIVERSE_NAME}" == "r-forge" ]; then
+if [ "${UNIVERSE_NAME:0:4}" == "bioc" ] || [ "${UNIVERSE_NAME}" == "r-forge" ]; then
 sed -i 's/R\s*(>= 4.[56]/R (>= 4.4/' ${DESCRIPTION} || true
 fi
 
