@@ -690,6 +690,10 @@ render_news_files <- function(package, outdir = '.', url = NULL){
       message("Did not find CRAN timeline data for package: ", package)
     })
     txt <- paste(unlist(format(news)), collapse = "\n\n")
+    if (!tools:::.news_db_has_no_bad_entries(news)){
+      warning("Errors parsing NEWS file: NEWS.html may be incomplete.")
+      attr(news, 'bad') <- NULL # Ignore parsing errors in e.g. 'urltools'
+    }
     html <- tools::toHTML(news, title = 'NEWS', logo = FALSE, up = NULL, top = NULL,
                           css = 'https://r-universe.dev/static/news-styles.css')
     html <- gsub('<h2>Changes in version', paste0('<h2>', package), html, fixed = TRUE)
