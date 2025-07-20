@@ -29,3 +29,4 @@ Imports:
     yaml,
     xml2
 RoxygenNote: 7.3.2.9000
+Additional_repositories: https://rcppcore.r-universe.dev
