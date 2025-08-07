@@ -241,7 +241,7 @@ url_exists <- function(url){
   for(i in 1:3){
     try({
       req <- curl::curl_fetch_memory(url)
-      return(req$status < 400 && !length(grepRaw('ERR FATAL', req$content, fixed = TRUE)))
+      return(req$status < 400 && length(req$content) && !length(grepRaw('ERR FATAL', req$content, fixed = TRUE)))
     })
     Sys.sleep(3)
   }
@@ -645,6 +645,9 @@ render_readme <- function(url, outdir = '.'){
   base <- dirname(url)
   md <- readLines(url)
   html <- commonmark::markdown_html(md, extensions = TRUE)
+  if(identical(html, "")){
+    stop("Invalid/empty README.md")
+  }
   doc <- xml2::read_html(html)
   badges_extract(doc)
   for(img in xml2::xml_find_all(doc, '//img')){
