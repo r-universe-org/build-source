@@ -186,7 +186,7 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 # Replace or add "Repository:" in DESCRIPTION
 if [ "${MY_UNIVERSE}" ]; then
 sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${DESCRIPTION}"
-echo "Date/Publication: ${GIT_DATE}" >> "${DESCRIPTION}"
+sed -n -e '/^Date.Publication:/!p' -e "\$aDate/Publication: ${GIT_DATE}" -i "${DESCRIPTION}"
 echo "RemoteUrl: ${1}" >> "${DESCRIPTION}"
 echo "RemoteRef: ${BRANCH}" >> "${DESCRIPTION}"
 echo "RemoteSha: ${2}" >> "${DESCRIPTION}"
