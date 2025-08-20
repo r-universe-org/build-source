@@ -30,6 +30,7 @@ if [ "${2}" ]; then
 echo "Resetting to $2"
 ( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
 fi
+GIT_DATE=$(cd ${REPO}; TZ=UTC git show --quiet --date='format-local:%Y-%m-%d %H:%M:%S UTC' --format="%cd")
 echo "::endgroup::"
 
 # Subdirectory containing the R package
@@ -185,6 +186,7 @@ echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 # Replace or add "Repository:" in DESCRIPTION
 if [ "${MY_UNIVERSE}" ]; then
 sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${DESCRIPTION}"
+echo "Date/Publication: ${GIT_DATE}" >> "${DESCRIPTION}"
 echo "RemoteUrl: ${1}" >> "${DESCRIPTION}"
 echo "RemoteRef: ${BRANCH}" >> "${DESCRIPTION}"
 echo "RemoteSha: ${2}" >> "${DESCRIPTION}"
