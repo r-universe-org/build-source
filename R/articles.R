@@ -37,7 +37,6 @@ r_universe_format <- function(){
     toc = TRUE,
     toc_depth = 2,
     theme = NULL,
-    mathjax = NULL,
     highlight = 'pygments',
     template = template_file('template.html'),
     includes = rmarkdown::includes(
