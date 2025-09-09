@@ -4,7 +4,9 @@ COPY . /pkg
 COPY entrypoint.sh /entrypoint.sh
 COPY pdftinytex /root/bin/pdftinytex
 COPY tinyxelatex /root/bin/tinyxelatex
+
 COPY shims /shims
+ENV QUARTO_PATH=/shims/quarto
 
 COPY dummykey/key.zip /key.zip
 
