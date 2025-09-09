@@ -1,3 +1,4 @@
 #!/bin/sh
 touch /NEED_QUARTO
+echo "Recording quarto use" 1>&2
 exec /usr/local/bin/quarto "$@"

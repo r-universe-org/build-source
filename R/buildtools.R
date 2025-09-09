@@ -401,6 +401,11 @@ install_dependencies <- function(path = '.'){
   if(isTRUE('rJava' %in% rundeps)){
     file.create('/NEED_RJAVA')
   }
+
+  # This does not include 'suggests'
+  if(isTRUE('quarto' %in% c(rundeps, desc$Package))){
+    file.create('/NEED_QUARTO')
+  }
   if(isTRUE(any(c('rjags', 'runjags') %in% c(rundeps, desc$Package)))){
     if(!require('rjags'))
       utils::install.packages('rjags')
