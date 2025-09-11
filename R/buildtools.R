@@ -1044,6 +1044,8 @@ get_cran_releases_fast <- function(package){
 }
 
 get_cran_releases_slow <- function(package){
+  oldrepos <- options(repos = c(CRAN = 'https://cloud.r-project.org'))
+  on.exit(options(repos = oldrepos))
   current <- tools:::CRAN_current_db()
   matches <- which(grepl(sprintf('^%s_.*\\.tar\\.gz', package), row.names(current)))
   filenames <- row.names(current)[matches]
