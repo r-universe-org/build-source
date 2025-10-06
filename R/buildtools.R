@@ -1084,7 +1084,7 @@ find_pkgdown_url <- function(package){
       req <- curl::curl_fetch_memory(paste0(x, '/pkgdown.yml'))
       if(req$status == 200){
         yaml <- yaml:::yaml.load(rawToChar(req$content))
-        if(length(yaml$pkgdown)){
+        if(length(yaml$pkgdown) || length(yaml$altdoc)){
           return(x)
         }
       }
