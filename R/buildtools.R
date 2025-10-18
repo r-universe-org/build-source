@@ -271,13 +271,14 @@ sysdeps_info <- function(pkg){
   if(file.exists('/NEED_JAGS')){
     sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rjags'))
   }
-  df <- sysdeps[!is.na(sysdeps$package), c('package', 'headers', 'source', 'version')]
+  df <- sysdeps[!is.na(sysdeps$package), c('shlib', 'package', 'headers', 'source', 'version')]
   if(is.data.frame(df) && nrow(df) > 0){
     df$name = NA_character_
     df$homepage = NA_character_
     df$description = NA_character_
     for(i in seq_len(nrow(df))){
-      df$name[i] = sysdep_shortname(df[i,])
+      df$shlib[i] <- sub('\\..*', '', df$shlib[i])
+      df$name[i] <- sysdep_shortname(df[i,])
       pkginfo <- apt_cache_info(df$package[i])
       if(length(pkginfo$homepage))
         df$homepage[i] = pkginfo$homepage[1]
