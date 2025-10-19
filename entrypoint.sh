@@ -71,6 +71,10 @@ if [ "${UNIVERSE_NAME:0:4}" == "bioc" ] || [ "${UNIVERSE_NAME}" == "r-forge" ]; 
 sed -i 's/R\s*(>= 4.[56]/R (>= 4.4/' ${DESCRIPTION} || true
 fi
 
+# Workaround arrow bug https://github.com/r-universe-org/help/issues/643
+if [ "${UNIVERSE_NAME}" != "apache" ]; then
+export ARROW_GCS=OFF
+fi
 
 # Resolve \Sexpr[] during CMD build for compiled packages (because these break cross compiles)
 if [ -d "${PKGDIR}/src" ]; then
