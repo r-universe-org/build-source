@@ -403,6 +403,10 @@ install_dependencies <- function(path = '.'){
     file.create('/NEED_RJAVA')
   }
 
+  if(isTRUE(grepl('golang', desc$SystemRequirements, ignore.case = TRUE))){
+    file.create('/NEED_GOLANG')
+  }
+
   # This does not include 'suggests'
   if(isTRUE('quarto' %in% c(rundeps, desc$Package))){
     file.create('/NEED_QUARTO')
