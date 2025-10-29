@@ -271,6 +271,11 @@ sysdeps_info <- function(pkg){
   if(file.exists('/NEED_JAGS')){
     sysdeps <- rbind(sysdeps, maketools::package_sysdeps('rjags'))
   }
+  if(any(grepl('protobuf', sysdeps$shlib))){
+    protoc <- maketools:::paths_to_sysdep(Sys.which("protoc"))
+    protoc$shlib <- NA
+    sysdeps <- rbind(sysdeps, protoc)
+  }
   df <- sysdeps[!is.na(sysdeps$package), c('shlib', 'package', 'headers', 'source', 'version')]
   if(is.data.frame(df) && nrow(df) > 0){
     df$name = NA_character_
