@@ -9,6 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+    BiocCheck,
     cffr,
     commonmark,
     curl,
@@ -28,5 +29,6 @@ Imports:
     unix,
     yaml,
     xml2
-RoxygenNote: 7.3.2.9000
+RoxygenNote: 7.3.3
 Additional_repositories: https://rcppcore.r-universe.dev
+Remotes: Bioconductor/BiocCheck
