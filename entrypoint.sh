@@ -273,13 +273,6 @@ Rscript -e "buildtools::render_html_manual('$PACKAGE', 'outputs/$PACKAGE/extra')
 Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL', '$BRANCH')"
 echo "::endgroup::"
 
-# Run BiocCheck for Bioconductor repos only
-if [ "${UNIVERSE_NAME:0:4}" == "bioc" ]; then
-echo "::group::BiocCheck('$SOURCEPKG')"
-Rscript -e "buildtools::bioc_check('$SOURCEPKG', 'install.log')"
-echo "::endgroup::"
-fi
-
 # if outputs has any files, add them to tarball
 echo "::group::Adding extra files to tarball"
 gunzip "$SOURCEPKG"
