@@ -589,7 +589,7 @@ universe_name_fallback <- function(){
   sub("https://(.+)\\.r-universe\\.dev", "\\1", Sys.getenv('MY_UNIVERSE'))
 }
 
-universe_info <- function(){
+universe_bio <- function(){
   name <- Sys.getenv('UNIVERSE_NAME', universe_name_fallback())
   if(nchar(name)){
     universe <- switch(name,
@@ -599,7 +599,16 @@ universe_info <- function(){
      'ropensci-champions' = 'ropensci',
      name
     )
-    gh::gh(sprintf('/users/%s', universe))
+    userinfo <- gh::gh(sprintf('/users/%s', universe))
+    userbio <- list(
+      uuid = userinfo$id,
+      type = tolower(userinfo$type),
+      name = ifelse(length(userinfo$name), userinfo$name, userinfo$login)
+    )
+    if(length(userinfo$bio)){
+      userbio$description <- userinfo$bio
+    }
+    return(userinfo)
   }
 }
 
@@ -905,16 +914,9 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   if(!length(searchresults)){
     searchresults <- current[['_searchresults']]
   }
-  userinfo <- universe_info()
-  userbio <- list(
-    uuid = userinfo$id,
-    type = tolower(userinfo$type),
-    name = ifelse(length(userinfo$name), userinfo$name, userinfo$login)
-  )
-  if(length(userinfo$bio)){
-    userbio$description <- userinfo$bio
-  }
-  contents$userbio <- lapply(userbio, jsonlite::unbox)
+  userbio <- universe_bio()
+  if(length(userbio))
+    contents$userbio <- lapply(userbio, jsonlite::unbox)
   if(length(downloads))
     contents$downloads <- lapply(downloads, jsonlite::unbox)
   if(length(mentions))
