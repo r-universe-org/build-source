@@ -603,9 +603,12 @@ universe_info <- function(){
 
 current_info <- function(package){
   tryCatch({
-    url <- paste0(Sys.getenv('MY_UNIVERSE', 'https://cran.r-universe.dev'), '/', package, '/json')
-    message("Looking up current package info: ", url)
-    jsonlite::fromJSON(url)
+    universe <- Sys.getenv('MY_UNIVERSE')
+    if(nchar(universe)){
+      url <- paste0(universe, '/', package, '/json')
+      message("Looking up current package info: ", url)
+      jsonlite::fromJSON(url)
+    }
   }, error = message)
 }
 

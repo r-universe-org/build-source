@@ -22,7 +22,10 @@ get_blackbird_count <- function(package){
 
 make_session_handle <- function(){
   agent <- 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'
-  curl::new_handle(useragent = agent, cookie = sprintf("user_session=%s;", Sys.getenv("DUMMY_SESSION")))
+  session <- Sys.getenv("DUMMY_SESSION")
+  if(!nchar(session))
+    stop("No dummy session, skipping script count")
+  curl::new_handle(useragent = agent, cookie = sprintf("user_session=%s;", session))
 }
 
 #out <- get_blackbird_count('dplyr')
