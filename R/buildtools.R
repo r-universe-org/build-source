@@ -591,14 +591,16 @@ universe_name_fallback <- function(){
 
 universe_info <- function(){
   name <- Sys.getenv('UNIVERSE_NAME', universe_name_fallback())
-  universe <- switch(name,
-    'bioc' = 'bioconductor',
-    'bioc-release' = 'bioconductor',
-    'r-multiverse-staging' = 'r-multiverse',
-    'ropensci-champions' = 'ropensci',
-    name
-  )
-  gh::gh(sprintf('/users/%s', universe))
+  if(nchar(name)){
+    universe <- switch(name,
+     'bioc' = 'bioconductor',
+     'bioc-release' = 'bioconductor',
+     'r-multiverse-staging' = 'r-multiverse',
+     'ropensci-champions' = 'ropensci',
+     name
+    )
+    gh::gh(sprintf('/users/%s', universe))
+  }
 }
 
 current_info <- function(package){
