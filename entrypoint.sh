@@ -140,7 +140,7 @@ fi
 
 # Do not build articles (vignettes) for remotes
 #BUILD_ARGS="--resave-data"
-if [ "${5}" == "false" ]; then
+if [ "${5}" == "false" ] || [ "$SKIP_VIGNETTES" ]; then
   BUILD_ARGS="${BUILD_ARGS} --no-build-vignettes"
   rm -Rf ${PKGDIR}/vignettes
 fi
