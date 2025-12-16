@@ -608,7 +608,7 @@ universe_bio <- function(){
     if(length(userinfo$bio)){
       userbio$description <- userinfo$bio
     }
-    return(userinfo)
+    return(userbio)
   }
 }
 
