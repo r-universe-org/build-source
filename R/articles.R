@@ -107,7 +107,7 @@ replace_rmarkdown_engine <- function(){
   setHook(packageEvent("litedown", "onLoad"), function(...) {
     message("Found litedown! Enabling r-universe template")
     old_engine <- tools::vignetteEngine('vignette', package='litedown')
-    tools::vignetteEngine('vignette', package = 'litedown', weave = function(file, encoding, ...){
+    tools::vignetteEngine('vignette', package = 'litedown', weave = function(file, quiet = FALSE, ...){
       meta <- buildtools:::read_yaml_font_matter(file)$options$meta
       has_plugins <- setdiff(c(meta$css ,meta$js), c('@default'))
       template <- if(length(has_plugins)){
@@ -118,7 +118,7 @@ replace_rmarkdown_engine <- function(){
       mdfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.md'))
       htmlfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.html'))
       load_custom_output_package(file)
-      litedown::fuse(file, mdfile, ...)
+      litedown::fuse(file, mdfile, quiet = quiet, envir = globalenv())
       options(litedown.html.template = template)
       on.exit(options(litedown.html.template = NULL))
       litedown::mark(mdfile, htmlfile)
