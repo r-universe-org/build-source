@@ -21,6 +21,7 @@ Imports:
     knitr,
     lubridate,
     maketools,
+    markdown,
     pak,
     postdoc (>= 1.4.1),
     remotes,
