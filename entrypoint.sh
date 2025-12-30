@@ -35,7 +35,11 @@ echo "::endgroup::"
 
 # Subdirectory containing the R package
 PKGDIR="${REPO}"
+if [ "$UPSTREAMBRANCH" ]; then
+BRANCH="$UPSTREAMBRANCH"
+else
 BRANCH=${4:-HEAD}
+fi
 if [ "${3}" ]; then
 SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
