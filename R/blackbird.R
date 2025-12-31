@@ -1,6 +1,10 @@
 # This is experimental. The GH blackbird API seemingly may only be used with a
 # webui user_session cookie, not a token. So we hack it.
 get_blackbird_count <- function(package){
+  if(nchar(Sys.getenv('BLACKBIRD_COUNT'))){
+    message("Found BLACKBIRD_COUNT")
+    return(as.numeric(Sys.getenv('BLACKBIRD_COUNT')))
+  }
   tryCatch({
     # Todo: we could also include (path:*.R OR path:*.*md) to get only R results
     url <- paste0('https://github.com/search/blackbird_count?saved_searches=&q=%22library%28', package, '%29%22')
