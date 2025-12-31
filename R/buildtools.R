@@ -323,7 +323,11 @@ install_sysdeps <- function(path = '.'){
       options(pak.no_extra_messages = TRUE)
       pak::pkg_sysreqs('.', upgrade = FALSE)
     }, timeout = 180)
-    syspkgs <- grep(skiplist, unlist(pakinfo$packages$system_packages), value = TRUE, invert = TRUE)
+    syspkgs <- unlist(pakinfo$packages$system_packages)
+    if('rustc' %in% syspkgs){
+      syspkgs <- c(syspkgs, 'libclang-dev')
+    }
+    syspkgs <- grep(skiplist, syspkgs, value = TRUE, invert = TRUE)
     if(length(syspkgs)){
       syspkgs <- paste(syspkgs, collapse = ' ')
       message("Installing sysreqs: ", syspkgs)
