@@ -6,6 +6,11 @@ echo "Subdir: ${3}"
 echo "Branch: ${4}"
 echo "Articles: ${5}"
 
+# Some checks
+if [ -z "$GITHUB_PAT" ] && [ -z "$GITHUB_TOKEN" ]; then
+echo "Warning: No GITHUB_PAT is available"
+fi
+
 # Setup build environment (expand ~ to $HOME)
 export R_LIBS_USER="${PWD}/pkglib"
 mkdir -p $R_LIBS_USER
