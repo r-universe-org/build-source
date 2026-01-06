@@ -348,6 +348,11 @@ install_sysdeps <- function(path = '.'){
 # These are not on CRAN, so we filter them out
 basepkgs <- names(which(installed.packages()[ ,"Priority"] == "base", ))
 
+# Packages over 2GB in size
+too_big <- c('SNPlocs.Hsapiens.dbSNP155.GRCh38', 'SNPlocs.Hsapiens.dbSNP155.GRCh37',
+             'MafDb.gnomAD.r2.1.GRCh38', 'MafDb.gnomAD.r2.1.hs37d5')
+dont_install <- c('R', basepkgs, too_big)
+
 #' @rdname buildtools
 #' @export
 install_dependencies <- function(path = '.'){
@@ -375,7 +380,7 @@ install_dependencies <- function(path = '.'){
   # Try to download and cache *all* dependencies (also those preinstalled on this image)
   # Note that if deps is NULL, tools::package_dependencies() returns all packages!
   alldeps <- if(length(deps)){
-    setdiff(unique(c(deps,unlist(unname(tools::package_dependencies(deps, recursive = TRUE))))), basepkgs)
+    setdiff(unique(c(deps,unlist(unname(tools::package_dependencies(deps, recursive = TRUE))))), dont_install)
   }
 
   # Some sanity check
@@ -446,7 +451,7 @@ recurse_deps <- function(pkgs){
   if(!length(pkgs))
     return(character())
   all <- sort(unique(c(pkgs, unlist(unname(tools::package_dependencies(pkgs, recursive = TRUE))))))
-  setdiff(all, basepkgs)
+  setdiff(all, dont_install)
 }
 
 #' @rdname buildtools
