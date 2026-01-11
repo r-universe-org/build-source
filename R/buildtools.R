@@ -640,7 +640,7 @@ list_contributors <- function(repo){
   counts <- vapply(contributors, function(x){x$contributions}, integer(1))
 
   # Filter bots and duplicate users (github bug)
-  skip <- duplicated(logins) | grepl('[bot]', logins, fixed = TRUE)
+  skip <- duplicated(logins) | grepl('[bot]', logins, fixed = TRUE) | logins == 'actions-user'
   counts <- counts[!skip]
   logins <- logins[!skip]
   uuids <- uuids[!skip]
