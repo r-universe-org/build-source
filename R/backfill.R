@@ -6,7 +6,7 @@
 backfill_search_results <- function(){
   userpwd <- Sys.getenv("CRANLIKEPWD", NA)
   if(is.na(userpwd)) stop("No CRANLIKEPWD set, cannot deploy")
-  df <- jsonlite::stream_in(url(paste0('https://r-universe.dev/stats/files?type=src&fields=_searchresults,_score&nocache=', rnorm(1))))
+  df <- jsonlite::stream_in(url(paste0('https://r-universe.dev/api/files?type=src&fields=_searchresults,_score&nocache=', rnorm(1))))
   df <- df[is.na(df[['_searchresults']]),]
   df <- df[order(df[['_score']], decreasing = TRUE),]
   for(i in seq_len(nrow(df))){
@@ -33,7 +33,7 @@ backfill_search_results <- function(){
 backfill_bioc_downloads <- function(){
   userpwd <- Sys.getenv("CRANLIKEPWD", NA)
   if(is.na(userpwd)) stop("No CRANLIKEPWD set, cannot deploy")
-  df <- jsonlite::stream_in(url('https://bioc.r-universe.dev/stats/files?type=src&fields=_downloads.count&nocache=123'))
+  df <- jsonlite::stream_in(url('https://bioc.r-universe.dev/api/files?type=src&fields=_downloads.count&nocache=123'))
   df <- df[is.na(df[['_downloads']]$count),]
   for(i in seq_len(nrow(df))){
     info <- as.list(df[i,])
@@ -58,7 +58,7 @@ backfill_bioc_downloads <- function(){
 backfill_indexurls <- function(){
   userpwd <- Sys.getenv("CRANLIKEPWD", NA)
   if(is.na(userpwd)) stop("No CRANLIKEPWD set, cannot deploy")
-  df <- jsonlite::stream_in(url('https://r-universe.dev/stats/files?type=src&fields=_indexed,_indexurl&nocache=123'))
+  df <- jsonlite::stream_in(url('https://r-universe.dev/api/files?type=src&fields=_indexed,_indexurl&nocache=123'))
   indexed <- df[df[['_indexed']],]
   noindex <- df[!df[['_indexed']] & is.na(df[['_indexurl']]),]
   noindex$indexowner <- indexed[match(noindex$package, indexed$package), 'user']
