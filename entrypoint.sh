@@ -61,7 +61,7 @@ Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
 echo "::endgroup::"
 
 # Workaround for rstanarm: ignore cleanup if package is already built
-if [ -f "$PKGDIR/MD5" ]; then
+if [ -f "$PKGDIR/MD5" ] && [ "${PKGDIR}" != "ECOSolveR" ]; then
   rm -f $PKGDIR/MD5
   test -f $PKGDIR/cleanup && echo "" > $PKGDIR/cleanup
 elif test -f "$PKGDIR/bootstrap.R"; then
