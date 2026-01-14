@@ -55,6 +55,11 @@ DESCRIPTION="${PKGDIR}/DESCRIPTION"
 echo "" >> ${DESCRIPTION} #ensure line ending
 sed '/^[[:space:]]*$/d' -i "${DESCRIPTION}" # delete empty lines at end of DESCRIPTION
 
+# Hack for bug in cranhaven
+if [ "$SUBDIR" = "regmedint" ]; then
+curl -L "https://raw.githubusercontent.com/cran/regmedint/refs/heads/master/DESCRIPTION" -o "$DESCRIPTION"
+fi
+
 # Get system dependencies
 echo "::group::Installing system dependencies"
 Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
