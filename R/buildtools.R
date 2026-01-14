@@ -721,7 +721,9 @@ render_news_files <- function(package, outdir = '.', url = NULL){
       # Try to add CRAN release dates (similar to pkgdown)
       # NB: dates in HTML are only shown starting R-4.3 (pr@82796)
       dateurl <- paste0("https://crandb.r-pkg.org/", package, "/all")
-      pkgdata <- jsonlite::fromJSON(dateurl)
+      req <- curl::curl_fetch_memory(dateurl)
+      stopifnot(req$status_code < 400)
+      pkgdata <- jsonlite::fromJSON(rawToChar(req$content))
       stopifnot(identical(package, pkgdata$name))
       timeline <- pkgdata$timeline
       news$Date <- vapply(news$Version, function(ver){
@@ -1104,17 +1106,20 @@ normalize_description <- function(path){
 
 # Mimic downlit:::remote_metadata_slow but skip r-universe urls
 find_pkgdown_url <- function(package){
+  message("Looking for pkgdown URL...")
   urls <- downlit:::package_urls(package)
   urls <- grep('r-universe.dev', urls, value = TRUE, invert = TRUE)
   for(x in urls){
     try({
       req <- curl::curl_fetch_memory(paste0(x, '/pkgdown.yml'))
+      message("Trying: ", x, '/pkgdown.yml: HTTP ', req$status)
       if(req$status == 200){
         yaml <- yaml:::yaml.load(rawToChar(req$content))
         if(length(yaml$pkgdown) || length(yaml$altdoc)){
+          message("Success")
           return(x)
         }
       }
-    }, silent = TRUE)
+    }, silent = FALSE)
   }
 }
