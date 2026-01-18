@@ -60,6 +60,11 @@ if [ "$SUBDIR" = "regmedint" ]; then
 curl -L "https://raw.githubusercontent.com/cran/regmedint/refs/heads/master/DESCRIPTION" -o "$DESCRIPTION"
 fi
 
+# Upstream required '--no-staged-install'
+if [ "$REPO" = "catboost" ]; then
+echo "StagedInstall: no" >> "$DESCRIPTION"
+fi
+
 # Get system dependencies
 echo "::group::Installing system dependencies"
 Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
