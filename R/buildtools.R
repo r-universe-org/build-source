@@ -920,11 +920,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     dev_url <- guess_development_url(package, tolower(git_url))
     contents <- get_gitstats(repo, pkgdir, git_url)
   }
-  current <- current_info(package)
-  searchresults <- get_blackbird_count(package)
-  if(!length(searchresults)){
-    searchresults <- current[['_searchresults']]
-  }
+  searchresults <- get_script_count(package)
   userbio <- universe_bio()
   if(length(userbio))
     contents$userbio <- lapply(userbio, jsonlite::unbox)
