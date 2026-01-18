@@ -65,6 +65,12 @@ if [ "$REPO" = "catboost" ]; then
 echo "StagedInstall: no" >> "$DESCRIPTION"
 fi
 
+# Fix CRAN mirror build of this package
+# Does not work
+#if [ "$REPO" = "symengine" ]; then
+#curl -L "https://raw.githubusercontent.com/symengine/symengine.R/refs/heads/master/.Rbuildignore" -o ${PKGDIR}/.Rbuildignore
+#fi
+
 # Get system dependencies
 echo "::group::Installing system dependencies"
 Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"

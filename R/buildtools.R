@@ -1018,7 +1018,7 @@ precache_pppm <- function(){
   for(i in 1:3){
     unlink(list.files(tempdir(), pattern = 'p3m.dev', full.names = TRUE))
     pkgs <- utils::available.packages(repos = url)
-    message("Found ", nrow(pkgs), " packages on p3m.dev")
+    message("Found ", nrow(pkgs), " packages on ", url)
     if(nrow(pkgs) > 20000){
       message("OK")
       break
