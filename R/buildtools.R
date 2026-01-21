@@ -227,7 +227,7 @@ markdown_headings <- function(file){
 base64_gzip <- function(bin){
   buf <- memCompress(bin, 'gzip')
   b64 <- gsub("\n", "", jsonlite::base64_enc(buf), fixed = TRUE)
-  chartr('+/', '-_', b64)
+  sub("=+$", "", chartr('+/', '-_', b64))
 }
 
 base64_gunzip <- function(b64){
