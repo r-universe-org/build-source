@@ -578,7 +578,9 @@ get_gitstats <- function(repo, pkgdir, url){
   }
   repo <- sub("^https?://github.com/", "", url)
   repo <- sub("/$", "", repo)
-  ghinfo <- gh::gh(sprintf('/repos/%s', repo))
+  endpoint <- sprintf('/repos/%s', repo)
+  message("Getting ", endpoint)
+  ghinfo <- gh::gh(endpoint)
   ghtopics <- normalize_tags(unlist(ghinfo$topics))
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
