@@ -89,7 +89,9 @@ elif test -f "$PKGDIR/.prepare"; then
 fi
 
 # Normalize DESCRIPTION file
+if [ "$PKGDIR" != "GEOmetadb" ];then
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
+fi
 
 # Temp workaround for BioC because we need to build source packges on r-release
 if [ "${UNIVERSE_NAME:0:4}" == "bioc" ] || [ "${UNIVERSE_NAME}" == "r-forge" ]; then
