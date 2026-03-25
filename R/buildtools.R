@@ -1105,8 +1105,12 @@ split_by_comma <- function(x){
 
 # Keep whitespace within R blocks to account for comment lines
 # For example: https://github.com/cran/blogdown/blob/1.18/DESCRIPTION
+# Do twice because of bug in read.dcf() that happens when a dot falls
+# on new line after reformat. For example GEOmetadb 1.73.2
 normalize_description <- function(path){
-  x <-read.dcf(path, keep.white='Authors@R')
+  x <- read.dcf(path, keep.white='Authors@R')
+  write.dcf(x, path, keep.white='Authors@R')
+  x <- read.dcf(path, keep.white='Authors@R')
   write.dcf(x, path, keep.white='Authors@R')
 }
 
