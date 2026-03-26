@@ -50,15 +50,10 @@ SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
-# Prepare DESCRIPTION
+# Normalize DESCRIPTION file
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
-echo "" >> ${DESCRIPTION} #ensure line ending
-sed '/^[[:space:]]*$/d' -i "${DESCRIPTION}" # delete empty lines at end of DESCRIPTION
-
-# Hack for bug in cranhaven
-if [ "$SUBDIR" = "regmedint" ]; then
-curl -L "https://raw.githubusercontent.com/cran/regmedint/refs/heads/master/DESCRIPTION" -o "$DESCRIPTION"
-fi
+R -e "buildtools:::normalize_description('${DESCRIPTION}')"
+## sed '/^[[:space:]]*$/d' -i "${DESCRIPTION}" # delete empty lines at end of DESCRIPTION
 
 # Upstream required '--no-staged-install'
 if [ "$REPO" = "catboost" ]; then
@@ -87,9 +82,6 @@ elif test -f "$PKGDIR/.prepare"; then
   echo "Trying to run $PKGDIR/.prepare"
   (cd $PKGDIR; sh .prepare) || true
 fi
-
-# Normalize DESCRIPTION file
-R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 
 # Temp workaround for BioC because we need to build source packges on r-release
 if [ "${UNIVERSE_NAME:0:4}" == "bioc" ] || [ "${UNIVERSE_NAME}" == "r-forge" ]; then
