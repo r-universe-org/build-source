@@ -803,7 +803,7 @@ get_help_metadata <- function(package){
   aliases <- split(names(out), unname(out))
   db <- load_rd_data(package)
   titles <- vapply(db, tools:::.Rd_get_title, character(1), USE.NAMES = FALSE)
-  concepts <- vapply(db, get_first_concept, character(1), USE.NAMES = FALSE)
+  concepts <- get_json_concepts(db)
   df <- data.frame(page = names(db), title = titles, concept = concepts)
   df$topics <- lapply(unname(aliases[names(db)]), as.character)
   df
@@ -826,10 +826,14 @@ get_rd_keywords <- function(rd){
 }
 
 # Concept is usually the @family tag in roxygen2
-# In theory we can have multiple concepts but it is very rare
-get_first_concept <- function(rd){
-  concepts <- tools:::.Rd_get_metadata(rd, 'concept')
-  concepts[1]
+get_json_concepts <- function(db){
+  concepts <- vapply(db, function(rd){
+    x <- tools:::.Rd_get_metadata(rd, 'concept')
+    if(length(x)){
+      jsonlite::toJSON(x)
+    } else NA_character_
+  }, character(1), USE.NAMES = FALSE)
+  structure(concepts, class = 'json')
 }
 
 #' @export
