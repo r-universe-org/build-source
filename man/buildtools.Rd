@@ -21,6 +21,7 @@
 \alias{generate_metadata_files}
 \alias{needs_compilation}
 \alias{maintainer_info_base64}
+\alias{check_for_archived_deps}
 \alias{tweak_help_files}
 \title{Build tools}
 \usage{
@@ -63,6 +64,8 @@ generate_metadata_files(package, repo, subdir, outdir, pkgdir, git_url, branch)
 needs_compilation(package)
 
 maintainer_info_base64(path = ".")
+
+check_for_archived_deps(path)
 
 tweak_help_files(path)
 }

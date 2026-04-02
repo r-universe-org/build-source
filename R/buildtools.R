@@ -389,7 +389,7 @@ install_dependencies <- function(path = '.'){
   }
 
   # Actually install
-  message("Running: utils::install.packages(alldeps)")
+  # message("Running: utils::install.packages(alldeps)")
   utils::install.packages(alldeps)
 
   # The following should not be needed if the remote is part of the universe
@@ -1135,5 +1135,29 @@ find_pkgdown_url <- function(package){
         }
       }
     }, silent = FALSE)
+  }
+}
+
+#' @rdname buildtools
+#' @export
+check_for_archived_deps <- function(path){
+  setwd(path)
+  installed <- row.names(installed.packages())
+  harddeps <- remotes::local_package_deps()
+  missing <- setdiff(harddeps, installed)
+  if(length(missing)) {
+    message("Checking for archived dependencies...")
+    archived <- read.csv('http://r-universe-org.github.io/cran-to-git/archived.csv')
+    for(pkg in missing){
+      if(pkg %in% archived$Package){
+        info <- archived[archived$Package == pkg,]
+        errmsg <- sprintf('Hard dependency "%s" was archived from CRAN on %s because: %s',
+             info$Package, info$Date, info$Reason)
+        errmsg <- c(errmsg, 'Unfortunately this dependency will need to be removed or to proceed.')
+        inputpkg <- read_description_field('Package')
+        cat(sprintf("::error file=%s::%s\n", inputpkg, paste(errmsg, collapse = '%0A')))
+        quit(status = 1)
+      }
+    }
   }
 }

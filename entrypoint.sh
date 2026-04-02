@@ -128,18 +128,21 @@ exit 1
 fi
 
 # DEBUGGING
-if [ "${MY_UNIVERSE}" ]; then
-echo "::group::Show contents of $MY_UNIVERSE"
-R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,'Version',drop=FALSE])"
-echo "::endgroup::"
-else
-echo "MY_UNIVERSE is not set"
-fi
+#if [ "${MY_UNIVERSE}" ]; then
+#echo "::group::Show contents of $MY_UNIVERSE"
+#R -e "try(available.packages(repos = '${MY_UNIVERSE}')[,'Version',drop=FALSE])"
+#echo "::endgroup::"
+#else
+#echo "MY_UNIVERSE is not set"
+#fi
 
 # Get dependencies
 echo "::group::Installing R dependencies"
 Rscript --no-init-file -e "buildtools::install_dependencies('$PKGDIR')"
 echo "::endgroup::"
+
+# Give helpful error for some bioc packages
+Rscript --no-init-file -e "buildtools::check_for_archived_deps('$PKGDIR')"
 
 # These are set in install_dependencies() above
 if [ -f "/NEED_RJAVA" ]; then
