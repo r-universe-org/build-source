@@ -442,7 +442,7 @@ install_cmdstan_quick <- function(){
   standir <- normalizePath('~/.cmdstan', mustWork = FALSE)
   dir.create(standir)
   on.exit(unlink('cmdstan.tgz'))
-  utils::download.file('https://github.com/stan-dev/cmdstan/releases/download/v2.33.1/collab-cmdstan-2.33.1.tgz', 'cmdstan.tgz')
+  utils::download.file('https://github.com/stan-dev/cmdstan/releases/download/v2.38.0/colab-cmdstan-2.38.0.tgz', 'cmdstan.tgz')
   system(sprintf("tar zxf cmdstan.tgz -C %s", standir), intern = TRUE)
   message("Done installing cmdstan!")
 }
