@@ -327,6 +327,16 @@ install_sysdeps <- function(path = '.'){
     if('rustc' %in% syspkgs){
       syspkgs <- c(syspkgs, 'libclang-dev')
     }
+
+    # hardcode bioc legacy stuff
+    if(grepl('HilbertVisGUI', basename(path))){
+      syspkgs <- c(syspkgs, 'libgtkmm-2.4-dev')
+    }
+    if(grepl('RbowtieCuda', basename(path))){
+      # Does not work
+      syspkgs <- c(syspkgs, 'nvidia-cuda-toolkit', 'nvidia-cuda-toolkit-gcc', 'nvidia-driver-590')
+    }
+
     syspkgs <- grep(skiplist, syspkgs, value = TRUE, invert = TRUE)
     if(length(syspkgs)){
       syspkgs <- paste(syspkgs, collapse = ' ')
