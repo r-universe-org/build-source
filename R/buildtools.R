@@ -1146,18 +1146,39 @@ check_for_archived_deps <- function(path){
   harddeps <- remotes::local_package_deps()
   missing <- setdiff(harddeps, installed)
   if(length(missing)) {
-    message("Checking for archived dependencies...")
+    message("Checking for archived or deprecated dependencies...")
     archived <- read.csv('http://r-universe-org.github.io/cran-to-git/archived.csv')
+    deprecated <- bioc_devel_deprecated()
     for(pkg in missing){
       if(pkg %in% archived$Package){
         info <- archived[archived$Package == pkg,]
         errmsg <- sprintf('Hard dependency "%s" was archived from CRAN on %s because: %s',
              info$Package, info$Date, info$Reason)
-        errmsg <- c(errmsg, 'Unfortunately this dependency will need to be removed or to proceed.')
+        errmsg <- c(errmsg, 'Unfortunately this dependency will need to be removed to proceed.')
         inputpkg <- read_description_field('Package')
+        cat(sprintf("::error file=%s::%s\n", inputpkg, paste(errmsg, collapse = '%0A')))
+        quit(status = 1)
+      }
+      if(pkg %in% deprecated){
+        inputpkg <- read_description_field('Package')
+        errmsg <- sprintf('Hard dependency "%s" was deprecated in Bioconductor %s', pkg, attr(deprecated, 'bioc_version'))
+        errmsg <- c(errmsg, 'Unfortunately this dependency will need to be removed to proceed.')
         cat(sprintf("::error file=%s::%s\n", inputpkg, paste(errmsg, collapse = '%0A')))
         quit(status = 1)
       }
     }
   }
+}
+
+bioc_devel_deprecated <- function(){
+  tryCatch({
+    yml <- yaml::read_yaml("https://bioconductor.org/config.yaml")
+    biocver <- ifelse(identical(Sys.getenv('UNIVERSE_NAME'), 'bioc-release'), yml$release_version, yml$devel_version )
+    bioc <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', biocver))
+    deprecated <- Filter(function(x) identical(x$PackageStatus, 'Deprecated'), bioc)
+    structure(names(deprecated), bioc_version = biocver)
+  }, error = function(e){
+    message(e)
+    character()
+  })
 }
