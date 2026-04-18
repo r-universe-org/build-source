@@ -324,7 +324,10 @@ install_sysdeps <- function(path = '.'){
       pak::pkg_sysreqs('.', upgrade = FALSE)
     }, timeout = 180)
     syspkgs <- unlist(pakinfo$packages$system_packages)
-    if('rustc' %in% syspkgs){
+
+    # r-hub no longer uses apt package to install rust
+    if('rust' %in% pakinfo$packages$sysreq){
+      # Needed for e.g. roxigraph
       syspkgs <- c(syspkgs, 'libclang-dev')
     }
 
