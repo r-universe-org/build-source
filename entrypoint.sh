@@ -85,7 +85,7 @@ fi
 
 # Temp workaround for BioC because we need to build source packges on r-release
 if [ "${UNIVERSE_NAME:0:4}" == "bioc" ] || [ "${UNIVERSE_NAME}" == "r-forge" ]; then
-sed -i 's/R\s*(>= 4.[56]/R (>= 4.4/' ${DESCRIPTION} || true
+sed -i 's/R\s*(>= 4.[67]/R (>= 4.5/' ${DESCRIPTION} || true
 fi
 
 # Workaround arrow bug https://github.com/r-universe-org/help/issues/643
