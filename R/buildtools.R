@@ -12,6 +12,11 @@ find_logo <- function (path, git_url, branch, subdir = "") {
   # Match logic from pkgdown but return path relative packagfe root.
   rel_path <- c('logo.svg', 'man/figures/logo.svg', 'logo.png', 'man/figures/logo.png')
   cardimage <- find_opengraph_image(path = path)
+
+  # Prevent recursive self-references to r-universe
+  if(isTRUE(grepl('https?://.*.r-universe.dev/', cardimage))){
+    cardimage <- NULL
+  }
   if(length(cardimage)){
     if(grepl('^http', cardimage)){
       return(cardimage)
