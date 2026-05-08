@@ -60,6 +60,11 @@ if [ "$REPO" = "catboost" ]; then
 echo "StagedInstall: no" >> "$DESCRIPTION"
 fi
 
+# Workaround for cranhaven bug
+if [ "$REPO" = "veccompare" ]; then
+curl 'https://raw.githubusercontent.com/cran/veccompare/refs/heads/master/DESCRIPTION' -o "$DESCRIPTION"
+fi
+
 # Fix CRAN mirror build of this package
 # Does not work
 #if [ "$REPO" = "symengine" ]; then
