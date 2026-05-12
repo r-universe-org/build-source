@@ -50,6 +50,11 @@ SUBDIR="$3"
 PKGDIR="${PKGDIR}/${SUBDIR}"
 fi
 
+# Workaround for cranhaven bug borking description files
+if [ "$REPO" = "cranhaven.r-universe.dev" ] && [ "${SUBDIR}" ]; then
+curl "https://raw.githubusercontent.com/cran/${SUBDIR}/refs/heads/master/DESCRIPTION" -o "${PKGDIR}/DESCRIPTION"
+fi
+
 # Normalize DESCRIPTION file
 DESCRIPTION="${PKGDIR}/DESCRIPTION"
 R -e "buildtools:::normalize_description('${DESCRIPTION}')"
@@ -58,11 +63,6 @@ R -e "buildtools:::normalize_description('${DESCRIPTION}')"
 # Upstream required '--no-staged-install'
 if [ "$REPO" = "catboost" ]; then
 echo "StagedInstall: no" >> "$DESCRIPTION"
-fi
-
-# Workaround for cranhaven bug
-if [ "$REPO" = "veccompare" ]; then
-curl 'https://raw.githubusercontent.com/cran/veccompare/refs/heads/master/DESCRIPTION' -o "$DESCRIPTION"
 fi
 
 # Fix CRAN mirror build of this package
