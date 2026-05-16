@@ -518,6 +518,7 @@ get_maintainer_info <- function(path = '.'){
     info$linkedin <- socials$linkedin
     info$orcid <- socials$orcid #might be overridden below
     info$twitter <- socials$x #todo: drop this
+    info$description <- socials$bio
   }
   uuid <- Sys.getenv('MAINTAINERUUID', "")
   if(nchar(uuid)){
@@ -547,11 +548,15 @@ scrape_github_socials <- function(login){
     vcards <- xml2::xml_find_all(doc, "//li[contains(@class, 'vcard-detail')]")
     titles <- xml2::xml_text(xml2::xml_find_first(vcards, 'svg/title'))
     links <- xml2::xml_text(xml2::xml_find_first(vcards, 'a'))
+    bio <- xml2::xml_text(xml2::xml_find_first(doc, "//div[contains(@class, 'user-profile-bio')]"))
     is_orcid <- grepl("orcid", links, fixed = TRUE)
     links[is_orcid] <- parse_orcid_id(links[is_orcid])
     titles[is_orcid] <- 'orcid'
     links <- as.list(links[!is.na(titles)])
     names(links) <- tolower(titles[!is.na(titles)])
+    if(length(bio) && !is.na(bio)){
+      links$bio = bio
+    }
     links
   }, error = message)
 }
