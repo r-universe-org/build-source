@@ -369,7 +369,7 @@ basepkgs <- names(which(installed.packages()[ ,"Priority"] == "base", ))
 # Packages over 2GB in size
 too_big <- c('SNPlocs.Hsapiens.dbSNP155.GRCh38', 'SNPlocs.Hsapiens.dbSNP155.GRCh37',
              'MafDb.gnomAD.r2.1.GRCh38', 'MafDb.gnomAD.r2.1.hs37d5')
-dont_install <- c('R', basepkgs, too_big)
+dont_install <- c('R', 'gh', basepkgs, too_big)
 
 #' @rdname buildtools
 #' @export

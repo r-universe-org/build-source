@@ -15,7 +15,7 @@ Imports:
     data.table,
     downlit,
     gert (>= 1.6.0),
-    gh (>= 9.99),
+    gh,
     htmlwidgets,
     jsonlite,
     knitr,
@@ -30,4 +30,4 @@ Imports:
     yaml,
     xml2
 RoxygenNote: 7.3.2.9000
-Remotes: r-lib/gh@skip-validate
+Remotes: r-lib/gh
