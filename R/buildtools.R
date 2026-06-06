@@ -207,7 +207,7 @@ vignettes_engines <- function(files){
 
 vignettes_headings <- function(files){
   lapply(files, function(x){
-    if(grepl("\\.r?md$", x, ignore.case = TRUE)){
+    if(grepl("\\..?md$", x, ignore.case = TRUE)){
       tryCatch(markdown_headings(x), error = function(e){
         message(e)
         character()
