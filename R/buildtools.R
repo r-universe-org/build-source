@@ -233,7 +233,13 @@ markdown_headings <- function(file){
     doc <- xml2::xml_ns_strip(xml2::read_xml(xml))
     headings <- unique(xml2::xml_text(xml2::xml_find_all(doc, xpath = '//heading')))
     # Also remove pandoc-style class/id annotation
-    trimws(sub("\\{.*\\}$", "", headings))
+    headings <- trimws(sub("\\{.*\\}$", "", headings))
+    # Also strip embedded html tags (e.g. CHNOSZ)
+    vapply(headings, function(x){
+      tryCatch({
+        as.character(xml2::xml_text(xml2::read_html(charToRaw(x))))[1]
+      }, error = function(e){x})
+    }, character(1), USE.NAMES = FALSE)
   }
 }
 
