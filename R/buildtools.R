@@ -145,7 +145,7 @@ vignettes_info <- function(repo, pkg, subdir = ""){
     }, character(1))
     df$author = vapply(rmddata, function(x){remove_markup(normalize_author(x$author))}, character(1))
     df$engine = vignettes_engines(srcfiles)
-    df$headings = vignettes_headings(srcfiles)
+    df$headings = vignettes_headings(vignettes)
     df$created = stats$created
     df$modified = stats$modified
     df$commits = stats$commits
@@ -205,10 +205,18 @@ vignettes_engines <- function(files){
   }, character(1), USE.NAMES = FALSE)
 }
 
-vignettes_headings <- function(files){
-  lapply(files, function(x){
-    if(grepl("\\..?md$", x, ignore.case = TRUE)){
-      tryCatch(markdown_headings(x), error = function(e){
+vignettes_headings <- function(vignettes){
+  lapply(seq_len(nrow(vignettes)), function(i){
+    info <- as.list(vignettes[i,])
+    input <- file.path(info$Dir, 'doc', info$File)
+    output <- file.path(info$Dir, 'doc', info$PDF)
+    if(grepl("\\..?md$", input, ignore.case = TRUE)){
+      tryCatch(markdown_headings(input), error = function(e){
+        message(e)
+        character()
+      })
+    } else if(grepl("\\.pdf$", output, ignore.case = TRUE)){
+      tryCatch(as.character(sapply(pdftools::pdf_toc(output)$children, function(doc) doc$title)), error = function(e){
         message(e)
         character()
       })

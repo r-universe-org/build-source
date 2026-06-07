@@ -23,6 +23,7 @@ Imports:
     maketools,
     markdown,
     pak,
+    pdftools,
     postdoc (>= 1.4.1),
     remotes,
     rmarkdown,
