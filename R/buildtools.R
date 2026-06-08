@@ -307,7 +307,7 @@ sysdeps_info <- function(pkg){
       if(length(pkginfo$homepage))
         df$homepage[i] = pkginfo$homepage[1]
       if(length(pkginfo$description))
-        df$description[i] = pkginfo$description[1]
+        df$description[i] = sub("\n.*$", "", pkginfo$description[1]) #only get first line (e.g. JAGS)
     }
     return(df)
   }
