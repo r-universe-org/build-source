@@ -11,6 +11,12 @@ if [ -z "$GITHUB_PAT" ] && [ -z "$GITHUB_TOKEN" ]; then
 echo "Warning: No GITHUB_PAT is available"
 fi
 
+# Authenticating gives better error messages for git
+if [ "$GITHUB_PAT" ]; then
+AUTH=$(printf "x-access-token:%s" "$GITHUB_PAT" | base64 -w0)
+git config --global http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
+fi
+
 # Setup build environment (expand ~ to $HOME)
 export R_LIBS_USER="${PWD}/pkglib"
 mkdir -p $R_LIBS_USER
