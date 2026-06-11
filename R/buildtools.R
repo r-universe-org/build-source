@@ -949,7 +949,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   datasets <- get_package_datasets(package = package)
   vignettes <- vignettes_info(repo = repo, pkg = package, subdir = subdir)
   sysdeps <- sysdeps_info(pkg = package)
-  assets <- sort(c('extra/contents.json', list.files(outdir, recursive = TRUE, all.files = TRUE)))
+  assets <- sort(c('extra/contents.json', license_files(package), list.files(outdir, recursive = TRUE, all.files = TRUE)))
   rundeps <- readRDS('/tmp/rundeps.rds') # never NULL
   readme_url <- Sys.getenv('README_URL')
   readme <- if(nchar(readme_url) > 0) readme_url
@@ -1218,4 +1218,11 @@ bioc_devel_deprecated <- function(){
     message(e)
     character()
   })
+}
+
+license_files <- function(package){
+  # Are there other formats?
+  if(nchar(system.file('LICENSE', package = package))){
+    return("LICENSE")
+  }
 }
