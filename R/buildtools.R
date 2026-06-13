@@ -653,6 +653,9 @@ universe_bio <- function(){
       type = tolower(userinfo$type),
       name = ifelse(length(userinfo$name), userinfo$name, userinfo$login)
     )
+    if(length(userinfo$followers)){
+      userbio$followers <- userinfo$followers
+    }
     if(length(userinfo$bio)){
       userbio$description <- userinfo$bio
     }
