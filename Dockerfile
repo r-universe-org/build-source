@@ -15,7 +15,7 @@ COPY dummykey/key.zip /key.zip
 RUN sed -i 's/-Werror=format-security//g' $(R RHOME)/etc/Makeconf
 
 
-RUN sed -i 's/^ALL_CPPFLAGS.*/& -DENABLE_LEGACY_NONAPI/' $(R RHOME)/etc/Makeconf
+#RUN sed -i 's/^ALL_CPPFLAGS.*/& -DENABLE_LEGACY_NONAPI/' $(R RHOME)/etc/Makeconf
 
 RUN unzip -P dummy /key.zip -d /root/.ssh/ &&\
   chmod 400 /root/.ssh/id_rsa &&\
