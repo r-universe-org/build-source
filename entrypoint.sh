@@ -218,9 +218,17 @@ fi
 echo "buildtools::replace_rmarkdown_engine()" > /tmp/vignettehack.R
 #fi
 
+# Bioconductor release branch has a special Repository: specification
+if [ "${UNIVERSE_NAME}" = "bioc-release" ] && [ "${BRANCH:0:8}" = "RELEASE_" ]; then
+BIOC_VERSION="${BRANCH#RELEASE_}"
+DESC_REPOSITORY="Bioconductor ${BIOC_VERSION/_/.}"
+else
+DESC_REPOSITORY="${MY_UNIVERSE}"
+fi
+
 # Replace or add "Repository:" in DESCRIPTION
 if [ "${MY_UNIVERSE}" ]; then
-sed -n -e '/^Repository:/!p' -e "\$aRepository: ${MY_UNIVERSE}" -i "${DESCRIPTION}"
+sed -n -e '/^Repository:/!p' -e "\$aRepository: ${DESC_REPOSITORY}" -i "${DESCRIPTION}"
 sed -n -e '/^Date.Publication:/!p' -e "\$aDate/Publication: ${GIT_DATE}" -i "${DESCRIPTION}"
 echo "RemoteUrl: ${1}" >> "${DESCRIPTION}"
 echo "RemoteRef: ${BRANCH}" >> "${DESCRIPTION}"
