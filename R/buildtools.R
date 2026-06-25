@@ -210,20 +210,31 @@ vignettes_headings <- function(vignettes){
     info <- as.list(vignettes[i,])
     input <- file.path(info$Dir, 'doc', info$File)
     output <- file.path(info$Dir, 'doc', info$PDF)
-    if(grepl("\\..?md$", input, ignore.case = TRUE)){
+    headings <- if(grepl("\\..?md$", input, ignore.case = TRUE)){
       tryCatch(markdown_headings(input), error = function(e){
         message(e)
-        character()
       })
     } else if(grepl("\\.pdf$", output, ignore.case = TRUE)){
-      tryCatch(as.character(sapply(pdftools::pdf_toc(output)$children, function(doc) doc$title)), error = function(e){
+      tryCatch(pdf_headings(output), error = function(e){
         message(e)
-        character()
       })
-    } else {
-      character()
+    } else if(grepl("\\.html$", output, ignore.case = TRUE)){
+      tryCatch(html_headings(output), error = function(e){
+        message(e)
+      })
     }
+    as.character(headings)
   })
+}
+
+pdf_headings <- function(file){
+  children <- pdftools::pdf_toc(file)$children
+  as.character(sapply(children, function(doc) doc$title))
+}
+
+html_headings <- function(file){
+  doc <- xml2::read_html(file)
+  unique(xml2::xml_text(xml2::xml_find_all(doc, xpath = './/h1 | .//h2')))
 }
 
 markdown_headings <- function(file){
