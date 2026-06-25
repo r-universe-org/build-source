@@ -416,8 +416,13 @@ install_dependencies <- function(path = '.'){
     addrepos <- trimws(strsplit(desc$Additional_repositories, ",", fixed=TRUE)[[1]])
     addrepos <- grep('^https?://\\S+$', addrepos, value = TRUE)
     addrepos <- grep(Sys.getenv("MY_UNIVERSE"), fixed = TRUE, addrepos, value = TRUE, invert = TRUE)
-    message("Using additional_repositories: ", paste(addrepos, collapse = ', '))
-    options(repos = c(getOption('repos'), addrepos))
+    if(nchar(Sys.getenv('NO_ADDITIONAL_REPOSITORIES'))){
+      message("Additional_repositories are ignored for this organization!")
+    } else {
+      #TODO: validate repos and add save in package metada
+      message("Using additional_repositories: ", paste(addrepos, collapse = ', '))
+      options(repos = c(getOption('repos'), addrepos))
+    }
   }
 
   # Try to download and cache *all* dependencies (also those preinstalled on this image)
