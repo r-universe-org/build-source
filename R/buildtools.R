@@ -638,7 +638,7 @@ get_gitstats <- function(repo, pkgdir, url){
   if(length(ghtopics))
     out$topics <- unique(c(out$topics, ghtopics))
   if(tolower(ghinfo$owner$login) != tolower(dirname(repo))){
-    message(sprintf('% seems transferred to %s!', repo, ghinfo$owner$login))
+    message(sprintf('%s seems transferred to %s!', repo, ghinfo$owner$login))
   }
   if(length(ghinfo$stargazers_count))
     out$stars <- jsonlite::unbox(ghinfo$stargazers_count)
