@@ -104,6 +104,11 @@ if [ "${UNIVERSE_NAME}" != "apache" ]; then
 export ARROW_GCS=OFF
 fi
 
+# Hack for packages using depending on rstantools in configure
+if test -f "${PKGDIR}/configure" && grep 'rstantools::' "${PKGDIR}/configure" && ! grep 'rstantools' "$DESCRIPTION"; then
+  sed -i 's/StanHeaders/rstantools, StanHeaders/g' "$DESCRIPTION"
+fi
+
 # Resolve \Sexpr[] during CMD build for compiled packages (because these break cross compiles)
 if [ -d "${PKGDIR}/src" ]; then
 sed -i 's|Sexpr\[results=rd\]|Sexpr[results=rd,stage=build]|g' ${PKGDIR}/man/*.Rd || true
@@ -169,8 +174,6 @@ fi
 # Delete latex vignettes for now (latex is to heavy for github actions)
 #rm -f ${PKGDIR}/vignettes/*.Rnw
 
-# Do not build articles (vignettes) for remotes
-#BUILD_ARGS="--resave-data"
 if [ "${5}" == "false" ] || [ "$SKIP_VIGNETTES" ]; then
   BUILD_ARGS="${BUILD_ARGS} --no-build-vignettes"
   rm -Rf ${PKGDIR}/vignettes
@@ -185,6 +188,11 @@ fi
   #fi
   # Preinstall a copy to support --resave-data
 #fi
+
+# CRAN packages already have been resaved e.g: AudioScatter, wTO
+if [ "${UNIVERSE_NAME}" = "cran" ]; then
+BUILD_ARGS="--no-resave-data"
+fi
 
 if ls ${PKGDIR}/data/*.R 2>/dev/null; then
   echo "Found R files under data. Preinstalling..."
