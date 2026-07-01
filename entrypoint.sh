@@ -71,22 +71,21 @@ if [ "$REPO" = "catboost" ]; then
 echo "StagedInstall: no" >> "$DESCRIPTION"
 fi
 
-# Fix CRAN mirror build of this package
-# Does not work
-#if [ "$REPO" = "symengine" ]; then
-#curl -L "https://raw.githubusercontent.com/symengine/symengine.R/refs/heads/master/.Rbuildignore" -o ${PKGDIR}/.Rbuildignore
-#fi
-
 # Get system dependencies
 echo "::group::Installing system dependencies"
 Rscript --no-init-file -e "buildtools::install_sysdeps('$PKGDIR')"
 echo "::endgroup::"
 
-# Workaround for rstanarm: ignore cleanup if package is already built
-if [ -f "$PKGDIR/MD5" ] && [ "${PKGDIR}" != "ECOSolveR" ]; then
+# CRAN mirror cleanup script should NOT run for rstanarm ?
+# But SHOULD run for ECOSolveR and most CMAKE packages (symengine,RcppPlanc)
+if [ "${UNIVERSE_NAME}" = "cran" ]; then
   rm -f $PKGDIR/MD5
-  test -f $PKGDIR/cleanup && echo "" > $PKGDIR/cleanup
-elif test -f "$PKGDIR/bootstrap.R"; then
+  if [ "$REPO" = "rstanarm" ]; then
+    echo "" > $PKGDIR/cleanup
+  fi
+fi
+
+if test -f "$PKGDIR/bootstrap.R"; then
   echo "Trying to run $PKGDIR/bootstrap.R"
   (cd $PKGDIR; Rscript bootstrap.R) || true
 elif test -f "$PKGDIR/.prepare"; then
@@ -218,6 +217,7 @@ if [ ! -f "${PKGDIR}/.Rbuildignore" ]; then
 echo "^src/.*\.o$" >> ${PKGDIR}/.Rbuildignore
 echo "^src/.*\.a$" >> ${PKGDIR}/.Rbuildignore
 echo "^src/.*\.so$" >> ${PKGDIR}/.Rbuildignore
+echo "^.*/CMakeFiles" >> ${PKGDIR}/.Rbuildignore
 fi
 
 # Override rmarkdown engine
