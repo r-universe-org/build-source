@@ -917,7 +917,7 @@ get_package_datasets <- function(package){
       ifelse(length(filename), filename[1], NA_character_)
     }, character(1))
     datasets$class <- lapply(datalist, function(x){if(!is.null(x)) class(x)})
-    datasets$fields <- lapply(datalist, function(x){if(is.data.frame(x) || is.matrix(x)) colnames(x) else list()})
+    datasets$fields <- lapply(datalist, function(x){if(is.data.frame(x) || is.matrix(x)) as.character(colnames(x)) else list()})
     datasets$rows <- vapply(datalist, function(x){ifelse(is.data.frame(x) || is.matrix(x), nrow(x), NA_integer_)}, integer(1))
     datasets$table <- vapply(datalist, function(x){tryCatch({data.table::fwrite(x, tempfile()); TRUE}, error = function(e){FALSE})}, logical(1))
     datasets$tojson <- vapply(datalist, function(x){tryCatch({jsonlite::toJSON(x); TRUE}, error = function(e){FALSE})}, logical(1))
