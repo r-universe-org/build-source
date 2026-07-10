@@ -564,7 +564,7 @@ get_maintainer_info <- function(path = '.'){
 }
 
 parse_orcid_id <- function(str){
-  pattern <- '0000-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]'
+  pattern <- '000[0-9]-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]'
   m <- regexpr(pattern, str)
   result <- regmatches(str, m)
   if(length(result)){
