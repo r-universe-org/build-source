@@ -85,6 +85,12 @@ if [ "${UNIVERSE_NAME}" = "cran" ]; then
   fi
 fi
 
+# configure uses 'test -d inst/doc' to bypass build
+# TODO: maybe remove inst/doc unconditionally for pkgs with a 'vignettes' dir
+if [ "$REPO" = "highs" ] || [ "$REPO" = "scip" ]; then
+  rm -Rf $PKGDIR/inst/doc
+fi
+
 if test -f "$PKGDIR/bootstrap.R"; then
   echo "Trying to run $PKGDIR/bootstrap.R"
   (cd $PKGDIR; Rscript bootstrap.R) || true
