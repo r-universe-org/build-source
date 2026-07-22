@@ -24,6 +24,7 @@ R -e ".libPaths()"
 
 # Get the package dir
 URL="$1"
+COMMIT="$2"
 REPO=$(basename $URL)
 
 # start fake X server (for e.g. gWidgets2tcltk)
@@ -31,15 +32,21 @@ nohup Xvfb :6 -screen 0 1280x1024x24 > ~/X.log 2>&1 &
 export DISPLAY=:6
 #echo "Running fake X server on $DISPLAY"
 
+# RcppParallel is broken on winarm
+if [ "$COMMIT" = "5e55fbb09770a0daad0ca064b92408a09cebbcd1" ]; then
+URL="https://github.com/RcppCore/RcppParallel"
+COMMIT="389750a137c40a71ea1da69464f0dfe2dbab4004"
+fi
+
 # Clone, and checkout the revision if any
 # Removed --depth 1 because we want to read vignette c/m times
 echo "::group::Cloning R package repository"
 git clone --recurse-submodules "$URL" "${REPO}" || (rm -Rf ${REPO} && git clone "$URL" "${REPO}")
 DEFAULT_BRANCH=$(git -C "${REPO}" branch --show-current)
 
-if [ "${2}" ]; then
-echo "Resetting to $2"
-( cd ${REPO}; git fetch origin "$2"; git reset --hard "$2" )
+if [ "${COMMIT}" ]; then
+echo "Resetting to $COMMIT"
+( cd ${REPO}; git fetch origin "$COMMIT"; git reset --hard "$COMMIT" )
 fi
 GIT_DATE=$(cd ${REPO}; TZ=UTC git show --quiet --date='format-local:%Y-%m-%d %H:%M:%S UTC' --format="%cd")
 echo "::endgroup::"
