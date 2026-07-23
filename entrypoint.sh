@@ -38,6 +38,12 @@ URL="https://github.com/RcppCore/RcppParallel"
 COMMIT="389750a137c40a71ea1da69464f0dfe2dbab4004"
 fi
 
+# StanHeaders is broken with latest RcppParallel
+if [ "$COMMIT" = "e011b39592efa4061359729883d835ce68df7216" ]; then
+URL="https://github.com/r-universe-org/StanHeaders"
+COMMIT="521bfe3338536d34af55b0cb8a129945b9553f4d"
+fi
+
 # Clone, and checkout the revision if any
 # Removed --depth 1 because we want to read vignette c/m times
 echo "::group::Cloning R package repository"
