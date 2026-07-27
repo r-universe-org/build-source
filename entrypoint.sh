@@ -32,12 +32,6 @@ nohup Xvfb :6 -screen 0 1280x1024x24 > ~/X.log 2>&1 &
 export DISPLAY=:6
 #echo "Running fake X server on $DISPLAY"
 
-# rsolr is broken icw bioc-devel
-if [ "$COMMIT" = "b8e4fe0abfecc333b995489c7eae30405e631fc5" ]; then
-URL="https://github.com/lawremi/rsolr"
-COMMIT="5245c109ea19640cb1b6522f53cb182ccedbcd5a"
-fi
-
 if [ "$COMMIT" = "665ff95f629f415038cd8196fc560306d4f1623b" ]; then
 URL="https://github.com/r-universe-org/tomledit"
 COMMIT="b63d860b102413ef641f532c25ed2ca8bca9385f"
