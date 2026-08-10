@@ -533,7 +533,9 @@ get_schema_keywords <- function(path = '.'){
 get_maintainer_info <- function(path = '.'){
   # see also tools:::.expand_package_description_db_R_fields
   x <- tools:::.read_description(file.path(path, 'DESCRIPTION'))
-  extra <- tools:::.expand_package_description_db_R_fields(x)
+  extra <- tryCatch(tools:::.expand_package_description_db_R_fields(x), error = function(e){
+    c(Maintainer = 'Invalid DESCRIPTION <Authors@R.error>')
+  })
   maintainerline <- as.list(gsub("'", "", trimws(c(x, extra)), fixed = TRUE))$Maintainer
   info <- list(
     name = trimws(sub("<(.*)>", '', maintainerline)),
@@ -556,7 +558,7 @@ get_maintainer_info <- function(path = '.'){
   }
   aar <- x["Authors@R"]
   if(is.na(aar)) return(info)
-  authors <- utils:::.read_authors_at_R_field(aar)
+  authors <- tryCatch(utils:::.read_authors_at_R_field(aar), error = message)
   maintainer <- Filter(function(x){"cre" %in% x$role}, authors)
   if(!length(maintainer)) return(info)
   info$orcid <- parse_orcid_id(as.list(maintainer[[1]]$comment)$ORCID)
