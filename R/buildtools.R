@@ -959,6 +959,15 @@ cran_mentions_count <- function(pkg, project = 'cran'){
   }, error = message)
 }
 
+detect_gitlfs <- function(repo){
+  git_attr <- file.path(repo, '.gitattributes')
+  if(file.exists(git_attr)){
+    if(any(grepl('filter=lfs', readLines(git_attr, warn = FALSE), fixed = TRUE))){
+      return(TRUE)
+    }
+  }
+}
+
 #' @export
 #' @rdname buildtools
 generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_url, branch){
@@ -994,6 +1003,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   }
   searchresults <- get_script_count(package)
   userbio <- universe_bio()
+  has_lfs <- detect_gitlfs(repo)
   if(length(userbio))
     contents$userbio <- lapply(userbio, jsonlite::unbox)
   if(length(downloads))
@@ -1006,6 +1016,8 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$pkgdown <- jsonlite::unbox(pkgdown_url)
   if(length(searchresults))
     contents$searchresults <- jsonlite::unbox(searchresults)
+  if(length(has_lfs))
+    contents$gitlfs <- jsonlite::unbox(has_lfs)
 
   # Generate contents.json
   if(file.exists('/NEED_FORTRAN')){
