@@ -305,13 +305,17 @@ echo "::group::Build readme and manuals"
 mkdir -p outputs/$PACKAGE
 
 # Generate PDF manual
-R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
+mkdir -p "outputs/$PACKAGE/extra"
+R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/extra/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 if [ "$MANUAL_FAILURE" ]; then
 # Try again with xelatex to support weird fonts: https://github.com/r-universe-org/help/issues/336
 echo "Failed to build pdfmanual with pdflatex. Trying again with xelatex..."
 unset MANUAL_FAILURE
-PDFLATEX=tinyxelatex R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
+PDFLATEX=tinyxelatex R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/extra/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 fi
+
+# TEMP FIX: copy to old location. Remove this after server has updated.
+cp -f outputs/$PACKAGE/extra/manual.pdf outputs/$PACKAGE/manual.pdf || true
 
 # Find readme URL
 export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$BRANCH', '$SUBDIR'))")
