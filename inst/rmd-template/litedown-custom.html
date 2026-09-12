@@ -12,6 +12,18 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils@1.13.44/css/prism-xcode.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 
+$css$
+<style>
+/* litedown's own css (@default, syntax highlighting themes, plugin assets above)
+   assumes it owns the whole page; override the parts that clash with our
+   container layout/theme */
+body { max-width: none; margin: 0; padding: 0; background: none; }
+@media (prefers-color-scheme: dark) {
+  html, img, video, iframe { filter: none; }
+  body { background: none; }
+}
+</style>
+
 $header-includes$
 </head>
 
@@ -44,6 +56,7 @@ $include-after$
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/combine/npm/katex@0.16.11/dist/katex.min.js,npm/katex@0.16.11/dist/contrib/auto-render.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@xiee/utils@1.13.44/js/render-katex.min.js" defer></script>
+$js$
 
 </body>
 

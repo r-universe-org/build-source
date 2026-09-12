@@ -109,8 +109,12 @@ replace_rmarkdown_engine <- function(){
     old_engine <- tools::vignetteEngine('vignette', package='litedown')
     tools::vignetteEngine('vignette', package = 'litedown', weave = function(file, quiet = FALSE, ...){
       meta <- buildtools:::read_yaml_font_matter(file)$options$meta
-      has_plugins <- setdiff(c(meta$css ,meta$js), c('@default'))
-      template <- if(length(has_plugins)){
+      # These litedown plugins restructure the entire page (margin notes, book
+      # chapters) in ways that conflict with our container layout; anything
+      # else (mermaid, datatables, callout, copy-button, etc.) is just extra
+      # css/js that our custom template can host via $css$/$js$.
+      alters_layout <- grepl('^@(article|book|sidenotes|appendix)(@|$)', c(meta$css, meta$js))
+      template <- if(any(alters_layout)){
         template_file('litedown-default.html')
       } else {
         template_file('litedown-custom.html')
