@@ -115,14 +115,11 @@ replace_rmarkdown_engine <- function(){
       } else {
         template_file('litedown-custom.html')
       }
-      mdfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.md'))
-      htmlfile <- file.path(tempdir(), paste0(tools::file_path_sans_ext(file), '.html'))
+      htmlfile <- paste0(tools::file_path_sans_ext(file), '.html')
       load_custom_output_package(file)
-      litedown::fuse(file, mdfile, quiet = quiet, envir = globalenv())
       options(litedown.html.template = template)
       on.exit(options(litedown.html.template = NULL))
-      litedown::mark(mdfile, htmlfile)
-      file.copy(htmlfile, '.', overwrite = TRUE)
+      litedown::fuse(file, htmlfile, quiet = quiet, envir = globalenv())
     }, tangle = old_engine$tangle, pattern = old_engine$pattern)
   })
 
