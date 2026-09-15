@@ -314,9 +314,6 @@ unset MANUAL_FAILURE
 PDFLATEX=tinyxelatex R CMD Rd2pdf --no-preview --title="Package: $PACKAGE (via r-universe)" --output=outputs/$PACKAGE/extra/manual.pdf "$PKGDIR" 2> stderr_manual.txt || MANUAL_FAILURE=1
 fi
 
-# TEMP FIX: copy to old location. Remove this after server has updated.
-cp -f outputs/$PACKAGE/extra/manual.pdf outputs/$PACKAGE/manual.pdf || true
-
 # Find readme URL
 export README_URL=$(Rscript -e "cat(buildtools::find_readme_url('$URL', '$BRANCH', '$SUBDIR'))")
 if [ "$README_URL" ]; then
