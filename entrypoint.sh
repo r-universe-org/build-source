@@ -263,11 +263,22 @@ if [ "$PACKAGE" = "BayesDLMfMRI" ]; then
 BUILD_ARGS="--no-build-vignettes"
 fi
 
+# For bioc data packages
+if [ "$PKGTYPE" = "data" ]; then
+echo "Going to recompress data..."
+BUILD_ARGS="--resave-data=best"
+MAXSIZE="1000M"
+TIMEOUT=5000
+else
+MAXSIZE="100M"
+TIMEOUT=3000
+fi
+
 # Build source package. Try vignettes, but build without otherwise.
 # We set a timeout such that the workflow can post a 'failure' instead of timing out in CI (test pkg Mcomp)
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
-if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" timeout -v 3000 R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} &> >(tee stderr_build.log); then
+if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" timeout -v ${TIMEOUT} R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} &> >(tee stderr_build.log); then
 VIGNETTE_FAILURE=1
 echo "::endgroup::"
 echo "::group::R CMD build (trying without vignettes)"
@@ -340,9 +351,8 @@ tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
 gzip ${SOURCEPKG%.gz}
 echo "::endgroup::"
 
-# Check final size of source package before exporting
-if [ -n "$(find $SOURCEPKG -prune -size +100M)" ]; then
-  echo "File $SOURCEPKG is larger than 100 MB. This is not allowed"
+if [ -n "$(find $SOURCEPKG -prune -size +$MAXSIZE)" ]; then
+  echo "File $SOURCEPKG is larger than $MAXSIZE. This is not allowed"
   exit 1
 fi
 echo "SOURCEPKG=$SOURCEPKG" >> $GITHUB_OUTPUT
