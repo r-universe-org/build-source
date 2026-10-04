@@ -344,11 +344,11 @@ Rscript -e "buildtools::render_html_manual('$PACKAGE', 'outputs/$PACKAGE/extra')
 Rscript -e "buildtools::generate_metadata_files('$PACKAGE', '$REPO', '$SUBDIR', 'outputs/$PACKAGE', '$PKGDIR', '$URL', '$BRANCH')"
 echo "::endgroup::"
 
-# if outputs has any files, add them to tarball
-echo "::group::Adding extra files to tarball"
-gunzip "$SOURCEPKG"
-tar rfv ${SOURCEPKG%.gz} -C outputs "$PACKAGE"
-gzip ${SOURCEPKG%.gz}
+# Rebuild the tarball with commonly-requested files first (top-level files,
+# extra/, inst/doc/), so the frontend can extract them by only reading the
+# start of large tarballs.
+echo "::group::Assembling tarball with priority ordering"
+/assemble-tarball.sh "$PACKAGE" "$SOURCEPKG"
 echo "::endgroup::"
 
 if [ -n "$(find $SOURCEPKG -prune -size +$MAXSIZE)" ]; then

@@ -2,6 +2,7 @@ FROM ghcr.io/r-universe-org/base-image
 
 COPY . /pkg
 COPY entrypoint.sh /entrypoint.sh
+COPY assemble-tarball.sh /assemble-tarball.sh
 COPY pdftinytex /root/bin/pdftinytex
 COPY tinyxelatex /root/bin/tinyxelatex
 
