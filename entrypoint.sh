@@ -265,7 +265,7 @@ fi
 
 # For bioc data packages
 if [ "$PKGTYPE" = "data" ]; then
-echo "Going to recompress data..."
+echo "This is a DATA package! Going to recompress data..."
 BUILD_ARGS="--resave-data=best"
 MAXSIZE="1000M"
 TIMEOUT=5000
