@@ -1110,14 +1110,14 @@ precache_pppm <- function(){
 }
 
 bioc_releases <- function(package){
-  yml <- yaml::read_yaml("https://bioconductor.org/config.yaml")
-  bioc_devel <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', yml$devel_version))
+  bioc_devel <- bioc_metadata(release = FALSE)
   pkg_devel <- bioc_devel[[package]]
   if(length(pkg_devel)){
+    yml <- yaml::read_yaml("https://bioconductor.posit.co/config.yaml")
     bioc_branch <- 'devel'
     bioc_version <- yml$devel_version
     bioc_pkgver <- pkg_devel$Version
-    bioc_release <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', yml$release_version))
+    bioc_release <- bioc_metadata(release = TRUE)
     pkg_release <- bioc_release[[package]]
     if(length(pkg_release)){
       bioc_branch <- c(bioc_branch, 'release')
@@ -1126,6 +1126,17 @@ bioc_releases <- function(package){
     }
     data.frame(branch = bioc_branch, version = bioc_pkgver, bioc = bioc_version)
   }
+}
+
+bioc_metadata <- function(release = FALSE){
+  yml <- yaml::read_yaml("https://bioconductor.posit.co/config.yaml")
+  version <- ifelse(release, yml$release_version, yml$devel_version)
+  bioc <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/bioc/packages.json', version))
+  workflows <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/workflows/packages.json', version))
+  experiment <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/data/experiment/packages.json', version))
+  packages <- c(bioc, workflows, experiment)
+  stopifnot(length(packages) > 2100)
+  return(packages)
 }
 
 get_cran_releases <- function(package){
