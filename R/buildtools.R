@@ -1036,6 +1036,10 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$quarto <- jsonlite::unbox(TRUE)
     contents$topics <- unique(c(contents$topics, c("quarto")))
   }
+  if(Sys.getenv('PKGTYPE') == 'data'){
+    contents$datapkg <- jsonlite::unbox(TRUE)
+    contents$topics <- unique(c(contents$topics, c("datapkg")))
+  }
   if(length(sysdeps)){
     contents$topics <- unique(c(contents$topics, sysdeps$name))
     contents$topics <- sub('c++', 'cpp', contents$topics, fixed = TRUE)
