@@ -1121,26 +1121,35 @@ bioc_releases <- function(package){
     bioc_branch <- 'devel'
     bioc_version <- yml$devel_version
     bioc_pkgver <- pkg_devel$Version
+    bioc_repo <- pkg_devel$repository
     bioc_release <- bioc_metadata(release = TRUE)
     pkg_release <- bioc_release[[package]]
     if(length(pkg_release)){
       bioc_branch <- c(bioc_branch, 'release')
       bioc_version <- c(bioc_version, yml$release_version)
       bioc_pkgver <- c(bioc_pkgver,  pkg_release$Version)
+      bioc_repo <- c(bioc_repo,  pkg_release$repository)
     }
-    data.frame(branch = bioc_branch, version = bioc_pkgver, bioc = bioc_version)
+    data.frame(branch = bioc_branch, version = bioc_pkgver, bioc = bioc_version, repository = bioc_repo)
   }
 }
 
 bioc_metadata <- function(release = FALSE){
   yml <- yaml::read_yaml("https://bioconductor.posit.co/config.yaml")
   version <- ifelse(release, yml$release_version, yml$devel_version)
-  bioc <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/bioc/packages.json', version))
-  workflows <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/workflows/packages.json', version))
-  experiment <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/data/experiment/packages.json', version))
+  bioc <- bioc_repo('bioc', version)
+  workflows <- bioc_repo('workflows', version)
+  experiment <-  bioc_repo('data/experiment', version)
   packages <- c(bioc, workflows, experiment)
   stopifnot(length(packages) > 2100)
   return(packages)
+}
+
+bioc_repo <- function(repository, version){
+  pkgs <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/%s/packages.json', version, repository))
+  sapply(pkgs, function(x){
+    c(x, repository = repository)
+  }, simplify = FALSE)
 }
 
 get_cran_releases <- function(package){
