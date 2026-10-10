@@ -1146,7 +1146,8 @@ bioc_metadata <- function(release = FALSE){
   bioc <- bioc_repo('bioc', version)
   workflows <- bioc_repo('workflows', version)
   experiment <-  bioc_repo('data/experiment', version)
-  packages <- c(bioc, workflows, experiment)
+  books <- tryCatch(bioc_books(version), error = message)
+  packages <- c(bioc, workflows, experiment, books)
   stopifnot(length(packages) > 2100)
   return(packages)
 }
@@ -1156,6 +1157,15 @@ bioc_repo <- function(repository, version){
   sapply(pkgs, function(x){
     c(x, repository = repository)
   }, simplify = FALSE)
+}
+
+# Books repo does not seem to have a packages.json metadata
+bioc_books <- function(version){
+  tmp <- tempfile()
+  curl::curl_download(sprintf('https://bioconductor.posit.co/packages/%s/books/src/contrib/PACKAGES', version), tmp)
+  books <- read.dcf(tmp)
+  out <- apply(books, 1, function(x){c(as.list(x), repository = 'books')})
+  structure(out, names = books[,'Package'])
 }
 
 get_cran_releases <- function(package){
