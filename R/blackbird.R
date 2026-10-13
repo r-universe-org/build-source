@@ -5,6 +5,20 @@ get_script_count <- function(package){
     message("Found BLACKBIRD_COUNT")
     return(as.numeric(Sys.getenv('BLACKBIRD_COUNT')))
   }
+
+  # Note: codesearch has very low rate limit and slighly lower count as it only
+  # includes default branches, and skips forks and large files.
+  tryCatch({
+    query = sprintf("library(%s)", package)
+    message("Using codesearch for scripts with: ", query)
+    apidata <- gh::gh('/search/code', q = query)
+    if(length(apidata$total_count)){
+      return(apidata$total_count)
+    }
+  }, error = function(e){
+    message("Failed to call codesearch: ", e$message)
+  })
+
   tryCatch({
     current_info(package)[['_searchresults']]
   }, error = function(e){
