@@ -914,8 +914,12 @@ get_package_datasets <- function(package){
         message(sprintf('Failure loading dataset "%s" (%s)', dataset, err))
       })
     })
+    # Prefer an exact match: with files 'columb.rda' and 'columb.polys.rda' a prefix
+    # match for 'columb' would pick the latter. Examples: mgcv, ARTool, Modalclust
     datasets$file <- vapply(datasets$object, function(nm){
-      filename <- grep(sprintf('^%s\\.', nm), datafiles, value = TRUE)
+      filename <- datafiles[tools::file_path_sans_ext(datafiles, compression = TRUE) == nm]
+      if(!length(filename))
+        filename <- grep(sprintf('^%s\\.', gsub('.', '\\.', nm, fixed = TRUE)), datafiles, value = TRUE)
       ifelse(length(filename), filename[1], NA_character_)
     }, character(1))
     datasets$class <- lapply(datalist, function(x){if(!is.null(x)) class(x)})
