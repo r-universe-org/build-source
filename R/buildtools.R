@@ -1127,7 +1127,7 @@ bioc_releases <- function(package){
   bioc_devel <- bioc_metadata(release = FALSE)
   pkg_devel <- bioc_devel[[package]]
   if(length(pkg_devel)){
-    yml <- yaml::read_yaml("https://bioconductor.posit.co/config.yaml")
+    yml <- yaml::read_yaml(paste0(bioc_mirror(), "/config.yaml"))
     bioc_branch <- 'devel'
     bioc_version <- yml$devel_version
     bioc_pkgver <- pkg_devel$Version
@@ -1144,8 +1144,12 @@ bioc_releases <- function(package){
   }
 }
 
+bioc_mirror <- function(){
+  sub("/+$", "", Sys.getenv('R_BIOC_MIRROR', 'https://bioconductor.org'))
+}
+
 bioc_metadata <- function(release = FALSE){
-  yml <- yaml::read_yaml("https://bioconductor.posit.co/config.yaml")
+  yml <- yaml::read_yaml(paste0(bioc_mirror(), "/config.yaml"))
   version <- ifelse(release, yml$release_version, yml$devel_version)
   bioc <- bioc_repo('bioc', version)
   workflows <- bioc_repo('workflows', version)
@@ -1157,7 +1161,7 @@ bioc_metadata <- function(release = FALSE){
 }
 
 bioc_repo <- function(repository, version){
-  pkgs <- jsonlite::read_json(sprintf('https://bioconductor.posit.co/packages/json/%s/%s/packages.json', version, repository))
+  pkgs <- jsonlite::read_json(sprintf('%s/packages/json/%s/%s/packages.json', bioc_mirror(), version, repository))
   sapply(pkgs, function(x){
     c(x, repository = repository)
   }, simplify = FALSE)
@@ -1166,7 +1170,7 @@ bioc_repo <- function(repository, version){
 # Books repo does not seem to have a packages.json metadata
 bioc_books <- function(version){
   tmp <- tempfile()
-  curl::curl_download(sprintf('https://bioconductor.posit.co/packages/%s/books/src/contrib/PACKAGES', version), tmp)
+  curl::curl_download(sprintf('%s/packages/%s/books/src/contrib/PACKAGES', bioc_mirror(), version), tmp)
   books <- read.dcf(tmp)
   out <- apply(books, 1, function(x){c(as.list(x), repository = 'books')})
   structure(out, names = books[,'Package'])
@@ -1286,9 +1290,10 @@ check_for_archived_deps <- function(path){
 
 bioc_devel_deprecated <- function(){
   tryCatch({
-    yml <- yaml::read_yaml("https://bioconductor.org/config.yaml")
+    mirror <- bioc_mirror()
+    yml <- yaml::read_yaml(paste0(mirror, "/config.yaml"))
     biocver <- ifelse(identical(Sys.getenv('UNIVERSE_NAME'), 'bioc-release'), yml$release_version, yml$devel_version )
-    bioc <- jsonlite::read_json(sprintf('https://bioconductor.org/packages/json/%s/bioc/packages.json', biocver))
+    bioc <- jsonlite::read_json(sprintf('%s/packages/json/%s/bioc/packages.json', mirror, biocver))
     deprecated <- Filter(function(x) identical(x$PackageStatus, 'Deprecated'), bioc)
     structure(names(deprecated), bioc_version = biocver)
   }, error = function(e){
