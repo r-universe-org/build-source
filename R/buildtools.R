@@ -1054,6 +1054,11 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$topics <- unique(c(contents$topics, sysdeps$name))
     contents$topics <- sub('c++', 'cpp', contents$topics, fixed = TRUE)
   }
+  abi <- abitools::abi_list(package)
+  if(length(c(abi$exports$key, abi$imports$key))){
+    contents$abi <- abi
+  }
+
   contents$metadata <- get_registry_metadata()
   contents$rbuild <- jsonlite::unbox(as.character(getRversion()))
   contents$assets <- assets
