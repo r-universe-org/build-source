@@ -1057,6 +1057,8 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   abi <- abitools::abi_list(package)
   if(length(c(abi$exports$key, abi$imports$key))){
     contents$abi <- abi
+  } else {
+    message("No ABI imports/exports found")
   }
 
   contents$metadata <- get_registry_metadata()
