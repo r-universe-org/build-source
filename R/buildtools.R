@@ -1054,7 +1054,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
     contents$topics <- unique(c(contents$topics, sysdeps$name))
     contents$topics <- sub('c++', 'cpp', contents$topics, fixed = TRUE)
   }
-  abi <- abitools::abi_list(package)
+  abi <- abitools::abi_list(package, flags = abitools::install_flags('install.log'))
   if(length(c(abi$exports$key, abi$imports$key))){
     contents$abi <- abi
   } else {
