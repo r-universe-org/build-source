@@ -443,7 +443,9 @@ install_dependencies <- function(path = '.'){
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
   remotes <- desc$Remotes
-  if(length(remotes)){
+  if(length(remotes) && nchar(Sys.getenv('NO_ADDITIONAL_REPOSITORIES'))){
+    message("Remotes are ignored for this organization!")
+  } else if(length(remotes)){
     try({
       remotes_repos <- split_by_comma(remotes)
       lapply(remotes_repos, function(x){remotes::install_github(x, upgrade = FALSE)})
