@@ -356,7 +356,7 @@ install_sysdeps <- function(path = '.'){
     syspkgs <- unlist(pakinfo$packages$system_packages)
 
     # r-hub no longer uses apt package to install rust
-    if('rust' %in% pakinfo$packages$sysreq){
+    if('rust' %in% pakinfo$packages$sysreq || grepl('abitools', basename(path))){
       # Needed for e.g. roxigraph
       syspkgs <- c(syspkgs, 'libclang-dev')
     }
