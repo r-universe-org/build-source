@@ -1138,6 +1138,7 @@ bioc_releases <- function(package){
   if(length(pkg_devel)){
     yml <- yaml::read_yaml(paste0(bioc_mirror(), "/config.yaml"))
     bioc_branch <- 'devel'
+    bioc_rver <- yml$r_version_associated_with_devel
     bioc_version <- yml$devel_version
     bioc_pkgver <- pkg_devel$Version
     bioc_repo <- pkg_devel$repository
@@ -1145,11 +1146,12 @@ bioc_releases <- function(package){
     pkg_release <- bioc_release[[package]]
     if(length(pkg_release)){
       bioc_branch <- c(bioc_branch, 'release')
+      bioc_rver <- c(bioc_rver, yml$r_version_associated_with_release)
       bioc_version <- c(bioc_version, yml$release_version)
       bioc_pkgver <- c(bioc_pkgver,  pkg_release$Version)
       bioc_repo <- c(bioc_repo,  pkg_release$repository)
     }
-    data.frame(branch = bioc_branch, version = bioc_pkgver, bioc = bioc_version, repository = bioc_repo)
+    data.frame(branch = bioc_branch, version = bioc_pkgver, bioc = bioc_version, repository = bioc_repo, r = bioc_rver)
   }
 }
 
