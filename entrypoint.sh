@@ -202,7 +202,11 @@ fi
 
 # CRAN packages already have been resaved e.g: AudioScatter, wTO
 if [ "${UNIVERSE_NAME}" = "cran" ]; then
-BUILD_ARGS="--no-resave-data"
+BUILD_ARGS="${BUILD_ARGS} --no-resave-data"
+fi
+
+if [ "${UNIVERSE_NAME:0:4}" == "bioc" ]; then
+BUILD_ARGS="${BUILD_ARGS} --keep-empty-dirs"
 fi
 
 if ls ${PKGDIR}/data/*.R 2>/dev/null; then
@@ -260,13 +264,13 @@ fi
 
 # Workaround for package that seems to kill the GitHub job
 if [ "$PACKAGE" = "BayesDLMfMRI" ]; then
-BUILD_ARGS="--no-build-vignettes"
+BUILD_ARGS="${BUILD_ARGS} --no-build-vignettes"
 fi
 
 # For bioc data packages
 if [ "$PKGTYPE" = "data" ]; then
 echo "This is a DATA package! Going to recompress data..."
-BUILD_ARGS="--resave-data=best"
+BUILD_ARGS="${BUILD_ARGS} --resave-data=best"
 MAXSIZE="1000M"
 TIMEOUT=5000
 else
