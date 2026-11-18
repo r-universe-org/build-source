@@ -391,10 +391,7 @@ install_sysdeps <- function(path = '.'){
 # These are not on CRAN, so we filter them out
 basepkgs <- names(which(installed.packages()[ ,"Priority"] == "base", ))
 
-# Packages over 2GB in size
-too_big <- c('SNPlocs.Hsapiens.dbSNP155.GRCh38', 'SNPlocs.Hsapiens.dbSNP155.GRCh37',
-             'MafDb.gnomAD.r2.1.GRCh38', 'MafDb.gnomAD.r2.1.hs37d5')
-dont_install <- c('R', 'gh', basepkgs, too_big)
+dont_install <- c('R', 'gh', basepkgs)
 
 #' @rdname buildtools
 #' @export
@@ -431,6 +428,11 @@ install_dependencies <- function(path = '.'){
     setdiff(unique(c(deps,unlist(unname(tools::package_dependencies(deps, recursive = TRUE))))), dont_install)
   }
 
+  # We install annotation packages one by one because they can be huge
+  annotation <- row.names(utils::available.packages(repos='https://bioconductor.org/packages/devel/data/annotation'))
+  big_deps <- intersect(alldeps, annotation)
+  alldeps <- setdiff(alldeps, annotation)
+
   # Some sanity check
   if(length(alldeps) > 1000){
     stop("This package has ", length(alldeps), " dependencies. This does not seem right.")
@@ -439,6 +441,21 @@ install_dependencies <- function(path = '.'){
   # Actually install
   # message("Running: utils::install.packages(alldeps)")
   utils::install.packages(alldeps)
+
+  # Delete temp files
+  unlink(file.path(tempdir(), "downloaded_packages"), recursive = TRUE)
+
+  # Install huge bioc dependencies
+  for(big_pkg in big_deps){
+    options(timeout = 500)
+    for(attempt in 1:3){
+      message("Installing annotation separately: ", big_pkg, " (attempt ", attempt, ")")
+      utils::install.packages(big_pkg, type = 'source')
+      unlink(file.path(tempdir(), "downloaded_packages"), recursive = TRUE)
+      if(nchar(system.file(package = big_pkg)))
+        break
+    }
+  }
 
   # The following should not be needed if the remote is part of the universe
   # However we install it anyway to avoid race conditions if the remote was just added
