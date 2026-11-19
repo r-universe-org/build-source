@@ -29,7 +29,7 @@ test_that("get_authors_info() falls back to Maintainer without Authors@R", {
 
 test_that("get_authors_info() errors on malformed Authors@R", {
   dir <- local_description("Authors@R: c(person(\"Jane\", ")
-  expect_error(get_authors_info(dir))
+  expect_error(get_authors_info(dir), "unexpected end of input")
 })
 
 test_that("get_authors_info() serialises to the expected JSON", {
