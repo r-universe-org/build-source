@@ -31,5 +31,9 @@ Imports:
     unix,
     yaml,
     xml2
+Suggests:
+    testthat (>= 3.3.0),
+    withr
+Config/testthat/edition: 3
 RoxygenNote: 7.3.2.9000
 Remotes: r-universe-org/abitools
