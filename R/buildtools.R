@@ -601,6 +601,7 @@ get_authors_info <- function(path = '.'){
     name = vapply(persons, function(p){format(p, include = c("given", "family"))}, character(1)),
     email = vapply(persons, function(p){tolower(na_if_empty(p$email))}, character(1)),
     orcid = vapply(persons, function(p){na_if_empty(parse_orcid_id(as.list(p$comment)$ORCID))}, character(1)),
+    ror = vapply(persons, function(p){na_if_empty(parse_ror_id(as.list(p$comment)$ROR))}, character(1)),
     stringsAsFactors = FALSE
   )
   df$role <- lapply(persons, function(p){as.character(p$role)})
@@ -609,6 +610,16 @@ get_authors_info <- function(path = '.'){
 
 parse_orcid_id <- function(str){
   pattern <- '000[0-9]-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]'
+  m <- regexpr(pattern, str)
+  result <- regmatches(str, m)
+  if(length(result)){
+    result
+  }
+}
+
+# ROR IDs: '0' + 6 chars (no i, l, o, u) + 2 digits, bare or as https://ror.org/ URL
+parse_ror_id <- function(str){
+  pattern <- '0[a-hj-km-np-tv-z0-9]{6}[0-9]{2}'
   m <- regexpr(pattern, str)
   result <- regmatches(str, m)
   if(length(result)){

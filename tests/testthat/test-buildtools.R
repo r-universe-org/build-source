@@ -5,7 +5,7 @@ test_that("get_authors_info() parses all Authors@R persons, maintainer included"
     "      comment = c(ORCID = \"0000-0002-4035-0289\")),",
     "    person(\"Duncan\", \"Temple Lang\", role = c(\"aut\", \"cph\"),",
     "      comment = c(\"Original author of RJSONIO\")),",
-    "    person(\"rOpenSci\", role = \"fnd\")",
+    "    person(\"rOpenSci\", role = \"fnd\", comment = c(ROR = \"019jywm96\"))",
     "  )"
   ))
   res <- get_authors_info(dir)
@@ -14,6 +14,7 @@ test_that("get_authors_info() parses all Authors@R persons, maintainer included"
   expect_equal(res$name, c("Jeroen Ooms", "Duncan Temple Lang", "rOpenSci"))
   expect_equal(res$email, c("jeroenooms@gmail.com", NA, NA))
   expect_equal(res$orcid, c("0000-0002-4035-0289", NA, NA))
+  expect_equal(res$ror, c(NA, NA, "019jywm96"))
   expect_equal(res$role, list(c("aut", "cre", "cph"), c("aut", "cph"), "fnd"))
 })
 
@@ -24,7 +25,19 @@ test_that("get_authors_info() falls back to Maintainer without Authors@R", {
   expect_equal(res$name, "Jane Doe")
   expect_equal(res$email, "jane@example.org")
   expect_true(is.na(res$orcid))
+  expect_true(is.na(res$ror))
   expect_equal(res$role, list("cre"))
+})
+
+test_that("get_authors_info() extracts ROR IDs given as URL", {
+  dir <- local_description(c(
+    "Authors@R: c(",
+    "    person(\"Jeroen\", \"Ooms\", , \"jeroenooms@gmail.com\", role = c(\"aut\", \"cre\")),",
+    "    person(\"rOpenSci\", role = \"fnd\", comment = c(ROR = \"https://ror.org/019jywm96\"))",
+    "  )"
+  ))
+  res <- get_authors_info(dir)
+  expect_equal(res$ror, c(NA, "019jywm96"))
 })
 
 test_that("get_authors_info() errors on malformed Authors@R", {
@@ -39,7 +52,7 @@ test_that("get_authors_info() serialises to the expected JSON", {
     "      comment = c(ORCID = \"0000-0002-4035-0289\")),",
     "    person(\"Duncan\", \"Temple Lang\", role = c(\"aut\", \"cph\"),",
     "      comment = c(\"Original author of RJSONIO\")),",
-    "    person(\"rOpenSci\", role = \"fnd\")",
+    "    person(\"rOpenSci\", role = \"fnd\", comment = c(ROR = \"019jywm96\"))",
     "  )"
   ))
   json <- jsonlite::toJSON(get_authors_info(dir))
@@ -51,7 +64,7 @@ test_that("get_authors_info() serialises to the expected JSON", {
     role = list("aut", "cre", "cph")
   ))
   expect_equal(parsed[[2]], list(name = "Duncan Temple Lang", role = list("aut", "cph")))
-  expect_equal(parsed[[3]], list(name = "rOpenSci", role = list("fnd")))
+  expect_equal(parsed[[3]], list(name = "rOpenSci", ror = "019jywm96", role = list("fnd")))
 })
 
 test_that("get_maintainer_info() returns name, email and ORCID of the cre", {
