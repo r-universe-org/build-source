@@ -575,13 +575,36 @@ get_maintainer_info <- function(path = '.'){
   if(nchar(uuid)){
     info$uuid <- as.numeric(uuid)
   }
-  aar <- x["Authors@R"]
-  if(is.na(aar)) return(info)
-  authors <- tryCatch(utils:::.read_authors_at_R_field(aar), error = message)
-  maintainer <- Filter(function(x){"cre" %in% x$role}, authors)
-  if(!length(maintainer)) return(info)
-  info$orcid <- parse_orcid_id(as.list(maintainer[[1]]$comment)$ORCID)
+  # Runs before R CMD build, so DESCRIPTION may be invalid: don't fail here
+  if(is.na(x["Authors@R"])) return(info)
+  authors <- tryCatch(get_authors_info(path), error = function(e) NULL)
+  is_cre <- vapply(authors$role, function(r){"cre" %in% r}, logical(1))
+  if(!any(is_cre)) return(info)
+  orcid <- authors$orcid[is_cre][1]
+  info$orcid <- if(!is.na(orcid)) orcid
   return(info)
+}
+
+# Parsed data frame of all persons in Authors@R (maintainer included).
+# Falls back to the Maintainer field when there is no Authors@R.
+get_authors_info <- function(path = '.'){
+  x <- tools:::.read_description(file.path(path, 'DESCRIPTION'))
+  if(!is.na(x["Authors@R"])){
+    persons <- utils:::.read_authors_at_R_field(x[["Authors@R"]])
+  } else {
+    persons <- utils::as.person(x[["Maintainer"]])
+    persons$role <- "cre"
+  }
+  persons <- lapply(seq_along(persons), function(i){persons[i]})
+  na_if_empty <- function(val){if(length(val)) val[1] else NA_character_}
+  df <- data.frame(
+    name = vapply(persons, function(p){format(p, include = c("given", "family"))}, character(1)),
+    email = vapply(persons, function(p){tolower(na_if_empty(p$email))}, character(1)),
+    orcid = vapply(persons, function(p){na_if_empty(parse_orcid_id(as.list(p$comment)$ORCID))}, character(1)),
+    stringsAsFactors = FALSE
+  )
+  df$role <- lapply(persons, function(p){as.character(p$role)})
+  df
 }
 
 parse_orcid_id <- function(str){
@@ -1087,6 +1110,7 @@ generate_metadata_files <- function(package, repo, subdir, outdir, pkgdir, git_u
   contents$realowner <- jsonlite::unbox(realowner)
   contents$cranurl <- jsonlite::unbox(cranurl)
   contents$releases <- releases
+  contents$authors <- get_authors_info(dirname(system.file('DESCRIPTION', package = package)))
   contents$exports <- exports
   contents$datasets <- datasets
   contents$help <- helppages
