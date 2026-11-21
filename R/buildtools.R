@@ -442,6 +442,11 @@ install_dependencies <- function(path = '.'){
   # message("Running: utils::install.packages(alldeps)")
   utils::install.packages(alldeps)
 
+  # Temp fix for JAGS5 compat
+  if('rjags' %in% alldeps){
+    install.packages(c("rjags", "runjags"), repos = 'https://cran.r-universe.dev/bin/linux/resolute-x86_64/4.6')
+  }
+
   # Delete temp files
   unlink(file.path(tempdir(), "downloaded_packages"), recursive = TRUE)
 
