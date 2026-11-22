@@ -743,7 +743,7 @@ current_info <- function(package){
   tryCatch({
     universe <- Sys.getenv('MY_UNIVERSE')
     if(nchar(universe)){
-      url <- paste0(universe, '/', package, '/json')
+      url <- paste0(universe, '/api/packages/', package)
       message("Looking up current package info: ", url)
       jsonlite::fromJSON(url)
     }

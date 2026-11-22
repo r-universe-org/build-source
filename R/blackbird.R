@@ -6,6 +6,14 @@ get_script_count <- function(package){
     return(as.numeric(Sys.getenv('BLACKBIRD_COUNT')))
   }
 
+  tryCatch({
+    old <- current_info(package)[['_searchresults']]
+    if(length(old))
+      return(old)
+  }, error = function(e){
+    message("Failed to get script count: ", e$message)
+  })
+
   # Note: codesearch has very low rate limit and slighly lower count as it only
   # includes default branches, and skips forks and large files.
   tryCatch({
@@ -17,12 +25,6 @@ get_script_count <- function(package){
     }
   }, error = function(e){
     message("Failed to call codesearch: ", e$message)
-  })
-
-  tryCatch({
-    current_info(package)[['_searchresults']]
-  }, error = function(e){
-    message("Failed to get script count: ", e$message)
   })
 }
 
