@@ -278,12 +278,14 @@ fi
 # We set a timeout such that the workflow can post a 'failure' instead of timing out in CI (test pkg Mcomp)
 #mv ${REPO}/.git tmpgit
 echo "::group::R CMD build"
+echo "Running: R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS}"
 if ! R_TEXI2DVICMD=emulation PDFLATEX=pdftinytex R_TESTS="/tmp/vignettehack.R" timeout -v ${TIMEOUT} R --no-init-file CMD build ${PKGDIR} --no-manual ${BUILD_ARGS} &> >(tee stderr_build.log); then
 VIGNETTE_FAILURE=1
 echo "::endgroup::"
 echo "::group::R CMD build (trying without vignettes)"
 echo "---- ERROR: failed to run: R CMD build -----"
 echo "Trying to build source package without vignettes...."
+echo "Running: R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}"
 R --no-init-file CMD build ${PKGDIR} --no-manual --no-build-vignettes ${BUILD_ARGS}
 fi
 echo "::endgroup::"
